@@ -33,7 +33,7 @@ class GoodItem(models.Model):
     category = models.ForeignKey(GoodCategory, on_delete=models.SET_NULL, null=True)
 
     def __str__(self) -> str:
-        return self.title
+        return self.name
 
     class Meta:
         verbose_name = "Товар"
@@ -101,9 +101,10 @@ class BasketItem(models.Model):
     count = models.IntegerField("Количество", default=1)
 
     def __str__(self) -> str:
-        return self.good_item.title
+        return self.good_item.name
 
     class Meta:
+        unique_together = ('good_item', 'basket')
         verbose_name = "Товар в корзине"
         verbose_name_plural = "Товары в корзине"
 

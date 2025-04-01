@@ -26,7 +26,11 @@ router.register("delivery-methods", DeliveryMethodViewSet)
 router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
 
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken'))
+]
 
 schema_view = get_schema_view(
     openapi.Info(

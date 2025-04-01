@@ -52,8 +52,15 @@ class RecipentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class BasketItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BasketItem
+        fields = "__all__"
+        read_only_fields = ("basket",)
+
 class BasketSerializer(serializers.ModelSerializer):
     summary = serializers.SerializerMethodField()
+    items = BasketItemSerializer(many=True)
 
     class Meta:
         model = Basket
@@ -71,14 +78,10 @@ class BasketSerializer(serializers.ModelSerializer):
         return None
 
 
-class BasketItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BasketItem
-        fields = "__all__"
-        read_only_fields = ("basket",)
-
 
 class CheckoutSerializer(serializers.ModelSerializer):
+    basket = BasketSerializer()
+
     class Meta:
         model = Checkout
         fields = "__all__"

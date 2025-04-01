@@ -59,17 +59,21 @@ class BasketItemViewSet(
     serializer_class = BasketItemSerializer
 
     def get_queryset(self):
-        basket = Basket.objects.filter(visible=True).filter(user__id=1)
+        basket = Basket.objects.filter(visible=True).filter(user__id=self.request.user.id)
         if len(basket) == 0:
-            basket = Basket.objects.create(user_id=1)
+            basket = Basket.objects.create(user_id=self.request.user.id)
+        else:
+            basket = basket.get()
         basket_items = BasketItem.objects.filter(basket=basket)
         return basket_items
 
     def perform_create(
         self, serializer
     ):  # Нерабочий роут, дома посмотреть и разобраться, почему так
-        basket = Basket.objects.filter(visible=True).filter(user__id=1)
+        basket = Basket.objects.filter(visible=True).filter(user__id=self.request.user.id)
         if len(basket) == 0:
-            basket = Basket.objects.create(user_id=1)
+            basket = Basket.objects.create(user_id=self.request.user.id)
+        else:
+            basket = basket.get()
         serializer.save(basket_id=basket.id)
         # return super().perform_create(serializer)
