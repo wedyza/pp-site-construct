@@ -30,7 +30,7 @@ router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
 urlpatterns = [
     path("", include(router.urls)),
     path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
+    path('auth/', include('djoser.urls.jwt')),
     path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation')
 ]
 
