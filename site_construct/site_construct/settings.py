@@ -166,7 +166,7 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    'ACTIVATION_URL': 'users/{uid}/{token}',
+    'ACTIVATION_URL': '/api/v1/auth/activation/{uid}/{token}/',
     'SEND_ACTIVATION_EMAIL': True,
     "EMAIL_FRONTEND_SITE_NAME": 'Какой-то сайт',  # Add this line
     'LOGIN_FIELD': 'email',
