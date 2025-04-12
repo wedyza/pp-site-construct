@@ -1,0 +1,36 @@
+.header-categories {
+    position: fixed;
+    left: 0;
+    padding: 0 var(--padding);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    top: var(--top-padding);
+}
+
+.header-categories_item {
+    font-weight: 600;
+    font-size: 0.8em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.main-content {
+    padding-top: 59px;
+}
+
+.news {
+    background-color: var(--temp-color);
+    width: 100%;
+    height: 186px;
+    border-radius: var(--radius);
+}
+
+.main_goods-list {
+    margin-top: 32px;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+}
