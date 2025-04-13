@@ -1,0 +1,31 @@
+.orders-tabs {
+    display: flex;
+    background-color: var(--second-color);
+    border-radius: var(--radius);
+    width: fit-content;
+}
+
+.orders-tab {
+    padding: 10px 30px;
+    font-weight: 700;
+    font-size: 0.9em;
+    line-height: 120%;
+    letter-spacing: 0%;
+    color: var(--text-second);
+}
+
+.orders-tab__active {
+    background-color: var(--gray-accent);
+    border-radius: var(--radius);
+    color: var(--background);
+}
+
+.orders-content {
+    margin-top: 45px;
+}
+
+.orders-list {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(648px, 1fr));
+}

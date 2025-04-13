@@ -1,13 +1,14 @@
 import React from 'react';
 import MainPage from './pages/mainPage/MainPage';
-import Header from './components/header/Header';
+import { Route, Routes } from 'react-router-dom';
+import OrdersPage from './pages/ordersPage/OrdersPage';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <MainPage />
-    </div>
+    <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/orders" element={<OrdersPage />} />
+    </Routes>
   );
 }
 

@@ -4,9 +4,12 @@
     --temp-color: #D9D9D9;
     --light-color: #F3F3F3;
     --text-color: #000000;
+    --text-second: #5E5E5E;
+    --gray-accent: #929292;
     --radius: 10px;
     --padding: 60px;
-    --top-padding: 78px;
+    --header-height: 78px;
+    --cat-height: 59px;
 }
 
 body {
@@ -21,5 +24,5 @@ body {
 }
 
 .page-content {
-    padding-top: var(--top-padding);
+    padding-top: calc(var(--header-height) + var(--cat-height)) ;
 }
