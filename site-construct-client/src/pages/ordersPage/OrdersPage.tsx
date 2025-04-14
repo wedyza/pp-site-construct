@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './ordersPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import CompletedOrderCard from '../../components/completedOrderCard/CompletedOrderCard';
+import Header from '../../components/header/Header';
 
 export interface Order {
     id?: number;
@@ -80,6 +81,8 @@ const OrdersPage: React.FC = () => {
 
     return (
         <div className='page-content'>
+            <Header />
+            <HeaderCategories />
             <div className="orders-tabs">
                 <button
                     className={activeTab === 'current' ? 'orders-tab orders-tab__active' : 'orders-tab'}

@@ -3,6 +3,7 @@ import './mainPage.scss'
 import GoodsCard from '../../components/goodCard/GoodCard';
 import { Good } from '../../services/api'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
+import Header from '../../components/header/Header';
 
 
 const goods: Good[] = [
@@ -41,6 +42,8 @@ const goods: Good[] = [
 const MainPage: React.FC = () => {
     return (
         <div className='page-content'>
+            <Header />
+            <HeaderCategories />
             <div className="main-content">
                 <div className="news"></div>
                 <ul className='main_goods-list'>
