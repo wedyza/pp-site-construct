@@ -1,0 +1,46 @@
+.order-card__wide {
+    width: fit-content;
+    justify-content: flex-start;
+}
+
+.order-card_imgs {
+    display: flex;
+    padding: 12px;
+    gap: 12px;
+}
+
+.order_good-img {
+    height: 100%;
+    background-color: var(--temp-color);
+    min-width: 200px;
+    border-radius: var(--big-radius);
+    position: relative;
+    height: 231px;
+}
+
+.order-card_info {
+    padding: 24px;
+    position: relative;
+    min-width: calc(100vw - 648px - var(--padding) * 2);
+}
+
+.order-card_cancel {
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+.order-card_actions {
+    display: flex;
+    gap: 16px;
+}
+
+.order-card_price__bold {
+    font-weight: 700;
+    font-size: 1.1em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.order-card_info-item__price {
+    align-items: center;
+}

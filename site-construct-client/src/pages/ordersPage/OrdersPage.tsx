@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './ordersPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
-import CompletedOrderCard from '../../components/completedOrderCard/CompletedOrderCard';
+import PurchasedCard from '../../components/purchasedCard/PurchasedCard';
 import Header from '../../components/header/Header';
+import OrderCard from '../../components/orderCard/OrderCard';
+import { Good } from '../../services/api';
 
 export interface Order {
     id?: number;
@@ -11,10 +13,11 @@ export interface Order {
     price: number;
     address: string;
     status: string;
+    goods?: Good[];
 }
 
 const OrdersPage: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased'>('current');
+    const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
     
     const currentOrders: Order[] = [
         {
@@ -23,7 +26,13 @@ const OrdersPage: React.FC = () => {
             delivery_date: '8 марта',
             price: 704,
             address: 'г. Екатеринбург ул. Малышева 15',
-            status: 'Получен'
+            status: 'Создан',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+            ]
         },
         {
             id: 565854,
@@ -31,7 +40,17 @@ const OrdersPage: React.FC = () => {
             delivery_date: '9 марта',
             price: 800,
             address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен'
+            status: 'В пути',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+            ]
         },
         {
             id: 565854,
@@ -39,7 +58,21 @@ const OrdersPage: React.FC = () => {
             delivery_date: '9 марта',
             price: 800,
             address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен'
+            status: 'В пути',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+            ]
         }
     ];
     const completedOrders: Order[] = [
@@ -49,7 +82,17 @@ const OrdersPage: React.FC = () => {
             delivery_date: '9 марта',
             price: 800,
             address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен'
+            status: 'Получен',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+            ]
         },
         {
             id: 565854,
@@ -57,7 +100,13 @@ const OrdersPage: React.FC = () => {
             delivery_date: '9 марта',
             price: 800,
             address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен'
+            status: 'Получен',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                }
+            ]
         }
     ];
     const purchasedGoods: Order[] = [
@@ -76,6 +125,32 @@ const OrdersPage: React.FC = () => {
             price: 800,
             address: 'г. Екатеринбург ул. Малышева 16',
             status: 'Получен'
+        },
+        {
+            id: 5658541,
+            placement_date: '10 марта',
+            delivery_date: '10 марта',
+            price: 800,
+            address: 'г. Екатеринбург ул. Малышева 16',
+            status: 'Получен'
+        }
+    ];
+    const refundsGoods: Order[] = [
+        {
+            id: 658540,
+            placement_date: '5 марта',
+            delivery_date: '6 марта',
+            price: 900,
+            address: 'г. Екатеринбург ул. Малышева 17',
+            status: 'возвращен'
+        },
+        {
+            id: 5658540,
+            placement_date: '7 марта',
+            delivery_date: '9 марта',
+            price: 800,
+            address: 'г. Екатеринбург ул. Малышева 16',
+            status: 'возвращен'
         }
     ];
 
@@ -102,13 +177,19 @@ const OrdersPage: React.FC = () => {
                 >
                     Купленные товары ({purchasedGoods.length})
                 </button>
+                <button
+                    className={activeTab === 'refunds' ? 'orders-tab orders-tab__active' : 'orders-tab'}
+                    onClick={() => setActiveTab('refunds')}
+                >
+                    Возвраты ({refundsGoods.length})
+                </button>
             </div>
             <div className="orders-content">
                 {activeTab === 'current' && (
                     <ul className="orders-list">
                         {currentOrders.map((order, index) => (
                             <li className='order' key={index}>
-                                <CompletedOrderCard order={order} />
+                                <OrderCard order={order} />
                             </li>
                         ))}
                     </ul>
@@ -117,16 +198,25 @@ const OrdersPage: React.FC = () => {
                     <ul className="orders-list">
                         {completedOrders.map((order, index) => (
                             <li className='order' key={index}>
-                                <CompletedOrderCard order={order} />
+                                <OrderCard order={order} />
                             </li>
                         ))}
                     </ul>
                 )}
                 {activeTab === 'purchased' && (
-                    <ul className="orders-list">
+                    <ul className="orders_goods-list">
                         {purchasedGoods.map((order, index) => (
                             <li className='order' key={index}>
-                                <CompletedOrderCard order={order} />
+                                <PurchasedCard order={order} />
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                {activeTab === 'refunds' && (
+                    <ul className="orders_goods-list">
+                        {refundsGoods.map((order, index) => (
+                            <li className='order' key={index}>
+                                <PurchasedCard order={order} />
                             </li>
                         ))}
                     </ul>

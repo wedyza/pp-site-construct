@@ -24,8 +24,15 @@
     margin-top: 45px;
 }
 
-.orders-list {
+.orders_goods-list {
     display: grid;
     gap: 24px;
     grid-template-columns: repeat(auto-fit, minmax(648px, 1fr));
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
 }

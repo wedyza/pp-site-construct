@@ -1,20 +1,23 @@
 .order-card {
     background-color: var(--second-color);
-    border-radius: var(--radius);
+    border-radius: var(--big-radius);
     display: flex;
     align-items: stretch;
     justify-content: space-between;
     gap: 24px;
+    position: relative;
 }
 
 .order-card_img {
     background-color: var(--temp-color);
-    width: 200px;
-    border-radius: 0 var(--radius) var(--radius) 0;
+    min-width: 200px;
+    border-radius: var(--big-radius);
 }
 
-.order-card_info {
+.order_good-card_info {
     padding: 24px;
+    position: relative;
+    width: 100%;
 }
 
 .order-card_id {
@@ -46,15 +49,19 @@
 }
 
 .order-card_status {
-    font-weight: 600;
-    font-style: italic;
     font-size: 0.7em;
     line-height: 120%;
     letter-spacing: 0%;
-    color: #717171;
+    text-transform: lowercase;
+    position: absolute;
+    right: 0;
+    top: 24px;
+    padding: 4px 8px;
+    background-color: var(--background);
+    border-radius: var(--radius);
 }
 
-.order-card_rate {
+.order-card_action {
     margin-top: 24px;
     background-color: var(--background);
     border-radius: var(--radius);
@@ -65,8 +72,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    width: fit-content;
 }
 
 .order-card_rate-arrow {
-    margin-left: auto;
+    position: absolute;
+    top: 17px;
+    right: 16px;
+    opacity: 0.6;
 }
