@@ -5,6 +5,7 @@ import PurchasedCard from '../../components/purchasedCard/PurchasedCard';
 import Header from '../../components/header/Header';
 import OrderCard from '../../components/orderCard/OrderCard';
 import { Good } from '../../services/api';
+import GoodsCard from '../../components/goodCard/GoodCard';
 
 export interface Order {
     id?: number;
@@ -16,6 +17,40 @@ export interface Order {
     goods?: Good[];
 }
 
+
+
+const goods: Good[] = [
+    {
+        name: 'Платье летнее для прогулок',
+        description: '',
+        price: 4999
+    },
+    {
+        name: 'Пальто осеннее загадочное',
+        description: '',
+        price: 14999
+    },
+    {
+        name: 'Платье летнее для прогулок',
+        description: '',
+        price: 4999
+    },
+    {
+        name: 'Пальто осеннее загадочное',
+        description: '',
+        price: 14999
+    },
+    {
+        name: 'Платье летнее для прогулок',
+        description: '',
+        price: 4999
+    },
+    {
+        name: 'Пальто осеннее загадочное',
+        description: '',
+        price: 14999
+    },
+];
 const OrdersPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
     
@@ -221,6 +256,14 @@ const OrdersPage: React.FC = () => {
                         ))}
                     </ul>
                 )}
+            </div>
+            <div className='order-page_rec'>
+                <h2 className='order-page_rec-title'>Рекомендуем для вас</h2>
+                <ul className='main_goods-list'>
+                    {goods.map((good, index) => (
+                        <li key={index} className="main_good"><GoodsCard good={good} /></li>
+                    ))}
+                </ul>
             </div>
         </div>
     );

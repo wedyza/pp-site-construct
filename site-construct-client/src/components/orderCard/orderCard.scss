@@ -7,6 +7,7 @@
     display: flex;
     padding: 12px;
     gap: 12px;
+    padding-left: 0;
 }
 
 .order_good-img {
@@ -21,7 +22,7 @@
 .order-card_info {
     padding: 24px;
     position: relative;
-    min-width: calc(100vw - 648px - var(--padding) * 2);
+    min-width: calc(100vw - 672px - var(--padding) * 2);
 }
 
 .order-card_cancel {
