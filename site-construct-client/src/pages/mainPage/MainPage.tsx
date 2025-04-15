@@ -4,6 +4,7 @@ import GoodsCard from '../../components/goodCard/GoodCard';
 import { Good } from '../../services/api'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
+import { Link } from 'react-router-dom';
 
 
 const goods: Good[] = [
@@ -48,7 +49,11 @@ const MainPage: React.FC = () => {
                 <div className="news"></div>
                 <ul className='main_goods-list'>
                     {goods.map((good, index) => (
-                        <li key={index} className="main_good"><GoodsCard good={good} /></li>
+                        <li key={index} className="main_good">
+                            <Link to={'/product'}>
+                                <GoodsCard good={good} />
+                            </Link>
+                        </li>
                     ))}
                 </ul>
             </div>
