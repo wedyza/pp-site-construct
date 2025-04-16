@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import OrdersPage from './pages/ordersPage/OrdersPage';
 import ProfilePage from './pages/profilePage/ProfilePage';
 import ProductPage from './pages/productPage/ProductPage';
+import FavouritesPage from './pages/favouritesPage/FavouritesPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/product" element={<ProductPage />} />
+        <Route path="/favourites" element={<FavouritesPage />} />
     </Routes>
   );
 }

@@ -21,6 +21,7 @@ export interface Good {
     description: string;
     price?: number;
     category?: number | null;
+    isFav?: boolean;
 }
 
 export interface BasketItem {
