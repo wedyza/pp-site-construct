@@ -1,0 +1,77 @@
+.basket-page {
+    display: flex;
+    gap: 24px;
+}
+
+.basket_content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.basket-placement {
+    min-width: 312px;
+    background-color: var(--second-color);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: fit-content;
+}
+
+.basket-placement_content {
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--temp-color);
+}
+
+.basket-placement_content__label {
+    font-weight: 600;
+    font-style: italic;
+    font-size: 0.7em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.basket-placement_content__value {
+    font-weight: 700;
+    font-size: 1.2em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.basket-placement_link {
+    font-size: 0.8em;
+    line-height: 120%;
+    letter-spacing: 0%;
+    background-color: var(--background);
+    display: flex;
+    justify-content: center;
+    padding: 13px 0;
+    border-radius: var(--radius);
+}
+
+.basket-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.basket-btn {
+    font-size: 0.8em;
+    line-height: 120%;
+    letter-spacing: 0%;
+    background-color: var(--second-color);
+    border-radius: var(--big-radius);
+    width: 176px;
+    height: 56px;
+}
+
+.basket_list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
