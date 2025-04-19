@@ -14,8 +14,11 @@
 }
 
 .header-categories_item {
-    font-weight: 600;
     font-size: 0.8em;
     line-height: 120%;
     letter-spacing: 0%;
+}
+
+.header-categories_dot svg circle {
+    fill: var(--accent);
 }

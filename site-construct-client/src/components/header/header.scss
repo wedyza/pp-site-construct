@@ -6,7 +6,7 @@
     padding: 0 var(--padding);
     display: flex;
     height: 46px;
-    gap: 24px;
+    gap: 4px;
     align-items: center;
     justify-content: space-between;
     z-index: 10;
@@ -15,19 +15,24 @@
 
 .header_logo {
     height: 30px;
+    margin-right: 20px;
 }
 
 .header_catalog {
-    background-color: var(--second-color);
+    background-color: var(--black);
     border-radius: var(--radius);
     height: 100%;
-    padding: 0 16px;
+    padding: 0 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    flex: 1;
     font-size: 0.8em;
+
+    svg{
+        path {
+            stroke: var(--white-text);
+        }
+    }
 }
 
 .header_nav {
@@ -35,24 +40,34 @@
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    gap: 8px;
+    gap: 4px;
+    margin-left: 12px;
 }
 
 .header_link {
-    width: 75px;
-    background-color: var(--second-color);
+    width: 114px;
+    background-color: var(--black);
     border-radius: var(--radius);
     height: 100%;
     display: flex;
-    flex-direction: column;
+    gap: 6px;
     align-items: center;
-    justify-content: space-between;
-    font-size: 0.6em;
-    line-height: 120%;
-    letter-spacing: 0%;
-    padding: 5px 11px;
+    justify-content: center;
+
+    svg{
+        height: 20px;
+
+        path {
+            fill: var(--white-text);
+        }
+    }
 }
 
 .header-nav_text {
-    opacity: 0.6;
+    color: var(--white-text);
+    font-weight: 500;
+    font-size: 0.6em;
+    line-height: 100%;
+    letter-spacing: 0%;
+
 }
