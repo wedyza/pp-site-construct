@@ -1,0 +1,37 @@
+.reviews-page_content {
+    display: grid;
+    grid-template-columns: calc(72% + 24px) 1fr;
+    gap: 24px;
+}
+
+.reviews-product_to-basket {
+    height: fit-content;
+}
+
+.reviews-product {
+    background-color: var(--second-color);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 12px;
+    padding-right: 32px;
+}
+
+.reviews-product_img {
+    height: 88px;
+    background-color: var(--temp-color);
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius);
+}
+
+.reviews-product_rating {
+    margin-left: auto;
+}
+
+.reviews-list {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}

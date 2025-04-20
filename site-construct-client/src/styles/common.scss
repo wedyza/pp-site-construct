@@ -30,8 +30,29 @@ body {
     padding-top: calc(var(--header-height) + var(--cat-height)) ;
 }
 
-.price-text {
+.text-price {
     font-weight: 700;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.text-desc {
+    font-weight: 600;
+    font-style: italic;
+    font-size: 0.7em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.text-h1 {
+    font-weight: 700;
+    font-size: 1.2em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.text-n14 {
+    font-size: 0.7em;
     line-height: 120%;
     letter-spacing: 0%;
 }

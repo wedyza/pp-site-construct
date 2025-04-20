@@ -4,6 +4,7 @@ import App from './App';
 import './styles/reset.scss'
 import './styles/common.scss'
 import { BrowserRouter } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,6 +12,7 @@ const root = ReactDOM.createRoot(
 root.render(
   // <Provider store={store}>
       <BrowserRouter>
+        <ScrollToTop />
           <div className="App">
               <App />
           </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './productPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
@@ -8,6 +8,17 @@ import ReviewPrev from '../../components/reviewPrev/ReviewPrev';
 
 
 const ProductPage: React.FC = () => {
+    const reviewsRef = useRef<HTMLDivElement | null>(null);
+  
+    const HEADER_HEIGHT = 137;
+
+    const scrollToReviews = () => {
+        if (reviewsRef.current) {
+            const offsetTop = reviewsRef.current.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className='page-content'>
             <Header />
@@ -83,7 +94,7 @@ const ProductPage: React.FC = () => {
                                     45 оценок
                                 </div>
                             </div>
-                            <button className="product_reviews-btn">
+                            <button className="product_reviews-btn" onClick={scrollToReviews}>
                                 <span className="product_reviews-btn__label">К отзывам</span>
                                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd" clipRule="evenodd" d="M5.71967 11.9697C6.01256 11.6768 6.48744 11.6768 6.78033 11.9697L11.5 16.6893V6C11.5 5.58579 11.8358 5.25 12.25 5.25C12.6642 5.25 13 5.58579 13 6V16.6893L17.7197 11.9697C18.0126 11.6768 18.4874 11.6768 18.7803 11.9697C19.0732 12.2626 19.0732 12.7374 18.7803 13.0303L12.7803 19.0303C12.4874 19.3232 12.0126 19.3232 11.7197 19.0303L5.71967 13.0303C5.42678 12.7374 5.42678 12.2626 5.71967 11.9697Z" fill="black"/>
@@ -180,12 +191,12 @@ const ProductPage: React.FC = () => {
                         Робот-мойщик, сменные салфетки из микрофибры - 12 шт.(+2 салфетки на роботе), кольцо для салфетки - 2 шт., блок питания с удлинителем - 4м., кабель питания -  1,5 м., страховочный шнур - 4,5 м., инструкция, пульт ДУ
                     </p>
                 </div>
-                <div className='product-reviews'>
+                <div className='product-reviews' ref={reviewsRef}>
                     <div className="product-reviews_header">
                         <h2 className='product-reviews_title'>
                             Отзывы о товаре
                         </h2>
-                        <Link to='' className='product-reviews_link'>
+                        <Link to='/reviews' className='product-reviews_link'>
                             <span>Все  отзывы</span>
                             <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M7.46967 13.2803C7.17678 12.9874 7.17678 12.5126 7.46967 12.2197L12.1893 7.5L1.5 7.5C1.08579 7.5 0.75 7.16421 0.75 6.75C0.75 6.33579 1.08579 6 1.5 6L12.1893 6L7.46967 1.28033C7.17678 0.987437 7.17678 0.512563 7.46967 0.21967C7.76256 -0.0732231 8.23744 -0.0732231 8.53033 0.21967L14.5303 6.21967C14.8232 6.51256 14.8232 6.98744 14.5303 7.28033L8.53033 13.2803C8.23744 13.5732 7.76256 13.5732 7.46967 13.2803Z" fill="black"/>
