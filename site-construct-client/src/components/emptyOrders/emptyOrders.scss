@@ -1,0 +1,40 @@
+.empty-orders {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+}
+
+.empty-orders_img-container {
+    width: 257px;
+    height: 245px;
+}
+
+.empty-orders_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.empty-orders_info {
+    margin-top: 53px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    position: relative;
+}
+
+.empty-orders_link {
+    background-color: var(--temp-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 0;
+    border-radius: var(--radius);
+}
+
+.empty-orders_arrow {
+    position: absolute;
+    top: 2px;
+    right: -42px;
+}

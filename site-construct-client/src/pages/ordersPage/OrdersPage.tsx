@@ -6,6 +6,7 @@ import Header from '../../components/header/Header';
 import OrderCard from '../../components/orderCard/OrderCard';
 import { Good } from '../../services/api';
 import Recommendations from '../../components/recommendations/Recommendations';
+import EmptyOrders from '../../components/emptyOrders/EmptyOrders';
 
 export interface Order {
     id?: number;
@@ -16,8 +17,6 @@ export interface Order {
     status: string;
     goods?: Good[];
 }
-
-
 
 const OrdersPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
@@ -79,38 +78,38 @@ const OrdersPage: React.FC = () => {
         }
     ];
     const completedOrders: Order[] = [
-        {
-            id: 565854,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            price: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-            ]
-        },
-        {
-            id: 565854,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            price: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                }
-            ]
-        }
+        // {
+        //     id: 565854,
+        //     placement_date: '7 марта',
+        //     delivery_date: '9 марта',
+        //     price: 800,
+        //     address: 'г. Екатеринбург ул. Малышева 16',
+        //     status: 'Получен',
+        //     goods: [
+        //         {
+        //             name: 'a',
+        //             description: 'b',
+        //         },
+        //         {
+        //             name: 'a',
+        //             description: 'b',
+        //         },
+        //     ]
+        // },
+        // {
+        //     id: 565854,
+        //     placement_date: '7 марта',
+        //     delivery_date: '9 марта',
+        //     price: 800,
+        //     address: 'г. Екатеринбург ул. Малышева 16',
+        //     status: 'Получен',
+        //     goods: [
+        //         {
+        //             name: 'a',
+        //             description: 'b',
+        //         }
+        //     ]
+        // }
     ];
     const purchasedGoods: Order[] = [
         {
@@ -189,40 +188,56 @@ const OrdersPage: React.FC = () => {
             </div>
             <div className="orders-content">
                 {activeTab === 'current' && (
-                    <ul className="orders-list">
-                        {currentOrders.map((order, index) => (
-                            <li className='order' key={index}>
-                                <OrderCard order={order} />
-                            </li>
-                        ))}
-                    </ul>
+                    currentOrders.length > 0 ? (
+                        <ul className="orders-list">
+                            {currentOrders.map((order, index) => (
+                                <li className='order' key={index}>
+                                    <OrderCard order={order} />
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <EmptyOrders />
+                    )
                 )}
                 {activeTab === 'completed' && (
-                    <ul className="orders-list">
+                    completedOrders.length > 0 ? (
+                        <ul className="orders-list">
                         {completedOrders.map((order, index) => (
                             <li className='order' key={index}>
                                 <OrderCard order={order} />
                             </li>
                         ))}
                     </ul>
+                    ) : (
+                        <EmptyOrders />
+                    )
                 )}
                 {activeTab === 'purchased' && (
-                    <ul className="orders_goods-list">
-                        {purchasedGoods.map((order, index) => (
-                            <li className='order' key={index}>
-                                <PurchasedCard order={order} />
-                            </li>
-                        ))}
-                    </ul>
+                    purchasedGoods.length > 0 ? (
+                        <ul className="orders_goods-list">
+                            {purchasedGoods.map((order, index) => (
+                                <li className='order' key={index}>
+                                    <PurchasedCard order={order} />
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <EmptyOrders />
+                    )
                 )}
                 {activeTab === 'refunds' && (
-                    <ul className="orders_goods-list">
-                        {refundsGoods.map((order, index) => (
-                            <li className='order' key={index}>
-                                <PurchasedCard order={order} />
-                            </li>
-                        ))}
-                    </ul>
+                    refundsGoods.length > 0 ? (
+                        <ul className="orders_goods-list">
+                            {refundsGoods.map((order, index) => (
+                                <li className='order' key={index}>
+                                    <PurchasedCard order={order} />
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <EmptyOrders />
+                    )
                 )}
             </div>
             <Recommendations />
