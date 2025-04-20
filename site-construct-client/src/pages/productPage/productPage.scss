@@ -52,19 +52,17 @@
 .product_to-basket {
     background-color: var(--second-color);
     border-radius: var(--radius);
-    padding: 24px;
-}
-
-.product_to-basket {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
+    border: 1px solid var(--black15);
 }
 
 .product-basket_info {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    padding: 24px;
 }
 
 .product-basket_info-text {
@@ -89,21 +87,20 @@
 }
 
 .product_basket-btn {
-    background-color: var(--background);
-    padding: 13px 0;
+    background-color: var(--black);
+    color: var(--background);
+    height: 50px;
     border-radius: var(--radius);
-    font-size: 0.8em;
-    line-height: 120%;
-    letter-spacing: 0%;
 }
 
 .product_to-reviews {
     background-color: var(--second-color);
     border-radius: var(--radius);
-    padding: 24px;
+    padding: 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 1px solid var(--black15);
 }
 
 .product-rating {

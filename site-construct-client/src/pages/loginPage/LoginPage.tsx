@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
             </div>
             <div className='login-content'>
                 <h1 className='login-title'>Войдите</h1>
-                <form action="post" className='login-form'>
+                <form className='login-form'>
                     <input type='email' className='login-form_input' placeholder='Введите почту' />
                     <button type='submit' className='login-form_btn'>
                         Получить код

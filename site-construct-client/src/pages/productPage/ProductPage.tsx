@@ -70,7 +70,7 @@ const ProductPage: React.FC = () => {
                                     </svg>
                                 </button>
                             </div>
-                            <button className='product_basket-btn'>
+                            <button className='text-btn product_basket-btn'>
                                 В корзину
                             </button>
                         </div>

@@ -1,8 +1,19 @@
+import { useState } from 'react';
+import CustomCheckbox from '../customCheckbox/CustomCheckbox';
 import './basketCard.scss'
 
 const BasketCard: React.FC = () => {
+    const [isChecked, setIsChecked] = useState(false);
+
     return (
         <div className='basket-card'>
+            <div className="basket-card_checkbox-container">
+                <CustomCheckbox
+                    checked={isChecked}
+                    onChange={() => setIsChecked(!isChecked)}
+                    checkboxClass='basket-card_checkbox'
+                />
+            </div>
             <div className='basket-card_img'></div>
             <div className='basket-card_info'>
                 <p className="basket-card_price">

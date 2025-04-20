@@ -1,5 +1,5 @@
 .basket-card {
-    background-color: var(--second-color);
+    background-color: var(--white-gray);
     border-radius: var(--big-radius);
     display: flex;
     gap: 24px;
@@ -66,4 +66,22 @@
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.basket-card_checkbox-container {
+    position: absolute;
+    background-color: var(--white-gray);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--big-radius) 0 var(--big-radius) 0;
+    border-left: 1px solid var(--black15);
+    border-top: 1px solid var(--black15);
+}
+
+.basket-card_checkbox {
+    width: 20px;
+    height: 20px;
 }
