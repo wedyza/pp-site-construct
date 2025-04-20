@@ -5,6 +5,7 @@ import Header from '../../components/header/Header';
 import Recommendations from '../../components/recommendations/Recommendations';
 import { Link } from 'react-router-dom';
 import ReviewPrev from '../../components/reviewPrev/ReviewPrev';
+import ProductGallery from '../../components/productGallery/ProductGallery';
 
 
 const ProductPage: React.FC = () => {
@@ -25,15 +26,7 @@ const ProductPage: React.FC = () => {
             <HeaderCategories />
             <div className="main-content">
                 <div className='product_main-info'>
-                    <div className='product-gallery'>
-                        <div className='product-gallery_list'>
-                            <div className='product-gallery_img'></div>
-                            <div className='product-gallery_img'></div>
-                        </div>
-                        <div className='product-gallery_main'>
-                            
-                        </div>
-                    </div>
+                    <ProductGallery />
                     <div className='product-info'>
                         <h1 className='product-name'>
                             Робот мойщик окон с распылением
