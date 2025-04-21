@@ -12,16 +12,18 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from datetime import timedelta
 import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-z&5%-0@d%z(l3s!=r@1^s9%)25oon%93ow6&(oo4%7qo@x3j*s"
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
     "drf_yasg",
     "django_filters",
@@ -160,13 +163,12 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
 
 SIMPLE_JWT = {
-    # Устанавливаем срок жизни токена
    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
    'AUTH_HEADER_TYPES': ('Bearer',),
 }
@@ -175,7 +177,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'ACTIVATION_URL': '/api/v1/auth/activation/{uid}/{token}/',
     'SEND_ACTIVATION_EMAIL': True,
-    "EMAIL_FRONTEND_SITE_NAME": 'Какой-то сайт',  # Add this line
+    "EMAIL_FRONTEND_SITE_NAME": 'Какой-то сайт',  
     'LOGIN_FIELD': 'email',
     "EMAIL": {
         "activation": "users.email.ActivationEmail",
@@ -190,15 +192,15 @@ ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 #smtp
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'kostyagavrilov6@gmail.com'
-EMAIL_HOST_PASSWORD = 'jvzs gnsp siit kugu'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS=True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_STORAGE_BUCKET_NAME = 'item-media'
-AWS_ACCESS_KEY_ID = 'mGH9qYwOBe9o8n7mxbk2'
-AWS_SECRET_ACCESS_KEY = 'UqQXTgEdESXC7C2p6bIKHN1ha5SstuQ6F9XfN4l6'
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_S3_ENDPOINT_URL = 'https://localhost:9001'

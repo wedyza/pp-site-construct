@@ -14,7 +14,10 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'user_type', 'first_name', 'last_name')
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):
@@ -92,3 +95,12 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = "__all__"
+
+
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class UserLoginOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()

@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, mixins, permissions
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 from .models import (
     Basket,
     BasketItem,
@@ -16,6 +19,7 @@ from .serializers import (
     GoodItemSerializer,
     PaymentMethodSerializer,
     RecipentSerializer,
+    UserSerializer
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -83,3 +87,20 @@ class BasketItemViewSet(
             basket = basket.get()
         serializer.save(basket_id=basket.id)
         # return super().perform_create(serializer)
+
+class UsersViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (AdminOrReadOnly,)
+
+    @action(detail=False, url_path='me', methods=['GET', 'PATCH'])
+    def active_user(self, request, *args, **kwargs):
+        if self.request.method == 'GET':
+            serializer = self.serializer_class(request.user)
+            return Response(serializer.data)
+        if self.request.method == 'PATCH':
+            serializer = self.serializer_class(request.user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors)

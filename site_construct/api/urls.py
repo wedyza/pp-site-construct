@@ -15,11 +15,13 @@ from .views import (
     PaymentMethodViewSet,
     DeliveryMethodViewSet,
     BasketItemViewSet,
+    UsersViewSet
 )
-from users.views import ActivationView
+from users.views import ActivationView, LoginView, ValidateOTPView
 
 router = routers.DefaultRouter()
 
+router.register('users', UsersViewSet)
 router.register("good-categories", GoodCategoryViewSet)
 router.register("goods", GoodItemViewSet)
 router.register("payment-methods", PaymentMethodViewSet)
@@ -29,9 +31,11 @@ router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.jwt')),
-    path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation')
+    # path('auth/', include('djoser.urls')),
+    # path('auth/', include('djoser.urls.jwt')),
+    path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
+    path('auth/create-otp', LoginView.as_view(), name='email-otp-login'),
+    path('auth/validate-otp', ValidateOTPView.as_view(), name='email-otp-validate'),
 ]
 
 schema_view = get_schema_view(

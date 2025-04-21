@@ -68,9 +68,10 @@ class CustomAbstractUser(AbstractUser):
         default=UserType.BUYER
     )
     email = models.EmailField(unique=True)
-
+    password = None
+    last_login = None
+    otp = models.CharField(max_length=6, null=True, blank=True) 
     REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
-    
