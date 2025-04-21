@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from enum import Enum
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 User = get_user_model()
 
@@ -31,6 +32,7 @@ class GoodItem(models.Model):
     description = models.TextField("Описание", max_length=500)
     price = models.FloatField("Цена", default=0)
     category = models.ForeignKey(GoodCategory, on_delete=models.SET_NULL, null=True)
+    discount = models.FloatField("Скидка", default=0)
 
     def __str__(self) -> str:
         return self.name
@@ -109,7 +111,16 @@ class BasketItem(models.Model):
         verbose_name_plural = "Товары в корзине"
 
 
-class Checkout(models.Model):
+class Order(models.Model):
+    class OrderStatusChoices(Enum):
+        PAYED = "Оплачен"
+        PROCESSING = 'В обработке'
+        ON_THE_WAY = 'В пути'
+        DELIVERED = 'Доставлен'
+        RECEIVED = 'Получен'
+        REFUND = 'Возврат'
+        DECLINED = 'Отклонен'
+
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, verbose_name="Пользователь"
     )
@@ -132,6 +143,11 @@ class Checkout(models.Model):
         verbose_name="Способ доставки",
     )
     payment_total = models.FloatField(("Сумма"))
+    status = models.TextField(
+        "Статус",
+        choices=[(status.name, status.value) for status in OrderStatusChoices],
+        default=OrderStatusChoices.PROCESSING
+    )
 
     class Meta:
         verbose_name = "Счет"
@@ -150,8 +166,8 @@ class Transaction(models.Model):
         default=StatusChoices.PENDING,
     )
     amount = models.FloatField("Сумма платежа")
-    checkout = models.ForeignKey(
-        "api.Checkout",
+    order = models.ForeignKey(
+        Order,
         verbose_name=("Ответ от платежной системы"),
         on_delete=models.CASCADE,
     )
@@ -160,3 +176,89 @@ class Transaction(models.Model):
     class Meta:
         verbose_name = "Транзакция"
         verbose_name_plural = "Транзакции"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        User,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь'
+    )
+    item = models.ForeignKey(
+        GoodItem,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Товар'
+    )
+    order = models.ForeignKey(
+        Order,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Заказ'
+    )
+    body = models.TextField('Тело', max_length=500)
+    rate = models.IntegerField(
+        'Рейтинг',
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(10)]
+    )
+
+
+class CommentReply(models.Model):
+    user = models.ForeignKey(
+        User,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь'
+    )
+    comment = models.ForeignKey(
+        Comment,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Комментарий'
+    )
+    body = models.TextField('тело', max_length=500)
+
+class ItemMedia(models.Model):
+    item = models.ForeignKey(
+        GoodItem,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Товар'
+    )
+    # source = models.ImageField()
+
+
+class Message(models.Model):
+    user_from = models.ForeignKey(
+        User,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Отправитель',
+        related_name='sended_messages'
+    )
+    user_to = models.ForeignKey(
+        User,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Получатель',
+        related_name='received_messagess'
+    )
+    body = models.TextField(
+        'тело сообщения',
+        max_length=500
+    )
+    created_at = models.DateTimeField('Время сообщения', default='NOW()')
+
+
+class Notification(models.Model):
+    class NotificationType(models.Model):
+        COMMENT = 'Отзыв'
+        REFUND = "Возврат"
+        CHAT = 'Чат'
+        NEW_ORDER = 'Новый заказ'
+        ITEM_APPLIED = 'Товар одобрен'
+        ORDER_STATUS_CHANGED = 'Изменился статус заказа'
+        COMMENT_REPLIED = 'Получен ответ на комментарий'
+        #discount

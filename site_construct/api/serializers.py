@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     Basket,
     BasketItem,
-    Checkout,
+    Order,
     DeliveryMethod,
     GoodCategory,
     GoodItem,
@@ -13,6 +13,8 @@ from .models import (
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):
@@ -74,7 +76,6 @@ class BasketSerializer(serializers.ModelSerializer):
         return basket
 
     def get_summary(self, obj):
-        print(dir(obj))
         return None
 
 
@@ -83,7 +84,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
     basket = BasketSerializer()
 
     class Meta:
-        model = Checkout
+        model = Order
         fields = "__all__"
 
 

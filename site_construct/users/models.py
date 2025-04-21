@@ -4,6 +4,7 @@ from django.core.validators import (
     RegexValidator, MaxValueValidator, MinValueValidator
 )
 from django.utils import timezone
+from enum import Enum
 
 
 class UserManager(BaseUserManager):
@@ -49,10 +50,23 @@ class UserManager(BaseUserManager):
 #         verbose_name_plural = 'Типы пользователей'
 
 
-class CustomAbstractUser(AbstractUser):
+class CustomAbstractUser(AbstractUser): 
+    class UserType(Enum):
+        BUYER = 'Покупатель'
+        SELLER = 'Продавец'
+        ADMIN = 'Администратор'
+        DELIVERY = 'Доставщик'
+        SUPPORT = 'Поддержка'
+        MODERATOR = 'Модератор'
+
     username = None
     USERNAME_FIELD = 'email'
     objects = UserManager()
+    user_type = models.TextField(
+        "Тип пользователя",
+        choices=[(utype.name, utype.value) for utype in UserType],
+        default=UserType.BUYER
+    )
     email = models.EmailField(unique=True)
 
     REQUIRED_FIELDS = []

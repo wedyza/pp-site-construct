@@ -195,3 +195,10 @@ EMAIL_HOST_PASSWORD = 'jvzs gnsp siit kugu'
 EMAIL_PORT = 587
 EMAIL_USE_TLS=True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STORAGE_BUCKET_NAME = 'item-media'
+AWS_ACCESS_KEY_ID = 'mGH9qYwOBe9o8n7mxbk2'
+AWS_SECRET_ACCESS_KEY = 'UqQXTgEdESXC7C2p6bIKHN1ha5SstuQ6F9XfN4l6'
+AWS_S3_ENDPOINT_URL = 'https://localhost:9001'
