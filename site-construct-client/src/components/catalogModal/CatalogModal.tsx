@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './catalogModal.scss';
 import book from '../../img/book.svg'
 
@@ -135,6 +135,17 @@ const categories: CategoryData = {
 };
 
 const CatalogModal: React.FC<CatalogModalProps> = ({ isOpen, onClose }) => {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isOpen]);
+
     const [selectedCategory, setSelectedCategory] = useState<string>('Электроника и гаджеты');
     if (!isOpen) return null;
     const subcategories = categories[selectedCategory]?.subcategories || [];

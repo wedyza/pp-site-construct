@@ -1,14 +1,15 @@
 .profile-page {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr calc(75% - 6px);
     gap: 24px;
 }
 
 .profile-content {
-    width: 100%;
+    flex: 1;
 }
 
 .profile-nav {
-    min-width: calc(25% - 18px);
+    //min-width: calc(25% - 18px);
     background-color: var(--white-gray);
     border-radius: var(--big-radius);
     height: fit-content;
