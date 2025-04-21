@@ -253,7 +253,7 @@ class Message(models.Model):
 
 
 class Notification(models.Model):
-    class NotificationType(models.Model):
+    class NotificationType(Enum):
         COMMENT = 'Отзыв'
         REFUND = "Возврат"
         CHAT = 'Чат'
@@ -262,3 +262,14 @@ class Notification(models.Model):
         ORDER_STATUS_CHANGED = 'Изменился статус заказа'
         COMMENT_REPLIED = 'Получен ответ на комментарий'
         #discount
+
+    body = models.TextField(
+        'Тело', max_length=300
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь'
+    )
+    notification_type = models.TextField('Тип уведомления', choices=[(notification.name, notification.value) for notification in NotificationType])
+    readed = models.BooleanField('Прочитано', default=False)
