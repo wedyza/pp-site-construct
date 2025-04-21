@@ -3,17 +3,15 @@
     gap: 24px;
 }
 
-.profile-orders {
+.profile-content {
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
 }
 
 .profile-nav {
     min-width: calc(25% - 18px);
-    background-color: var(--light-color);
-    border-radius: var(--radius);
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    height: fit-content;
 }
 
 .profile-nav_header {
@@ -64,11 +62,16 @@
     font-size: 0.8em;
     line-height: 150%;
     letter-spacing: -1.1%;
+    color: var(--black60);
+
+    svg path {
+        fill: var(--black60);
+    }
 }
 
 .profile-item {
-    border-radius: var(--radius);
-    background-color: var(--light-color);
+    border-radius: var(--big-radius);
+    background-color: var(--white-gray);
     height: fit-content;
 }
 

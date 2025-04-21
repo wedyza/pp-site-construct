@@ -1,0 +1,107 @@
+.profile-info {
+    width: 100%;
+    display: flex;
+    gap: 24px;
+}
+
+.profile-info_form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    padding: 32px;
+    width: 40%;
+}
+
+.profile-info_form-title {
+    margin-bottom: 16px;
+}
+
+.profile_form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-info_input {
+    height: 50px;
+    background-color: var(--background);
+    border-radius: var(--radius);
+    padding: 0 24px;
+}
+
+.profile-info_form-btn {
+    align-self: flex-start;
+    width: 53%;
+    height: 50px;
+    background-color: var(--black15);
+    border-radius: var(--radius);
+    color: var(--black40);
+    margin-top: 24px;
+}
+
+
+
+
+.profile-info_stg {
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    padding: 32px;
+    width: 40%;
+    height: fit-content;
+}
+
+.profile-info_stg-title {
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--black15);
+    margin-bottom: 16px;
+}
+
+.profile-info_stg-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-info_stg-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 16px;
+}
+  
+.profile-info_toggle {
+    position: relative;
+    width: 22px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+  
+    .profile-info_toggle-track {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+  
+    .profile-info_toggle-dot {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: black;
+        border-radius: 50%;
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+    &.profile-info_toggle__off .profile-info_toggle-dot {
+        transform: translateX(4px);
+    }
+
+    &.profile-info_toggle__on .profile-info_toggle-dot {
+        transform: translateX(14px);
+    }
+}
+  
