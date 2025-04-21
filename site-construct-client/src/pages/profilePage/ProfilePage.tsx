@@ -27,7 +27,7 @@ const ProfilePage: React.FC = () => {
     };
   
     return (
-        <div className='page-content'>
+        <div className={`${selectedSection === 'messages' ? 'page-content__no-pad' : 'page-content'}`}>
             <Header />
             <HeaderCategories />
             <div className='profile-page'>

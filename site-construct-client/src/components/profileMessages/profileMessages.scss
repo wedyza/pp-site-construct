@@ -1,0 +1,145 @@
+.profile-messages {
+    display: grid;
+    grid-template-columns: 32% 1fr;
+    gap: 24px;
+    min-height: calc(100vh - var(--header-height) - var(--cat-height) - 8px);
+}
+
+.profile-messages_list {
+    padding-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    max-height: calc(100vh - var(--header-height) - var(--cat-height) - 61px);
+}
+
+.profile-messages_item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.profile-messages_item__active {
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+}
+
+.profile-messages_item-img {
+    min-width: 88px;
+    height: 88px;
+    background-color: var(--temp-color);
+    border-radius: var(--big-radius);
+}
+
+.profile-messages_item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-messages_chat {
+    border: 1px solid var(--black15);
+    border-radius: var(--big-radius);
+    height: 100%;
+    max-height: calc(100vh - var(--header-height) - var(--cat-height) - 24px);
+}
+
+.profile-messages_empty-chat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.profile-messages_empty-img {
+    width: 60%;
+}
+
+.profile-messages_chat-display {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 67px;
+}
+
+.profile-messages_chat-actions {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    padding-bottom: 17px;
+    gap: 12px;
+}
+
+.profile-messages_chat-input {
+    width: 100%;
+    background-color: var(--white-gray);
+    height: 100%;
+    padding: 0 24px;
+    border-radius: var(--radius);
+}
+
+.profile-messages_chat-attach ,
+.profile-messages_chat-send {
+    height: 24px;
+}
+
+.profile-messages_chat-content {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.profile-messages_chat-date {
+    color: var(--black60);
+    align-self: center;
+}
+
+.profile-messages_chat-bubble {
+    background-color: var(--white-gray);
+    padding: 16px;
+    max-width: 60%;
+    position: relative;
+}
+
+.profile-messages_chat-bubble__to {
+    align-self: flex-start;
+    margin-left: 14px;
+    border-radius: var(--radius) var(--radius) var(--radius) 0;
+}
+
+.profile-messages_chat-bubble__from {
+    align-self: flex-end;
+    margin-right: 14px;
+}
+
+.profile-messages_chat-bubble__to::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -14px;
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 0 solid transparent;
+    border-bottom: 18px solid var(--white-gray);
+}
+
+.profile-messages_chat-bubble__from::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -14px;
+    width: 0;
+    height: 0;
+    border-right: 18px solid transparent;
+    border-left: 0 solid transparent;
+    border-bottom: 18px solid var(--white-gray);
+}
