@@ -56,8 +56,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -141,15 +141,9 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SIMPLE_JWT = {
-    # Устанавливаем срок жизни токена
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-   'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
 SWAGGER_SETTINGS = {
    'SECURITY_DEFINITIONS': {
-      'Bearer': {
+      'api_key': {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
@@ -165,23 +159,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-}
-
-
-SIMPLE_JWT = {
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-   'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
-
-DJOSER = {
-    'ACTIVATION_URL': '/api/v1/auth/activation/{uid}/{token}/',
-    'SEND_ACTIVATION_EMAIL': True,
-    "EMAIL_FRONTEND_SITE_NAME": 'Какой-то сайт',  
-    'LOGIN_FIELD': 'email',
-    "EMAIL": {
-        "activation": "users.email.ActivationEmail",
-    },
 }
 
 

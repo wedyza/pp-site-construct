@@ -33,6 +33,8 @@ class GoodItem(models.Model):
     price = models.FloatField("Цена", default=0)
     category = models.ForeignKey(GoodCategory, on_delete=models.SET_NULL, null=True)
     discount = models.FloatField("Скидка", default=0)
+    visible = models.BooleanField("Видимость", default=False)
+    apply = models.BooleanField("Одобрено", default=False)
 
     def __str__(self) -> str:
         return self.name

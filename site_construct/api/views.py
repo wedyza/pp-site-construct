@@ -24,6 +24,8 @@ from .serializers import (
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from .permissions import AdminOrReadOnly
+from .paginators import CustomPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 User = get_user_model()
 
@@ -32,12 +34,28 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
     queryset = GoodCategory.objects.all()
     serializer_class = GoodCategorySerializer  # необходимо перегрузить лист категорий пагинацией ( вроде есть в фильтрах насколько я помню )
     permission_classes = (AdminOrReadOnly, )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('name',)
+
+    @action(methods=['GET'], detail=True, url_path='items', pagination_class=CustomPagination)
+    def get_items(self, request, pk):
+        items = GoodItem.objects.filter(category_id=pk).all()
+        
+        page = self.paginate_queryset(items)
+        if page is not None:
+            serializer = GoodItemSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = GoodItemSerializer(items, many=True)
+        return Response(serializer.data)
 
 
 class GoodItemViewSet(viewsets.ModelViewSet):
     queryset = GoodItem.objects.all()
     serializer_class = GoodItemSerializer  # тоже самое, что и сверху + добавить еще фильтр по категориям скорее всего
     permission_classes = (AdminOrReadOnly, )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('name',)
 
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):

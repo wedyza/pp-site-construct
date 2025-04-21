@@ -33,9 +33,8 @@ urlpatterns = [
     path("", include(router.urls)),
     # path('auth/', include('djoser.urls')),
     # path('auth/', include('djoser.urls.jwt')),
-    path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
-    path('auth/create-otp', LoginView.as_view(), name='email-otp-login'),
-    path('auth/validate-otp', ValidateOTPView.as_view(), name='email-otp-validate'),
+    # path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
+    path('auth/', include('users.urls'))
 ]
 
 schema_view = get_schema_view(

@@ -8,7 +8,8 @@ from .utils import generate_otp, send_otp_email
 from rest_framework.authtoken.models import Token
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 User = get_user_model()
@@ -32,7 +33,9 @@ class ActivationView(UserViewSet):
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
     
+
     @swagger_auto_schema(request_body=UserLoginSerializer)
+    @csrf_exempt
     def post(self, request):
         email = UserLoginSerializer(data=request.data)
         if not email.is_valid():
@@ -40,7 +43,7 @@ class LoginView(APIView):
         try:
             user = User.objects.get(email=email.data['email'])
         except User.DoesNotExist as e: 
-            print(e)
+            user = User.objects.create(**email.data)
 
         otp = generate_otp()
         user.otp = otp
@@ -53,8 +56,9 @@ class LoginView(APIView):
 
 class ValidateOTPView(APIView):
     permission_classes = (permissions.AllowAny,)
-
+    
     @swagger_auto_schema(request_body=UserLoginOTPSerializer)
+    @csrf_exempt
     def post(self, request):
         payload = UserLoginOTPSerializer(data=request.data)
 
