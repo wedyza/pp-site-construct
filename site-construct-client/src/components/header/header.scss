@@ -35,6 +35,11 @@
     }
 }
 
+.header_catalog__active {
+    background-color: var(--accent);
+    box-shadow: 2px 2px 10px 0px var(--accent40);
+}
+
 .header_nav {
     display: flex;
     align-items: center;

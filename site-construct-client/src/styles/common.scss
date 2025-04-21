@@ -8,6 +8,7 @@
     --text-second: #5E5E5E;
     --gray-accent: #929292;
     --accent: #FFA600;
+    --accent40: rgba(229, 149, 0, 0.4);
     --black: #02040F;
     --black15: rgba(2, 4, 15, 0.15);
     --white-text: #FEFEFE;
@@ -54,6 +55,13 @@ body {
 .text-h1 {
     font-weight: 700;
     font-size: 1.2em;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+
+.text-h2 {
+    font-weight: 700;
+    font-size: 0.9em;
     line-height: 120%;
     letter-spacing: 0%;
 }
