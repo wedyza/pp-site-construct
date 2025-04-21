@@ -1,0 +1,26 @@
+.payment-methods_title {
+    margin-top: 8px;
+}
+
+.payment-methods_list {
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-right: var(--padding);
+    display: flex;
+    gap: 24px;
+    margin-top: 25px;
+    width: calc(100vw - 0.5 * var(--padding) - 25vw - 6px);
+}
+
+.payment-methods_list::-webkit-scrollbar {
+    display: none;
+}
+
+.payment-method_add {
+    margin-top: 24px;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    width: 312px;
+    height: 165px;
+}
