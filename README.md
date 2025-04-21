@@ -49,4 +49,4 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-
+Также, для корректной работы, необходимо заменить содержимое файла библиотеки django: django/core/email/backends/smtp.py на значение [этого файла](https://github.com/django/django/blob/main/django/core/mail/backends/smtp.py)

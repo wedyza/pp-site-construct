@@ -4,6 +4,7 @@ from djoser.serializers import TokenCreateSerializer
 
 User = get_user_model()
 
+
 class CustomTokenCreateSerializer(TokenCreateSerializer):
 
     def validate(self, attrs):
@@ -17,6 +18,6 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
             if self.user and not self.user.check_password(password):
                 self.fail("invalid_credentials")
         # We changed only below line
-        if self.user: # and self.user.is_active: 
+        if self.user:  # and self.user.is_active:
             return attrs
         self.fail("invalid_credentials")

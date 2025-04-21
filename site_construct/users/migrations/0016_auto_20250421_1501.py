@@ -6,21 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0015_customabstractuser_user_type'),
+        ("users", "0015_customabstractuser_user_type"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='last_login',
+            model_name="customabstractuser",
+            name="last_login",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='password',
+            model_name="customabstractuser",
+            name="password",
         ),
         migrations.AddField(
-            model_name='customabstractuser',
-            name='otp',
+            model_name="customabstractuser",
+            name="otp",
             field=models.CharField(blank=True, max_length=6, null=True),
         ),
     ]

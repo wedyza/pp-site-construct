@@ -8,23 +8,33 @@ import users.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_auto_20241114_2020'),
+        ("users", "0003_auto_20241114_2020"),
     ]
 
     operations = [
         migrations.AlterModelManagers(
-            name='customabstractuser',
+            name="customabstractuser",
             managers=[
-                ('objects', users.models.UserManager()),
+                ("objects", users.models.UserManager()),
             ],
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='username',
+            model_name="customabstractuser",
+            name="username",
         ),
         migrations.AlterField(
-            model_name='customabstractuser',
-            name='phone_number',
-            field=models.CharField(max_length=12, unique=True, validators=[django.core.validators.RegexValidator(message='Номер телефона должен быть введен в формате +7XXXXXXXXXX.', regex='^\\+7\\d{10}$')], verbose_name='Номер телефона'),
+            model_name="customabstractuser",
+            name="phone_number",
+            field=models.CharField(
+                max_length=12,
+                unique=True,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        message="Номер телефона должен быть введен в формате +7XXXXXXXXXX.",
+                        regex="^\\+7\\d{10}$",
+                    )
+                ],
+                verbose_name="Номер телефона",
+            ),
         ),
     ]

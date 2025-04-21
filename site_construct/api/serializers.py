@@ -11,13 +11,16 @@ from .models import (
     Transaction,
 )
 from django.contrib.auth import get_user_model
+from django_enum.drf import EnumField
+from users.models import CustomAbstractUser
 
 User = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'user_type', 'first_name', 'last_name')
+        fields = ("email", "user_type", "first_name", "last_name")
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):
@@ -63,6 +66,7 @@ class BasketItemSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("basket",)
 
+
 class BasketSerializer(serializers.ModelSerializer):
     summary = serializers.SerializerMethodField()
     items = BasketItemSerializer(many=True)
@@ -82,7 +86,6 @@ class BasketSerializer(serializers.ModelSerializer):
         return None
 
 
-
 class CheckoutSerializer(serializers.ModelSerializer):
     basket = BasketSerializer()
 
@@ -99,6 +102,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
+    user_type = EnumField(enum=User.UserType, default="Покупатель")
 
 
 class UserLoginOTPSerializer(serializers.Serializer):

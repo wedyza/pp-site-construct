@@ -10,17 +10,46 @@ from django.utils.timezone import utc
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0007_auto_20241214_2152'),
+        ("users", "0007_auto_20241214_2152"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ModeratorSetuped',
+            name="ModeratorSetuped",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=datetime.datetime(2024, 12, 30, 3, 32, 57, 974230, tzinfo=utc))),
-                ('admin', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Админ', to=settings.AUTH_USER_MODEL)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Пользователь', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        default=datetime.datetime(
+                            2024, 12, 30, 3, 32, 57, 974230, tzinfo=utc
+                        )
+                    ),
+                ),
+                (
+                    "admin",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="Админ",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="Пользователь",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

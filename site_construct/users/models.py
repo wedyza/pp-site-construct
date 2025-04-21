@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import (
-    RegexValidator, MaxValueValidator, MinValueValidator
-)
+from django.core.validators import RegexValidator, MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from enum import Enum
 
@@ -14,8 +12,8 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('Должна быть почта')
-        
+            raise ValueError("Должна быть почта")
+
         self.email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -23,18 +21,18 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(email, password, **extra_fields)
 
@@ -50,27 +48,27 @@ class UserManager(BaseUserManager):
 #         verbose_name_plural = 'Типы пользователей'
 
 
-class CustomAbstractUser(AbstractUser): 
+class CustomAbstractUser(AbstractUser):
     class UserType(Enum):
-        BUYER = 'Покупатель'
-        SELLER = 'Продавец'
-        ADMIN = 'Администратор'
-        DELIVERY = 'Доставщик'
-        SUPPORT = 'Поддержка'
-        MODERATOR = 'Модератор'
+        BUYER = "Покупатель"
+        SELLER = "Продавец"
+        ADMIN = "Администратор"
+        DELIVERY = "Доставщик"
+        SUPPORT = "Поддержка"
+        MODERATOR = "Модератор"
 
     username = None
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     objects = UserManager()
     user_type = models.TextField(
         "Тип пользователя",
         choices=[(utype.name, utype.value) for utype in UserType],
-        default=UserType.BUYER
+        default="Покупатель",
     )
     email = models.EmailField(unique=True)
     password = None
     last_login = None
-    otp = models.CharField(max_length=6, null=True, blank=True) 
+    otp = models.CharField(max_length=6, null=True, blank=True)
     REQUIRED_FIELDS = []
 
     def __str__(self):

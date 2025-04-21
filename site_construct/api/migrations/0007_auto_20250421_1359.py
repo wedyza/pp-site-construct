@@ -9,34 +9,51 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0006_auto_20250421_1354'),
+        ("api", "0006_auto_20250421_1354"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='NotificationType',
+            name="NotificationType",
         ),
         migrations.AddField(
-            model_name='notification',
-            name='body',
-            field=models.TextField(default=0, max_length=300, verbose_name='Тело'),
+            model_name="notification",
+            name="body",
+            field=models.TextField(default=0, max_length=300, verbose_name="Тело"),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='notification',
-            name='notification_type',
-            field=models.TextField(choices=[('COMMENT', 'Отзыв'), ('REFUND', 'Возврат'), ('CHAT', 'Чат'), ('NEW_ORDER', 'Новый заказ'), ('ITEM_APPLIED', 'Товар одобрен'), ('ORDER_STATUS_CHANGED', 'Изменился статус заказа'), ('COMMENT_REPLIED', 'Получен ответ на комментарий')], default=None, verbose_name='Тип уведомления'),
+            model_name="notification",
+            name="notification_type",
+            field=models.TextField(
+                choices=[
+                    ("COMMENT", "Отзыв"),
+                    ("REFUND", "Возврат"),
+                    ("CHAT", "Чат"),
+                    ("NEW_ORDER", "Новый заказ"),
+                    ("ITEM_APPLIED", "Товар одобрен"),
+                    ("ORDER_STATUS_CHANGED", "Изменился статус заказа"),
+                    ("COMMENT_REPLIED", "Получен ответ на комментарий"),
+                ],
+                default=None,
+                verbose_name="Тип уведомления",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='notification',
-            name='readed',
-            field=models.BooleanField(default=False, verbose_name='Прочитано'),
+            model_name="notification",
+            name="readed",
+            field=models.BooleanField(default=False, verbose_name="Прочитано"),
         ),
         migrations.AddField(
-            model_name='notification',
-            name='user',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='users.customabstractuser', verbose_name='Пользователь'),
+            model_name="notification",
+            name="user",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.customabstractuser",
+                verbose_name="Пользователь",
+            ),
             preserve_default=False,
         ),
     ]

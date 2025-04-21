@@ -6,39 +6,43 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0013_delete_moderatorsetuped'),
+        ("users", "0013_delete_moderatorsetuped"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='avatar',
+            model_name="customabstractuser",
+            name="avatar",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='given_name',
+            model_name="customabstractuser",
+            name="given_name",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='phone_number',
+            model_name="customabstractuser",
+            name="phone_number",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='rating',
+            model_name="customabstractuser",
+            name="rating",
         ),
         migrations.AlterField(
-            model_name='customabstractuser',
-            name='email',
+            model_name="customabstractuser",
+            name="email",
             field=models.EmailField(max_length=254, unique=True),
         ),
         migrations.AlterField(
-            model_name='customabstractuser',
-            name='first_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='first name'),
+            model_name="customabstractuser",
+            name="first_name",
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="first name"
+            ),
         ),
         migrations.AlterField(
-            model_name='customabstractuser',
-            name='last_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='last name'),
+            model_name="customabstractuser",
+            name="last_name",
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="last name"
+            ),
         ),
     ]

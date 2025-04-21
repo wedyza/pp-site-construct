@@ -10,15 +10,17 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+
 # Create your views here.
 
 User = get_user_model()
 
+
 class ActivationView(UserViewSet):
     def activation(self, request, *args, **kwargs):
         print(self.kwargs)
-        request.data['uid'] = self.kwargs['uid']
-        request.data['token'] = self.kwargs['token']
+        request.data["uid"] = self.kwargs["uid"]
+        request.data["token"] = self.kwargs["token"]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
@@ -30,47 +32,58 @@ class ActivationView(UserViewSet):
             status=status.HTTP_200_OK,
         )
 
+
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
-    
 
     @swagger_auto_schema(request_body=UserLoginSerializer)
     @csrf_exempt
     def post(self, request):
         email = UserLoginSerializer(data=request.data)
         if not email.is_valid():
-            return Response({'error': 'Введен неправильный формат почты'}, status=status.HTTP_400_BAD_REQUEST)
+            print(email.errors)
+            return Response(
+                {"error": "Введен неправильный формат почты"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
-            user = User.objects.get(email=email.data['email'])
-        except User.DoesNotExist as e: 
+            user = User.objects.get(email=email.data["email"])
+        except User.DoesNotExist as e:
             user = User.objects.create(**email.data)
 
         otp = generate_otp()
         user.otp = otp
         user.save()
 
-        send_otp_email(email.data['email'], otp)
+        send_otp_email(email.data["email"], otp)
 
-        return Response({'message': 'Письмо с одноразовым кодом отправлено вам на почту'}, status=status.HTTP_200_OK)
-    
+        return Response(
+            {"message": "Письмо с одноразовым кодом отправлено вам на почту"},
+            status=status.HTTP_200_OK,
+        )
+
 
 class ValidateOTPView(APIView):
     permission_classes = (permissions.AllowAny,)
-    
+
     @swagger_auto_schema(request_body=UserLoginOTPSerializer)
     @csrf_exempt
     def post(self, request):
         payload = UserLoginOTPSerializer(data=request.data)
 
         if not payload.is_valid():
-            return Response({'error': 'Введена неправильная почта, либо введен неправильный формат кода'})
+            return Response(
+                {
+                    "error": "Введена неправильная почта, либо введен неправильный формат кода"
+                }
+            )
         try:
-            user = User.objects.get(email=payload.data['email'])
+            user = User.objects.get(email=payload.data["email"])
         except User.DoesNotExist as e:
             # return Response({'error': 'Пользователя с такой почто.'}, status=status.HTTP_404_NOT_FOUND)
             print(e)
 
-        otp = payload.data['otp']
+        otp = payload.data["otp"]
         if user.otp == otp:
             user.otp = None  # Reset the OTP field after successful validation
             user.save()
@@ -78,6 +91,8 @@ class ValidateOTPView(APIView):
             # Authenticate the user and create or get an authentication token
             token, _ = Token.objects.get_or_create(user=user)
 
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            return Response({"token": token.key}, status=status.HTTP_200_OK)
         else:
-            return Response({'error': 'Неправильынй код.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Неправильынй код."}, status=status.HTTP_400_BAD_REQUEST
+            )

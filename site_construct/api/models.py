@@ -108,7 +108,7 @@ class BasketItem(models.Model):
         return self.good_item.name
 
     class Meta:
-        unique_together = ('good_item', 'basket')
+        unique_together = ("good_item", "basket")
         verbose_name = "Товар в корзине"
         verbose_name_plural = "Товары в корзине"
 
@@ -116,12 +116,12 @@ class BasketItem(models.Model):
 class Order(models.Model):
     class OrderStatusChoices(Enum):
         PAYED = "Оплачен"
-        PROCESSING = 'В обработке'
-        ON_THE_WAY = 'В пути'
-        DELIVERED = 'Доставлен'
-        RECEIVED = 'Получен'
-        REFUND = 'Возврат'
-        DECLINED = 'Отклонен'
+        PROCESSING = "В обработке"
+        ON_THE_WAY = "В пути"
+        DELIVERED = "Доставлен"
+        RECEIVED = "Получен"
+        REFUND = "Возврат"
+        DECLINED = "Отклонен"
 
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, verbose_name="Пользователь"
@@ -148,7 +148,7 @@ class Order(models.Model):
     status = models.TextField(
         "Статус",
         choices=[(status.name, status.value) for status in OrderStatusChoices],
-        default=OrderStatusChoices.PROCESSING
+        default="В обработке",
     )
 
     class Meta:
@@ -182,52 +182,33 @@ class Transaction(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(
-        User,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+        User, null=False, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
     item = models.ForeignKey(
-        GoodItem,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Товар'
+        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
     )
     order = models.ForeignKey(
-        Order,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Заказ'
+        Order, null=False, on_delete=models.CASCADE, verbose_name="Заказ"
     )
-    body = models.TextField('Тело', max_length=500)
+    body = models.TextField("Тело", max_length=500)
     rate = models.IntegerField(
-        'Рейтинг',
-        default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(10)]
+        "Рейтинг", default=0, validators=[MinValueValidator(0), MaxValueValidator(10)]
     )
 
 
 class CommentReply(models.Model):
     user = models.ForeignKey(
-        User,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+        User, null=False, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
     comment = models.ForeignKey(
-        Comment,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Комментарий'
+        Comment, null=False, on_delete=models.CASCADE, verbose_name="Комментарий"
     )
-    body = models.TextField('тело', max_length=500)
+    body = models.TextField("тело", max_length=500)
+
 
 class ItemMedia(models.Model):
     item = models.ForeignKey(
-        GoodItem,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Товар'
+        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
     )
     # source = models.ImageField()
 
@@ -237,41 +218,39 @@ class Message(models.Model):
         User,
         null=False,
         on_delete=models.CASCADE,
-        verbose_name='Отправитель',
-        related_name='sended_messages'
+        verbose_name="Отправитель",
+        related_name="sended_messages",
     )
     user_to = models.ForeignKey(
         User,
         null=False,
         on_delete=models.CASCADE,
-        verbose_name='Получатель',
-        related_name='received_messagess'
+        verbose_name="Получатель",
+        related_name="received_messagess",
     )
-    body = models.TextField(
-        'тело сообщения',
-        max_length=500
-    )
-    created_at = models.DateTimeField('Время сообщения', default='NOW()')
+    body = models.TextField("тело сообщения", max_length=500)
+    created_at = models.DateTimeField("Время сообщения", default="NOW()")
 
 
 class Notification(models.Model):
     class NotificationType(Enum):
-        COMMENT = 'Отзыв'
+        COMMENT = "Отзыв"
         REFUND = "Возврат"
-        CHAT = 'Чат'
-        NEW_ORDER = 'Новый заказ'
-        ITEM_APPLIED = 'Товар одобрен'
-        ORDER_STATUS_CHANGED = 'Изменился статус заказа'
-        COMMENT_REPLIED = 'Получен ответ на комментарий'
-        #discount
+        CHAT = "Чат"
+        NEW_ORDER = "Новый заказ"
+        ITEM_APPLIED = "Товар одобрен"
+        ORDER_STATUS_CHANGED = "Изменился статус заказа"
+        COMMENT_REPLIED = "Получен ответ на комментарий"
+        # discount
 
-    body = models.TextField(
-        'Тело', max_length=300
-    )
+    body = models.TextField("Тело", max_length=300)
     user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
-    notification_type = models.TextField('Тип уведомления', choices=[(notification.name, notification.value) for notification in NotificationType])
-    readed = models.BooleanField('Прочитано', default=False)
+    notification_type = models.TextField(
+        "Тип уведомления",
+        choices=[
+            (notification.name, notification.value) for notification in NotificationType
+        ],
+    )
+    readed = models.BooleanField("Прочитано", default=False)

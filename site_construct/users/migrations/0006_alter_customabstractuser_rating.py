@@ -7,13 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0005_customabstractuser_given_name'),
+        ("users", "0005_customabstractuser_given_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customabstractuser',
-            name='rating',
-            field=models.FloatField(default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(10)], verbose_name='Рейтинг'),
+            model_name="customabstractuser",
+            name="rating",
+            field=models.FloatField(
+                default=0,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(10),
+                ],
+                verbose_name="Рейтинг",
+            ),
         ),
     ]
