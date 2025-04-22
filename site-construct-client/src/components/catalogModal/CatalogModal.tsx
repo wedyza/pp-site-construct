@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './catalogModal.scss';
 import book from '../../img/book.svg'
+import { Link } from 'react-router-dom';
 
 interface CatalogModalProps {
     isOpen: boolean;
@@ -168,14 +169,14 @@ const CatalogModal: React.FC<CatalogModalProps> = ({ isOpen, onClose }) => {
                 <div className="catalog-subcat_panel">
                     {subcategories.map((subcat, index) => (
                         <div className="catalog-subcat_block" key={index}>
-                            <h4 className="catalog-subcat_title text-h2">{subcat.title}</h4>
-                            <ul className="catalog-subcat_list">
+                            <Link to='/category' className="catalog-subcat_title text-h2">{subcat.title}</Link>
+                            <div className="catalog-subcat_list">
                                 {subcat.items.map((item, i) => (
-                                    <li className="catalog-subcat_item text-n16" key={i}>
+                                    <Link to='/category' className="catalog-subcat_item text-n16" key={i}>
                                         {item}
-                                    </li>
+                                    </Link>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
                     ))}
                 </div>
