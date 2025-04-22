@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, mixins, permissions
+from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
@@ -11,19 +11,26 @@ from .models import (
     GoodItem,
     PaymentMethod,
     Recipent,
+    Order,
+    Characteristics
 )
 from .serializers import (
     BasketItemSerializer,
     DeliveryMethodSerializer,
     GoodCategorySerializer,
     GoodItemSerializer,
+    ItemApplyCharacteristic,
     PaymentMethodSerializer,
     RecipentSerializer,
     UserSerializer,
+    OrderToBuyerSerializer,
+    OrderCreateSerializer,
+    CharacteristicCreateSerializer,
+    CharacteristicSerializer
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from .permissions import AdminOrReadOnly, OwnerOrReadOnly, AdminOrModerator
+from .permissions import AdminOrReadOnly, Owner, OwnerOrReadOnly, AdminOrModerator
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -59,6 +66,16 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
         serializer = GoodItemSerializer(items, many=True)
         return Response(serializer.data)
 
+    @action(methods=["GET"], url_path='characteristics', detail=True, serializer_class=CharacteristicSerializer)
+    def get_characteristics(self, request, pk):
+        characteristics = Characteristics.objects.filter(category_id=pk).all()
+        category = GoodCategory.objects.get(id=pk)
+        if category.parent != None:
+            parent_characteristics = Characteristics.objects.filter(category_id=category.parent.id).all()
+            characteristics = characteristics.union(parent_characteristics)
+        
+        characteristics = CharacteristicSerializer(characteristics, many=True)
+        return Response(characteristics.data)
 
 class GoodItemViewSet(viewsets.ModelViewSet):
     queryset = GoodItem.objects.all()
@@ -67,24 +84,28 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ("name",)
 
+    @action(detail=True, methods=['POST'], url_path='apply_characteristic', serializer_class=ItemApplyCharacteristic)
+    def apply_characteristic(self, request, pk):
+        item = GoodItem.objects.get(id=pk)
+        payload = self.serializer_class(data = request.data)
+
+        if not payload.is_valid():
+            return Response({'error': "Не обнаружено "}, status=status.HTTP_400_BAD_REQUEST)
+        
+        characteristic = Characteristics.objects.get(id=payload.data['characteristic'])
+        item.characteristics.add(characteristic, through_defaults={'body': payload.data['body']})
+        return Response({'success': "Успено"}, status=status.HTTP_200_OK)
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
     queryset = PaymentMethod.objects.all()
     serializer_class = PaymentMethodSerializer
-    permission_classes = (AdminOrReadOnly,)
+    permission_classes = (OwnerOrReadOnly,)
 
 
 class DeliveryMethodViewSet(viewsets.ModelViewSet):
     queryset = DeliveryMethod.objects.all()
     serializer_class = DeliveryMethodSerializer
     permission_classes = (AdminOrReadOnly,)
-
-
-class RecipentViewSet(viewsets.ModelViewSet):
-    queryset = Recipent.objects.all()
-    serializer_class = RecipentSerializer
-    permission_classes = (AdminOrReadOnly,)
-
 
 class BasketItemViewSet(
     viewsets.GenericViewSet,
@@ -132,7 +153,7 @@ class UsersViewSet(
     serializer_class = UserSerializer
     permission_classes = (AdminOrReadOnly,)
 
-    @action(detail=False, url_path="me", methods=["GET", "PATCH"])
+    @action(detail=False, url_path="me", methods=["GET", "PATCH"], permission_classes=(permissions.IsAuthenticated,))
     def active_user(self, request, *args, **kwargs):
         if self.request.method == "GET":
             serializer = self.serializer_class(request.user)
@@ -153,3 +174,24 @@ class RecipentViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipentSerializer
     permission_classes = (OwnerOrReadOnly,)
+
+
+class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin):
+    permission_classes = (Owner, )
+    
+    def get_serializer(self, *args, **kwargs):
+        if self.request.method == 'GET':
+            return OrderToBuyerSerializer()
+        elif self.request.method == 'POST':
+            return OrderCreateSerializer()
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).all()
+    
+    # @action(detail=True, )
+    
+
+class CharacteristicViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
+    permission_classes = (AdminOrReadOnly, )
+    serializer_class = CharacteristicCreateSerializer
+    queryset = Characteristics.objects.all()

@@ -27,6 +27,19 @@ class GoodCategory(models.Model):
         verbose_name_plural = "Категории"
 
 
+class Characteristics(models.Model):
+    category = models.ForeignKey(
+        GoodCategory,
+        verbose_name='Категория',
+        on_delete=models.CASCADE,
+        related_name='characteristics'
+    )
+    title = models.CharField('Название свойства', max_length=50)
+
+    def __str__(self):
+        return self.title
+
+
 class GoodItem(models.Model):
     name = models.CharField("Название", max_length=100)
     description = models.TextField("Описание", max_length=500)
@@ -35,6 +48,12 @@ class GoodItem(models.Model):
     discount = models.FloatField("Скидка", default=0)
     visible = models.BooleanField("Видимость", default=False)
     apply = models.BooleanField("Одобрено", default=False)
+    characteristics = models.ManyToManyField(
+        Characteristics,
+        verbose_name='Характеристики',
+        through='ItemCharacteristic',
+        related_name='characteristics'
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -43,6 +62,14 @@ class GoodItem(models.Model):
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
 
+
+class ItemCharacteristic(models.Model):
+    item = models.ForeignKey(GoodItem, on_delete=models.CASCADE)
+    characteristic = models.ForeignKey(Characteristics, on_delete=models.CASCADE)
+    body = models.TextField('Содержимое свойства', max_length=500)
+
+    class Meta:
+        unique_together = ('item', 'characteristic')
 
 class BaseMethod(models.Model):
     title = models.CharField("Название", max_length=100)
@@ -55,13 +82,35 @@ class BaseMethod(models.Model):
         abstract = True
 
 
-class PaymentMethod(BaseMethod):  # Надо добавить картинки + интеграция с MinIO
+class PaymentMethod(models.Model):  # Надо добавить картинки + интеграция с MinIO
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=False,
+        verbose_name='Пользователь',
+        related_name='cards'
+    )
+    card_body = models.CharField('Номер карты', max_length=16)
+    card_expire_date = models.DateField('Дата окончания действия карты')
+    card_cvc_code = models.CharField('CVC код', max_length=3)
+
+
+    def __str__(self) -> str:
+        return self.title
+    
+    
     class Meta:
         verbose_name = "Способ оплаты"
         verbose_name_plural = "Способы оплаты"
 
 
-class DeliveryMethod(BaseMethod):
+class DeliveryMethod(models.Model):
+    title = models.CharField("Название", max_length=100)
+    description = models.TextField("Описание", max_length=500)
+
+    def __str__(self) -> str:
+        return self.title
+    
     class Meta:
         verbose_name = "Способ доставки"
         verbose_name_plural = "Способы доставки"
@@ -168,10 +217,11 @@ class Transaction(models.Model):
         default=StatusChoices.PENDING,
     )
     amount = models.FloatField("Сумма платежа")
-    order = models.ForeignKey(
+    order = models.OneToOneField(
         Order,
         verbose_name=("Ответ от платежной системы"),
         on_delete=models.CASCADE,
+        related_name='transaction'
     )
     # provider_data = models.SomeField
 
@@ -254,3 +304,4 @@ class Notification(models.Model):
         ],
     )
     readed = models.BooleanField("Прочитано", default=False)
+

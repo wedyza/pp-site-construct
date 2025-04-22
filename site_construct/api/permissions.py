@@ -3,13 +3,11 @@ from users.models import CustomAbstractUser
 
 
 class AdminOrReadOnly(permissions.BasePermission):
-
     def has_permission(self, request, view):
-        return request.method in permissions.SAFE_METHODS or request.user.is_staff
+        return request.method in permissions.SAFE_METHODS or request.user.user_type == 'Администратор'
 
 
 class OwnerOrReadOnly(permissions.BasePermission):
-
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS
@@ -17,8 +15,8 @@ class OwnerOrReadOnly(permissions.BasePermission):
             or request.user.is_superuser
         )
 
-    def has_object_permission(self, request, view, obj):
-        return obj == request.user
+    # def has_object_permission(self, request, view, obj): #добавить user к товару
+    #     return obj == request.user
 
 
 class AdminOrModerator(permissions.BasePermission):
@@ -27,3 +25,7 @@ class AdminOrModerator(permissions.BasePermission):
             request.user.user_type == CustomAbstractUser.UserType.ADMIN
             or request.user.user_type == CustomAbstractUser.UserType.MODERATOR
         )
+
+class Owner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user

@@ -57,6 +57,10 @@ class CustomAbstractUser(AbstractUser):
         SUPPORT = "Поддержка"
         MODERATOR = "Модератор"
 
+    class SexType(Enum):
+        MALE = "Мужчина"
+        FEMALE = "Женщина"
+
     username = None
     USERNAME_FIELD = "email"
     objects = UserManager()
@@ -69,6 +73,11 @@ class CustomAbstractUser(AbstractUser):
     password = None
     last_login = None
     otp = models.CharField(max_length=6, null=True, blank=True)
+    sex = models.TextField(
+        "Пол пользователя",
+        choices=[(sex.name, sex.value) for sex in SexType],
+        null=True
+    )
     REQUIRED_FIELDS = []
 
     def __str__(self):

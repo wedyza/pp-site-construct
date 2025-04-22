@@ -16,6 +16,9 @@ from .views import (
     DeliveryMethodViewSet,
     BasketItemViewSet,
     UsersViewSet,
+    RecipentViewSet,
+    OrderViewSet,
+    CharacteristicViewSet
 )
 from users.views import ActivationView, LoginView, ValidateOTPView
 
@@ -27,6 +30,10 @@ router.register("goods", GoodItemViewSet)
 router.register("payment-methods", PaymentMethodViewSet)
 router.register("delivery-methods", DeliveryMethodViewSet)
 router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
+router.register("recipents", RecipentViewSet, basename='recipents')
+router.register("orders", OrderViewSet, basename='orders')
+router.register("characteristics", CharacteristicViewSet)
+
 
 
 urlpatterns = [
