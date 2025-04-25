@@ -22,69 +22,27 @@ const OrdersPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
     
     const currentOrders: Order[] = [
-        {
-            id: 4565854,
-            placement_date: '6 марта',
-            delivery_date: '8 марта',
-            price: 704,
-            address: 'г. Екатеринбург ул. Малышева 15',
-            status: 'Создан',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-            ]
-        },
-        {
-            id: 565854,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            price: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'В пути',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-            ]
-        },
-        {
-            id: 565854,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            price: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'В пути',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-            ]
-        }
-    ];
-    const completedOrders: Order[] = [
+        // {
+        //     id: 4565854,
+        //     placement_date: '6 марта',
+        //     delivery_date: '8 марта',
+        //     price: 704,
+        //     address: 'г. Екатеринбург ул. Малышева 15',
+        //     status: 'Создан',
+        //     goods: [
+        //         {
+        //             name: 'a',
+        //             description: 'b',
+        //         },
+        //     ]
+        // },
         // {
         //     id: 565854,
         //     placement_date: '7 марта',
         //     delivery_date: '9 марта',
         //     price: 800,
         //     address: 'г. Екатеринбург ул. Малышева 16',
-        //     status: 'Получен',
+        //     status: 'В пути',
         //     goods: [
         //         {
         //             name: 'a',
@@ -102,14 +60,56 @@ const OrdersPage: React.FC = () => {
         //     delivery_date: '9 марта',
         //     price: 800,
         //     address: 'г. Екатеринбург ул. Малышева 16',
-        //     status: 'Получен',
+        //     status: 'В пути',
         //     goods: [
         //         {
         //             name: 'a',
         //             description: 'b',
-        //         }
+        //         },
+        //         {
+        //             name: 'a',
+        //             description: 'b',
+        //         },
+        //         {
+        //             name: 'a',
+        //             description: 'b',
+        //         },
         //     ]
         // }
+    ];
+    const completedOrders: Order[] = [
+        {
+            id: 565854,
+            placement_date: '7 марта',
+            delivery_date: '9 марта',
+            price: 800,
+            address: 'г. Екатеринбург ул. Малышева 16',
+            status: 'Получен',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+                {
+                    name: 'a',
+                    description: 'b',
+                },
+            ]
+        },
+        {
+            id: 565854,
+            placement_date: '7 марта',
+            delivery_date: '9 марта',
+            price: 800,
+            address: 'г. Екатеринбург ул. Малышева 16',
+            status: 'Получен',
+            goods: [
+                {
+                    name: 'a',
+                    description: 'b',
+                }
+            ]
+        }
     ];
     const purchasedGoods: Order[] = [
         {

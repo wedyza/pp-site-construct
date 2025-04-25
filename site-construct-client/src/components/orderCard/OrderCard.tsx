@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './orderCard.scss'
 import { Order } from '../../pages/ordersPage/OrdersPage';
+import Modal from '../modal/Modal';
+import RefundForm from '../refundForm/RefundForm';
 
 interface OrderCardProps {
     order: Order;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+    const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
+    const [isRefundGoodModalOpen, setIsRefundGoodModalOpen] = useState(false);
+    const [isRefundDoneModalOpen, setIsRefundDoneModalOpen] = useState(false);
+
     return (
         <div className="order-card order-card__wide">
             <div className='order-card_info'>
@@ -60,7 +66,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                                 </clipPath>
                                 </defs>
                             </svg>
-                            <span>Оформить возврат</span>
+                            <button onClick={() => setIsRefundModalOpen(true)}>
+                                Оформить возврат
+                            </button>
                         </div>
                     </div>
                 )}
@@ -74,6 +82,167 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                     </div>
                 ))}
             </div>
+            <Modal
+                isOpen={isRefundModalOpen}
+                onClose={() => setIsRefundModalOpen(false)}
+                className="order_refund-modal"
+            >
+                <h2 className='text-h2'>Оформление возврата</h2>
+                <button className='refund-modal_exit modal_exit-btn' onClick={() => setIsRefundModalOpen(false)}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M0.227072 0.22703C0.519965 -0.0658633 0.994839 -0.0658636 1.28773 0.22703L6.00004 4.93934L10.7124 0.22703C11.0052 -0.0658633 11.4801 -0.0658637 11.773 0.22703C12.0659 0.519923 12.0659 0.994797 11.773 1.28769L7.0607 6L11.773 10.7123C12.0659 11.0052 12.0659 11.4801 11.773 11.773C11.4801 12.0659 11.0052 12.0659 10.7124 11.773L6.00004 7.06066L1.28773 11.773C0.994839 12.0659 0.519965 12.0659 0.227072 11.773C-0.0658213 11.4801 -0.0658213 11.0052 0.227072 10.7123L4.93938 6L0.227072 1.28769C-0.0658213 0.994797 -0.0658213 0.519923 0.227072 0.22703Z" fill="#02040F"/>
+                    </svg>
+                </button>
+
+                <div className='refund-modal_info'>
+                    <p className='refund-modal_info-id text-card'>№4565854</p>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            Дата оформления заказа
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            6 марта
+                        </p>
+                    </div>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            В пункт выдачи
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            г. Екатеринбург ул. Малышева 15
+                        </p>
+                    </div>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            Дата доставки
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            8 марта
+                        </p>
+                    </div>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            Оплачено
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            704 ₽
+                        </p>
+                    </div>
+                </div>
+                <p className='text-desc refund-modal_select-title'>Выберете заказ для оформления возврата</p>
+                <div className="refund-modal_select-list">
+                    <div className="refund-modal_select-item">
+                        <div className="refund_select-img"></div>
+                        <button
+                            className="refund_select-btn text-n14"
+                            onClick={() => {
+                                setIsRefundModalOpen(false);
+                                setIsRefundGoodModalOpen(true);
+                            }}
+                        >
+                            Этот товар
+                        </button>
+                    </div>
+                    <div className="refund-modal_select-item">
+                        <div className="refund_select-img"></div>
+                        <button
+                            className="refund_select-btn text-n14"
+                            onClick={() => {
+                                setIsRefundModalOpen(false);
+                                setIsRefundGoodModalOpen(true);
+                            }}
+                        >
+                            Этот товар
+                        </button>
+                    </div>
+                    <div className="refund-modal_select-item">
+                        <div className="refund_select-img"></div>
+                        <button
+                            className="refund_select-btn text-n14"
+                            onClick={() => {
+                                setIsRefundModalOpen(false);
+                                setIsRefundGoodModalOpen(true);
+                            }}
+                        >
+                            Этот товар
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+            <Modal
+                isOpen={isRefundGoodModalOpen}
+                onClose={() => setIsRefundGoodModalOpen(false)}
+                className="order_refund-modal"
+            >
+                <h2 className='text-h2'>Оформление возврата</h2>
+                <button className='refund-modal_exit modal_exit-btn' onClick={() => setIsRefundModalOpen(false)}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M0.227072 0.22703C0.519965 -0.0658633 0.994839 -0.0658636 1.28773 0.22703L6.00004 4.93934L10.7124 0.22703C11.0052 -0.0658633 11.4801 -0.0658637 11.773 0.22703C12.0659 0.519923 12.0659 0.994797 11.773 1.28769L7.0607 6L11.773 10.7123C12.0659 11.0052 12.0659 11.4801 11.773 11.773C11.4801 12.0659 11.0052 12.0659 10.7124 11.773L6.00004 7.06066L1.28773 11.773C0.994839 12.0659 0.519965 12.0659 0.227072 11.773C-0.0658213 11.4801 -0.0658213 11.0052 0.227072 10.7123L4.93938 6L0.227072 1.28769C-0.0658213 0.994797 -0.0658213 0.519923 0.227072 0.22703Z" fill="#02040F"/>
+                    </svg>
+                </button>
+                
+                <div className='refund-modal_info'>
+                    <p className='refund-modal_info-id text-card'>№4565854</p>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            Дата оформления заказа
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            6 марта
+                        </p>
+                    </div>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            В пункт выдачи
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            г. Екатеринбург ул. Малышева 15
+                        </p>
+                    </div>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            Дата доставки
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            8 марта
+                        </p>
+                    </div>
+                    <div className="refund-modal_info-item">
+                        <p className='refund-modal_info-label text-n14'>
+                            Оплачено
+                        </p>
+                        <p className='refund-modal_info-value text-n16'>
+                            704 ₽
+                        </p>
+                    </div>
+                </div>
+                <div className='refund-good_content'>
+                    <div className="refund-good_current">
+                        <div className="refund-good_img"></div>
+                        <button 
+                            className="refund-good_btn text-n14"
+                            onClick={(e) => {
+                                setIsRefundGoodModalOpen(false);
+                                //setTimeout(() => setIsRefundModalOpen(true), 0);
+                                setIsRefundModalOpen(true);
+                            }}
+                        >
+                            Не этот товар
+                        </button>
+                    </div>
+                    <RefundForm setIsOpenFirst={setIsRefundGoodModalOpen} setIsOpenSecond={setIsRefundDoneModalOpen} />
+                </div>
+            </Modal>
+            <Modal
+                isOpen={isRefundDoneModalOpen}
+                onClose={() => setIsRefundDoneModalOpen(false)}
+                className="order_refund-done-modal"
+            >
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M30 3.125C15.1573 3.125 3.125 15.1573 3.125 30C3.125 44.8427 15.1573 56.875 30 56.875C44.8427 56.875 56.875 44.8427 56.875 30C56.875 15.1573 44.8427 3.125 30 3.125ZM18.8261 29.9242C18.0939 29.1919 16.9067 29.1919 16.1745 29.9242C15.4422 30.6564 15.4422 31.8436 16.1745 32.5758L23.6745 40.0758C24.4067 40.8081 25.5939 40.8081 26.3261 40.0758L43.8261 22.5758C44.5583 21.8436 44.5583 20.6564 43.8261 19.9242C43.0939 19.1919 41.9067 19.1919 41.1745 19.9242L25.0003 36.0983L18.8261 29.9242Z" fill="#FFA600"/>
+                </svg>
+                <p className='text-n16'>Возврат оформлен</p>
+            </Modal>
         </div>
     );
 };
