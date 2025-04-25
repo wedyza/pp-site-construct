@@ -118,6 +118,7 @@
 .profile-messages_chat-bubble__from {
     align-self: flex-end;
     margin-right: 14px;
+    border-radius: var(--radius) var(--radius) 0 var(--radius);
 }
 
 .profile-messages_chat-bubble__to::before {
