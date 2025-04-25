@@ -85,3 +85,54 @@
     gap: 24px;
     grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
 }
+
+.profile-reviews_modal {
+    width: 33%;
+}
+
+.reviews-modal_header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.reviews-modal_header-img {
+    background-color: var(--temp-color);
+    width: 53px;
+    height: 53px;
+    border-radius: var(--radius);
+}
+
+.reviews-modal_form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 32px;
+    gap: 24px;
+}
+
+.reviews-form_textarea {
+    background-color: var(--white-gray);
+    padding: 16.5px 24px;
+    border-radius: var(--radius);
+    margin-top: -16px;
+}
+
+.reviews-modal_form-uploader {
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+
+    .refund-form_dropzone {
+        background-color: var(--white-gray);
+    }
+
+    .refund-form_dropzone-desc {
+        width: 82%;
+    }
+}
+
+.reviews-modal_form-btn {
+    height: 50px;
+    background-color: var(--black);
+    color: var(--background);
+    border-radius: var(--radius);
+}

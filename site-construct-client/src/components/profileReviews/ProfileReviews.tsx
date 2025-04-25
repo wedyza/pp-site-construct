@@ -1,6 +1,13 @@
+import { useState } from 'react';
 import './profileReviews.scss'
+import Modal from '../modal/Modal';
+import StarRating from '../starRating/StarRating';
+import FileUploader from '../fileUploader/FileUploader';
 
 const ProfileReviews: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+      const [files, setFiles] = useState<File[]>([]);
+
     return (
         <div className='profile-reviews'>
             <h1 className='text-h1'>Отзывы</h1>
@@ -20,7 +27,7 @@ const ProfileReviews: React.FC = () => {
                                 </svg>                            
                             ))}
                         </div>
-                        <div className='text-n14 reviews-make_card-btn reviews-make_card-btn__mt24'>Оставить отзыв</div>
+                        <button onClick={() => setIsModalOpen(true)} className='text-n14 reviews-make_card-btn reviews-make_card-btn__mt24'>Оставить отзыв</button>
                     </div>
                 </li>
                 <li className='profile-reviews_make-card'>
@@ -37,7 +44,7 @@ const ProfileReviews: React.FC = () => {
                                 </svg>                            
                             ))}
                         </div>
-                        <div className='text-n14 reviews-make_card-btn reviews-make_card-btn__mt24'>Оставить отзыв</div>
+                        <button onClick={() => setIsModalOpen(true)} className='text-n14 reviews-make_card-btn reviews-make_card-btn__mt24'>Оставить отзыв</button>
                     </div>
                 </li>
                 <li className='profile-reviews_make-card'>
@@ -54,7 +61,7 @@ const ProfileReviews: React.FC = () => {
                                 </svg>                            
                             ))}
                         </div>
-                        <div className='text-n14 reviews-make_card-btn reviews-make_card-btn__mt24'>Оставить отзыв</div>
+                        <button onClick={() => setIsModalOpen(true)} className='text-n14 reviews-make_card-btn reviews-make_card-btn__mt24'>Оставить отзыв</button>
                     </div>
                 </li>
             </ul>
@@ -139,6 +146,31 @@ const ProfileReviews: React.FC = () => {
                     </div>
                 </li>
             </ul>
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                className="profile-reviews_modal"
+            >
+                <button className='reviews-modal_exit modal_exit-btn' onClick={() => setIsModalOpen(false)}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M0.227072 0.22703C0.519965 -0.0658633 0.994839 -0.0658636 1.28773 0.22703L6.00004 4.93934L10.7124 0.22703C11.0052 -0.0658633 11.4801 -0.0658637 11.773 0.22703C12.0659 0.519923 12.0659 0.994797 11.773 1.28769L7.0607 6L11.773 10.7123C12.0659 11.0052 12.0659 11.4801 11.773 11.773C11.4801 12.0659 11.0052 12.0659 10.7124 11.773L6.00004 7.06066L1.28773 11.773C0.994839 12.0659 0.519965 12.0659 0.227072 11.773C-0.0658213 11.4801 -0.0658213 11.0052 0.227072 10.7123L4.93938 6L0.227072 1.28769C-0.0658213 0.994797 -0.0658213 0.519923 0.227072 0.22703Z" fill="#02040F"/>
+                    </svg>
+                </button>
+                <div className="reviews-modal_header">
+                    <div className="reviews-modal_header-img"></div>
+                    <h2 className="text-h2 reviews-modal_header-name">Робот мойщик окон с распылением</h2>
+                </div>
+                <div className="reviews-modal_form">
+                    <label className="text-n14 reviews-form_label">Ваш отзыв</label>
+                    <textarea placeholder="Начните писать" className="reviews-form_textarea text-n14" />
+                    <StarRating onRate={(rating) => console.log("Оценка:", rating)} />
+                    <div className="reviews-modal_form-uploader">
+                        <FileUploader onFilesChange={setFiles} />
+                    </div>
+                    
+                    <button className='reviews-modal_form-btn text-btn' onClick={() => console.log(files)}>Оставить отзыв</button>
+                </div>
+            </Modal>
         </div>
     );
 };
