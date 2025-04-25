@@ -24,3 +24,51 @@
     width: 312px;
     height: 165px;
 }
+
+.payment-modal {
+    width: 30%;
+}
+
+.payment-modal_form {
+    display: grid;
+    grid-template-areas: 
+        'number number'
+        'date cvv'
+        'btn btn'
+    ;
+    row-gap: 16px;
+    column-gap: 12px;
+    margin-top: 24px;
+    width: 100%;
+    min-width: 0;
+}
+
+.payment-modal_input {
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    padding: 0 24px;
+    height: 50px;
+    min-width: 0;
+}
+
+.payment-modal_number {
+    grid-area: number;
+}
+
+.payment-modal_date {
+    grid-area: date;
+}
+
+.payment-modal_cvv {
+    grid-area: cvv;
+}
+
+.payment-modal_form-btn {
+    grid-area: btn;
+    margin-top: 8px;
+    height: 50px;
+    background-color: var(--black);
+    color: var(--background);
+    border-radius: var(--radius);
+    min-width: 0;
+}
