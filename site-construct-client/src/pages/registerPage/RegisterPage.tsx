@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
+import './registerPage.scss';
 import { Link } from 'react-router-dom';
-import './loginPage.scss';
 import login1 from '../../img/login1.png';
 import login2 from '../../img/login2.png';
+import logo from '../../img/Kaufen.svg';
 import LoginGallery from '../../components/loginGallery/LoginGallery';
 import CodeInputForm from '../../components/codeInputForm/CodeInputForm';
 
 const pages = [
-    { text: 'Покупай с лёгкостью. Живи с удовольствием.', image: login1 },
-    { text: 'Честные отзывы, честные цены, честные покупки', image: login2 },
+    {
+        text: 'Покупай с лёгкостью. Живи с удовольствием.',
+        image: login1,
+    },
+    {
+        text: 'Честные отзывы, честные цены, честные покупки',
+        image: login2,
+    },
 ];
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isCodeStep, setIsCodeStep] = useState(false);
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+
+    const goToPage = (direction: 'prev' | 'next') => {
+        setCurrentPage((prev) =>
+            direction === 'prev' ? Math.max(0, prev - 1) : Math.min(pages.length - 1, prev + 1)
+        );
+    };
 
     const handleGetCode = (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,12 +38,6 @@ const LoginPage: React.FC = () => {
 
     const handleLogin = (code: string[]) => {
         console.log('Пытаемся войти с кодом:', { email, code: code.join('') });
-    };
-
-    const goToPage = (direction: 'prev' | 'next') => {
-        setCurrentPage((prev) =>
-            direction === 'prev' ? Math.max(0, prev - 1) : Math.min(pages.length - 1, prev + 1)
-        );
     };
 
     return (
@@ -42,14 +50,21 @@ const LoginPage: React.FC = () => {
             />
 
             <div className='login-content'>
-                <h1 className='login-title'>Войдите</h1>
-
+                <h1 className='login-title'>Создайте аккаунт</h1>
                 {!isCodeStep ? (
                     <form className='login-form' onSubmit={handleGetCode}>
                         <input
+                            type='text'
+                            className='login-form_input'
+                            placeholder='Ваше имя'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        <input
                             type='email'
                             className='login-form_input'
-                            placeholder='Введите почту'
+                            placeholder='Почта'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -63,9 +78,11 @@ const LoginPage: React.FC = () => {
                 )}
 
                 <div className='to-reg'>
-                    <p className='to-reg_text'>Нет аккаунта?</p>
-                    <Link to='/register' className='to-reg_link'>
-                        <p className='to-reg_link-text'>Создайте его!</p>
+                    <p className='to-reg_text'>
+                        Уже есть аккаунт?
+                    </p>
+                    <Link to='/login' className='to-reg_link'>
+                        <p className='to-reg_link-text'>Войдите!</p>
                     </Link>
                 </div>
             </div>
@@ -73,4 +90,4 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default RegisterPage;

@@ -9,6 +9,7 @@ import BasketPage from './pages/basketPage/BasketPage';
 import LoginPage from './pages/loginPage/LoginPage';
 import ReviewsPage from './pages/reviewsPage/ReviewsPage';
 import CategoryPage from './pages/categoryPage/CategoryPage';
+import RegisterPage from './pages/registerPage/RegisterPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/basket" element={<BasketPage />} />
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
     </Routes>
   );
 }

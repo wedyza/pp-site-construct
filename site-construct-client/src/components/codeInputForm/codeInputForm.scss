@@ -1,0 +1,32 @@
+.login-form_code-inputs {
+    display: flex;
+    gap: 6px;
+}
+
+.login-form_code-input {
+    background-color: var(--background);
+    border-radius: var(--radius);
+    border: 1px solid var(--black15);
+    height: 50px;
+    min-width: 0;
+    text-align: center;
+}
+
+.login-form_code-btn {
+    position: relative;
+    margin-top: 22px;
+}
+
+.login-form_code-btn::before {
+    content: 'Введите одноразовый пароль, отправленный на вашу почту';
+    position: absolute;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: -2%;
+    text-align: center;
+    left: -50px;
+    right: -50px;
+    color: var(--black60);
+    top: -30px;
+}

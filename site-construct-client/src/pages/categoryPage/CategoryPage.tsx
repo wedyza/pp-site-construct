@@ -143,9 +143,9 @@ const CategoryPage: React.FC = () => {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    const toggleSubcategory = (index: number) => {
-        setOpenIndex(prev => (prev === index ? null : index));
-    };
+    // const toggleSubcategory = (index: number) => {
+    //     setOpenIndex(prev => (prev === index ? null : index));
+    // };
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
