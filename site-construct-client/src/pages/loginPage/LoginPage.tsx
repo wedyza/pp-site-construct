@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
+import { createOtp, validateOtp, setEmail } from '../../store/authSlice';
+
 import './loginPage.scss';
 import login1 from '../../img/login1.png';
 import login2 from '../../img/login2.png';
@@ -12,18 +16,19 @@ const pages = [
 ];
 
 const LoginPage: React.FC = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const { email, step, loading, error, token } = useSelector((state: RootState) => state.auth);
+
     const [currentPage, setCurrentPage] = useState(0);
-    const [isCodeStep, setIsCodeStep] = useState(false);
-    const [email, setEmail] = useState('');
 
     const handleGetCode = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Запрашиваем код для:', email);
-        setIsCodeStep(true);
+        dispatch(createOtp(email));
     };
 
     const handleLogin = (code: string[]) => {
-        console.log('Пытаемся войти с кодом:', { email, code: code.join('') });
+        dispatch(validateOtp({ email, otp: code.join('') }));
     };
 
     const goToPage = (direction: 'prev' | 'next') => {
@@ -31,6 +36,12 @@ const LoginPage: React.FC = () => {
             direction === 'prev' ? Math.max(0, prev - 1) : Math.min(pages.length - 1, prev + 1)
         );
     };
+
+    useEffect(() => {
+        if (token) {
+            navigate('/');
+        }
+    }, [token]);
 
     return (
         <div className="login-page">
@@ -44,22 +55,30 @@ const LoginPage: React.FC = () => {
             <div className='login-content'>
                 <h1 className='login-title'>Войдите</h1>
 
-                {!isCodeStep ? (
+                {step === 'email' && (
                     <form className='login-form' onSubmit={handleGetCode}>
                         <input
                             type='email'
                             className='login-form_input'
                             placeholder='Введите почту'
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => dispatch(setEmail(e.target.value))}
                             required
+                            disabled={loading}
                         />
-                        <button type='submit' className='login-form_btn'>
-                            Получить код
+                        <button type='submit' className='login-form_btn' disabled={loading}>
+                            {loading ? 'Отправляем код...' : 'Получить код'}
                         </button>
+                        {error && <div className="error">{error}</div>}
                     </form>
-                ) : (
-                    <CodeInputForm onSubmit={handleLogin} />
+                )}
+
+                {step === 'otp' && (
+                    <>
+                        <CodeInputForm onSubmit={handleLogin} />
+                        {loading && <p className="loading-text">Проверяем код...</p>}
+                        {error && <div className="error">{error}</div>}
+                    </>
                 )}
 
                 <div className='to-reg'>

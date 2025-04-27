@@ -4,7 +4,7 @@ import HeaderCategories from '../../components/headerCategories/HeaderCategories
 import PurchasedCard from '../../components/purchasedCard/PurchasedCard';
 import Header from '../../components/header/Header';
 import OrderCard from '../../components/orderCard/OrderCard';
-import { Good } from '../../services/api';
+import { Good } from '../../api/api';
 import Recommendations from '../../components/recommendations/Recommendations';
 import EmptyOrders from '../../components/emptyOrders/EmptyOrders';
 

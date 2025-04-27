@@ -4,7 +4,7 @@ import HeaderCategories from '../../components/headerCategories/HeaderCategories
 import Header from '../../components/header/Header';
 import DropdownSubcategory from '../../components/dropdownSubcategory/DropdownSubcategory';
 import GoodsCard from '../../components/goodCard/GoodCard';
-import { Good } from '../../services/api';
+import { Good } from '../../api/api';
 
 const goods: Good[] = [
     {

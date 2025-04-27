@@ -1,4 +1,4 @@
-import { Good } from '../../services/api';
+import { Good } from '../../api/api';
 import './goodCard.scss'
 
 

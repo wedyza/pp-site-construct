@@ -1,6 +1,6 @@
 import React from 'react';
 import './recommendations.scss'
-import { Good } from '../../services/api';
+import { Good } from '../../api/api';
 import GoodsCard from '../goodCard/GoodCard';
 
 const goods: Good[] = [

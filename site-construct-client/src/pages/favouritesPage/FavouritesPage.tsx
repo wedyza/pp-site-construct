@@ -2,7 +2,7 @@ import React from 'react';
 import './favouritesPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
-import { Good } from '../../services/api';
+import { Good } from '../../api/api';
 import { Link } from 'react-router-dom';
 import GoodsCard from '../../components/goodCard/GoodCard';
 

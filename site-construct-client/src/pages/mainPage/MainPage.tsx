@@ -1,7 +1,7 @@
 import React from 'react';
 import './mainPage.scss'
 import GoodsCard from '../../components/goodCard/GoodCard';
-import { Good } from '../../services/api'
+import { Good } from '../../api/api'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
 import { Link } from 'react-router-dom';
