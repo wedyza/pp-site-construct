@@ -18,9 +18,9 @@ from .views import (
     UsersViewSet,
     RecipentViewSet,
     OrderViewSet,
-    CharacteristicViewSet
+    CharacteristicViewSet,
+    GetMyWishlistView
 )
-from users.views import ActivationView, LoginView, ValidateOTPView
 
 router = routers.DefaultRouter()
 
@@ -42,6 +42,7 @@ urlpatterns = [
     # path('auth/', include('djoser.urls.jwt')),
     # path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
     path("auth/", include("users.urls")),
+    path("me/wishlist/", GetMyWishlistView.as_view(), name='get-my-wishlist')
 ]
 
 schema_view = get_schema_view(

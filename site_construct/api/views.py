@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, mixins, permissions, status
+from rest_framework import viewsets, mixins, permissions, status, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
@@ -12,7 +12,8 @@ from .models import (
     PaymentMethod,
     Recipent,
     Order,
-    Characteristics
+    Characteristics,
+    Like
 )
 from .serializers import (
     BasketItemSerializer,
@@ -95,6 +96,22 @@ class GoodItemViewSet(viewsets.ModelViewSet):
         characteristic = Characteristics.objects.get(id=payload.data['characteristic'])
         item.characteristics.add(characteristic, through_defaults={'body': payload.data['body']})
         return Response({'success': "Успено"}, status=status.HTTP_200_OK)
+    
+
+    @action(detail=True, methods=['POST'], url_path='switch_wishlist', permission_classes=(permissions.IsAuthenticated,))
+    def add_to_wishlist(self, request, pk):
+        item = GoodItem.objects.get(id=pk)
+        user = request.user
+
+        like = Like.objects.filter(item=item).filter(user=user).first()
+        if like is not None:
+            like.delete()
+        else:
+            like = Like.objects.create(item=item, user=user)
+            like.save()
+
+        return Response('success')
+
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
     queryset = PaymentMethod.objects.all()
@@ -195,3 +212,17 @@ class CharacteristicViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mi
     permission_classes = (AdminOrReadOnly, )
     serializer_class = CharacteristicCreateSerializer
     queryset = Characteristics.objects.all()
+
+
+class GetMyWishlistView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        user = self.request.user
+        wishlist = Like.objects.filter(user=user).select_related("item").all()
+
+        items = [like.item for like in wishlist]
+
+        serializer = GoodItemSerializer(data=items, many=True)
+        serializer.is_valid()
+        return Response(serializer.data)

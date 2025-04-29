@@ -279,7 +279,7 @@ class Message(models.Model):
         related_name="received_messagess",
     )
     body = models.TextField("тело сообщения", max_length=500)
-    created_at = models.DateTimeField("Время сообщения", default="NOW()")
+    created_at = models.DateTimeField("Время сообщения", auto_now_add=True)
 
 
 class Notification(models.Model):
@@ -305,3 +305,11 @@ class Notification(models.Model):
     )
     readed = models.BooleanField("Прочитано", default=False)
 
+class Like(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+    item = models.ForeignKey(
+        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)

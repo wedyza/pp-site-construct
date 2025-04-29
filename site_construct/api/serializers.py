@@ -14,7 +14,6 @@ from .models import (
 )
 from django.contrib.auth import get_user_model
 from django_enum.drf import EnumField
-from users.models import CustomAbstractUser
 
 User = get_user_model()
 

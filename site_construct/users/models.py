@@ -4,7 +4,6 @@ from django.core.validators import RegexValidator, MaxValueValidator, MinValueVa
 from django.utils import timezone
 from enum import Enum
 
-
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
