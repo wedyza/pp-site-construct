@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from enum import Enum
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 
 User = get_user_model()
 
@@ -90,13 +90,13 @@ class PaymentMethod(models.Model):  # Надо добавить картинки
         verbose_name='Пользователь',
         related_name='cards'
     )
-    card_body = models.CharField('Номер карты', max_length=16)
-    card_expire_date = models.DateField('Дата окончания действия карты')
-    card_cvc_code = models.CharField('CVC код', max_length=3)
+    card_body = models.CharField('Номер карты', max_length=16, null=False)
+    card_expire_date = models.DateField('Дата окончания действия карты', null=False)
+    card_cvv_code = models.IntegerField('CVC код', null=False)
 
 
     def __str__(self) -> str:
-        return self.title
+        return self.card_body
     
     
     class Meta:
@@ -122,9 +122,18 @@ class Recipent(models.Model):
     middle_name = models.CharField("Отчество", max_length=50, null=True)
     address = models.CharField("Адрес", max_length=150)
     zip_code = models.CharField("Код почты", max_length=50)
-    phone = models.CharField("Номер телефона", max_length=15)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+    phone_regex = RegexValidator(
+        regex=r'^\+7\d{10}$',
+        message='Номер телефона должен быть введен в формате +7XXXXXXXXXX.'
+    )
+    phone_number = models.CharField(
+        'Номер телефона',
+        validators=[phone_regex],
+        max_length=12,
+        unique=True
     )
 
     def __str__(self) -> str:

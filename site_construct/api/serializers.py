@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, validators
 from .models import (
     Basket,
     BasketItem,
@@ -26,7 +26,7 @@ class CharacteristicSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "user_type", "first_name", "last_name")
+        fields = ("email", "user_type", "name", "sex")
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):
@@ -69,6 +69,12 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
         fields = ("card_body", "card_expire_date")
 
 
+class PaymentMethodCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = ("card_body", "card_expire_date", 'card_cvv_code')
+
+
 class DeliveryMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeliveryMethod
@@ -81,12 +87,19 @@ class RecipentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipent
         fields = "__all__"
-
+        read_only_fields = ('user',)
 
 class BasketItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = BasketItem
-        fields = "__all__"
+        fields = ('good_item', 'count', 'basket')
+        read_only_fields = ("basket",)
+        
+
+class BasketItemCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BasketItem
+        fields = '__all__'
         read_only_fields = ("basket",)
 
 
@@ -113,7 +126,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
-        read_only_fields = ('user',)
+        read_only_fields = ('user', "payment_total")
+        extra_kwargs = {'payment_method': {'required': True}, 'delivery_method': {'required': True}}
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -135,7 +149,13 @@ class OrderToBuyerSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    user_type = EnumField(enum=User.UserType, default="Покупатель")
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'sex', 'name')
+        required = ('emai', 'name')
 
 
 class UserLoginOTPSerializer(serializers.Serializer):

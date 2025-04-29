@@ -78,6 +78,10 @@ class CustomAbstractUser(AbstractUser):
         null=True
     )
     REQUIRED_FIELDS = []
+    first_name = None
+    last_name = None
+    name = models.CharField('Имя', null=True, max_length=50)
+    otp_expires = models.DateTimeField('Время жизни otp', null=True, blank=True)
 
     def __str__(self):
         return self.email

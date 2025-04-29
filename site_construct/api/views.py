@@ -16,11 +16,13 @@ from .models import (
     Like
 )
 from .serializers import (
+    BasketItemCreateSerializer,
     BasketItemSerializer,
     DeliveryMethodSerializer,
     GoodCategorySerializer,
     GoodItemSerializer,
     ItemApplyCharacteristic,
+    PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
     RecipentSerializer,
     UserSerializer,
@@ -34,6 +36,7 @@ from django.shortcuts import get_object_or_404
 from .permissions import AdminOrReadOnly, Owner, OwnerOrReadOnly, AdminOrModerator
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Sum
 
 User = get_user_model()
 
@@ -114,9 +117,19 @@ class GoodItemViewSet(viewsets.ModelViewSet):
 
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
-    queryset = PaymentMethod.objects.all()
     serializer_class = PaymentMethodSerializer
     permission_classes = (OwnerOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return PaymentMethodSerializer
+        return PaymentMethodCreateSerializer
+
+    def get_queryset(self):
+        return PaymentMethod.objects.filter(user=self.request.user).all()
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class DeliveryMethodViewSet(viewsets.ModelViewSet):
@@ -131,8 +144,13 @@ class BasketItemViewSet(
     mixins.DestroyModelMixin,
     mixins.UpdateModelMixin,
 ):
-    serializer_class = BasketItemSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return BasketItemCreateSerializer
+        return BasketItemSerializer
+
 
     def get_queryset(self):
         basket = Basket.objects.filter(visible=True).filter(
@@ -145,18 +163,26 @@ class BasketItemViewSet(
         basket_items = BasketItem.objects.filter(basket=basket)
         return basket_items
 
-    def perform_create(
-        self, serializer
-    ):  # Нерабочий роут, дома посмотреть и разобраться, почему так
+    def create(self, request, *args, **kwargs):
         basket = Basket.objects.filter(visible=True).filter(
-            user__id=self.request.user.id
+            user=self.request.user
         )
         if len(basket) == 0:
-            basket = Basket.objects.create(user_id=self.request.user.id)
+            basket = Basket.objects.create(user=self.request.user)
         else:
             basket = basket.get()
-        serializer.save(basket_id=basket.id)
-        # return super().perform_create(serializer)
+
+        basket_item = BasketItemCreateSerializer(data=request.data)
+        if not basket_item.is_valid():
+            return Response(basket_item.errors)
+        
+        try:
+            basket_item.save(basket=basket)
+        except:
+            return Response({'error': "Такой товар уже есть в корзине"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(basket_item.data, status=status.HTTP_200_OK)
+
 
 
 class UsersViewSet(
@@ -192,18 +218,54 @@ class RecipentViewSet(viewsets.ModelViewSet):
     serializer_class = RecipentSerializer
     permission_classes = (OwnerOrReadOnly,)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin):
-    permission_classes = (Owner, )
+    permission_classes = (OwnerOrReadOnly, )
     
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer_class(self):
         if self.request.method == 'GET':
-            return OrderToBuyerSerializer()
+            return OrderToBuyerSerializer
         elif self.request.method == 'POST':
-            return OrderCreateSerializer()
+            return OrderCreateSerializer
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).all()
+    
+    def create(self, request, *args, **kwargs): # сделать проверку на то, что получатель / способ оплаты принадлежит пользователю
+        order = OrderCreateSerializer(data=request.data)
+
+        if not order.is_valid():
+            return Response(order.errors)
+        
+        basket = Basket.objects.filter(visible=True).filter(
+            user__id=self.request.user.id
+        ).first()
+
+        if basket is None:
+            return Response({'error': 'Невозможно создать заказ с пустой корзиной!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # basket_items = BasketItem.objects.filter(basket=basket).all()
+
+        # if len(basket_items) == 0:
+        
+        sum_total = BasketItem.objects.filter(basket=basket).select_related("good_item").aggregate(Sum('good_item__price'))['good_item__price__sum']
+
+        if sum_total == 0:
+            return Response({'error': 'Невозможно создать заказ с пустой корзиной!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        basket.visible = False
+        basket.save()
+        order.save(basket=basket, payment_total=sum_total, user=self.request.user)
+
+        return Response(order.data)
+
+        return Response('h')
+
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
     
     # @action(detail=True, )
     
@@ -226,3 +288,5 @@ class GetMyWishlistView(views.APIView):
         serializer = GoodItemSerializer(data=items, many=True)
         serializer.is_valid()
         return Response(serializer.data)
+    
+

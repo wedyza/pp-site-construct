@@ -15,8 +15,8 @@ class OwnerOrReadOnly(permissions.BasePermission):
             or request.user.is_superuser
         )
 
-    # def has_object_permission(self, request, view, obj): #добавить user к товару
-    #     return obj == request.user
+    def has_object_permission(self, request, view, obj): #добавить user к товару
+        return obj.user == request.user
 
 
 class AdminOrModerator(permissions.BasePermission):
