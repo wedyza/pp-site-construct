@@ -6,6 +6,7 @@ import login2 from '../../img/login2.png';
 import logo from '../../img/Kaufen.svg';
 import LoginGallery from '../../components/loginGallery/LoginGallery';
 import CodeInputForm from '../../components/codeInputForm/CodeInputForm';
+import CustomRadio from '../../components/customRadio/CustomRadio';
 
 const pages = [
     {
@@ -19,6 +20,7 @@ const pages = [
 ];
 
 const RegisterPage: React.FC = () => {
+    const [selected, setSelected] = useState<string | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(0);
     const [isCodeStep, setIsCodeStep] = useState(false);
     const [email, setEmail] = useState('');
@@ -69,6 +71,22 @@ const RegisterPage: React.FC = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
+                        <div className="login-form__radio">
+                            <CustomRadio
+                                name=""
+                                value="female"
+                                checked={selected === 'female'}
+                                onChange={setSelected}
+                                label="Женщина"
+                            />
+                            <CustomRadio
+                                name=""
+                                value="male"
+                                checked={selected === 'male'}
+                                onChange={setSelected}
+                                label="Мужчина"
+                                />
+                            </div>
                         <button type='submit' className='login-form_btn'>
                             Получить код
                         </button>
