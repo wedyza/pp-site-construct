@@ -3,6 +3,7 @@ from .models import (
     Basket,
     BasketItem,
     Characteristics,
+    Market,
     Order,
     DeliveryMethod,
     GoodCategory,
@@ -48,7 +49,7 @@ class GoodItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market')
 
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
@@ -173,3 +174,9 @@ class ItemApplyCharacteristic(serializers.ModelSerializer):
     class Meta:
         model = ItemCharacteristic
         fields = ('characteristic', 'body')
+
+
+class MarketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Market
+        fields = '__all__'

@@ -54,6 +54,11 @@ class GoodItem(models.Model):
         through='ItemCharacteristic',
         related_name='characteristics'
     )
+    market = models.ForeignKey(
+        'Market',
+        on_delete=models.CASCADE,
+        verbose_name='Магазин'
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -322,3 +327,14 @@ class Like(models.Model):
         GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Market(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь'
+    )
+    name = models.CharField('Название', max_length=50)
+    description = models.TextField('Описание')
+    # avatar = models.ImageField()

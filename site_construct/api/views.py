@@ -9,6 +9,7 @@ from .models import (
     DeliveryMethod,
     GoodCategory,
     GoodItem,
+    Market,
     PaymentMethod,
     Recipent,
     Order,
@@ -22,6 +23,7 @@ from .serializers import (
     GoodCategorySerializer,
     GoodItemSerializer,
     ItemApplyCharacteristic,
+    MarketSerializer,
     PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
     RecipentSerializer,
@@ -33,7 +35,7 @@ from .serializers import (
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from .permissions import AdminOrReadOnly, Owner, OwnerOrReadOnly, AdminOrModerator
+from .permissions import AdminOrReadOnly, Owner, OwnerOrReadOnly, AdminOrModerator, SellerOrReadOnly
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum
@@ -290,3 +292,7 @@ class GetMyWishlistView(views.APIView):
         return Response(serializer.data)
     
 
+class MarketViewSet(viewsets.ModelViewSet):
+    queryset = Market.objects.all()
+    serializer_class = MarketSerializer
+    permission_classes = (SellerOrReadOnly,)
