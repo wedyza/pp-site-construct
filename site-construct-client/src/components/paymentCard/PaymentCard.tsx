@@ -1,6 +1,12 @@
+import { PaymentMethod } from '../../store/paymentMethodsSlice';
 import './paymentCard.scss'
 
-const PaymentCard: React.FC = () => {
+interface PaymentCardProps {
+    method: PaymentMethod;
+}
+
+
+const PaymentCard: React.FC<PaymentCardProps> = ( {method} ) => {
     return (
         <div className='payment-card'>
             <p className='payment-card_bank text-h1'>
@@ -16,7 +22,7 @@ const PaymentCard: React.FC = () => {
                 Основной
             </button>
             <p className='payment-card_num text-h1'>
-                ...5684
+                {`...${method.card_body.slice(-4)}`}
             </p>
         </div>
     );

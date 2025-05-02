@@ -31,11 +31,11 @@ export interface BasketItem {
     basket?: number;
 }
 
-export interface PaymentMethod {
-    id?: number;
-    title: string;
-    description: string;
-}
+// export interface PaymentMethod {
+//     id?: number;
+//     title: string;
+//     description: string;
+// }
   
 const api = axios.create({
     baseURL: API_URL,
@@ -201,40 +201,40 @@ export const deleteBasketItem = async (id: number): Promise<void> => {
 
 
 
-export const getPaymentMethods = async (): Promise<PaymentMethod[]> => {
-    const response = await api.get("/payment-methods/");
-    return response.data;
-};
+// export const getPaymentMethods = async (): Promise<PaymentMethod[]> => {
+//     const response = await api.get("/payment-methods/");
+//     return response.data;
+// };
 
-export const createPaymentMethod = async (
-    data: Omit<PaymentMethod, "id">
-): Promise<PaymentMethod> => {
-    const response = await api.post("/payment-methods/", data);
-    return response.data;
-};
+// export const createPaymentMethod = async (
+//     data: Omit<PaymentMethod, "id">
+// ): Promise<PaymentMethod> => {
+//     const response = await api.post("/payment-methods/", data);
+//     return response.data;
+// };
 
-export const getPaymentMethodById = async (
-    id: number
-): Promise<PaymentMethod> => {
-    const response = await api.get(`/payment-methods/${id}/`);
-    return response.data;
-};
+// export const getPaymentMethodById = async (
+//     id: number
+// ): Promise<PaymentMethod> => {
+//     const response = await api.get(`/payment-methods/${id}/`);
+//     return response.data;
+// };
 
-export const updatePaymentMethod = async (
-    id: number,
-    data: Omit<PaymentMethod, "id">
-): Promise<PaymentMethod> => {
-    const response = await api.put(`/payment-methods/${id}/`, data);
-    return response.data;
-};
+// export const updatePaymentMethod = async (
+//     id: number,
+//     data: Omit<PaymentMethod, "id">
+// ): Promise<PaymentMethod> => {
+//     const response = await api.put(`/payment-methods/${id}/`, data);
+//     return response.data;
+// };
 
-export const patchPaymentMethod = async (
-    id: number,
-    data: Partial<Omit<PaymentMethod, "id">>
-): Promise<PaymentMethod> => {
-    const response = await api.patch(`/payment-methods/${id}/`, data);
-    return response.data;
-};
+// export const patchPaymentMethod = async (
+//     id: number,
+//     data: Partial<Omit<PaymentMethod, "id">>
+// ): Promise<PaymentMethod> => {
+//     const response = await api.patch(`/payment-methods/${id}/`, data);
+//     return response.data;
+// };
 
 export const deletePaymentMethod = async (id: number): Promise<void> => {
     await api.delete(`/payment-methods/${id}/`);
