@@ -35,11 +35,11 @@ const ProfilePage: React.FC = () => {
             <HeaderCategories />
             <div className='profile-page'>
                 <div className='profile-nav'>
-                    <div className='profile-nav_header' onClick={() => setSelectedSection('profile')}>
+                    <div className='profile-nav_header hover1' onClick={() => setSelectedSection('profile')}>
                         <div className='profile-nav_avatar'>
 
                         </div>
-                        <div className='profile-nav_name'>
+                        <div className='profile-nav_name text-h2'>
                             <span>Алена</span>
                             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L5.93934 7L0.46967 12.4697C0.176777 12.7626 0.176777 13.2374 0.46967 13.5303C0.762563 13.8232 1.23744 13.8232 1.53033 13.5303L7.53033 7.53033C7.82322 7.23744 7.82322 6.76256 7.53033 6.46967L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967Z" fill="black"/>
@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
                         </button>
                     </div>
                     <ul className='profile-nav_list'>
-                        <li className='profile-nav_item' onClick={() => setSelectedSection('payment')}>
+                        <li className={`profile-nav_item hover2 ${selectedSection === 'payment' ? 'profile-nav_item__active' : ''}`} onClick={() => setSelectedSection('payment')}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M2.25 9C2.25 7.48122 3.48122 6.25 5 6.25H19C20.5188 6.25 21.75 7.48122 21.75 9V18C21.75 19.5188 20.5188 20.75 19 20.75H5C3.48122 20.75 2.25 19.5188 2.25 18V9ZM5 7.75C4.30964 7.75 3.75 8.30964 3.75 9V18C3.75 18.6904 4.30964 19.25 5 19.25H19C19.6904 19.25 20.25 18.6904 20.25 18V9C20.25 8.30964 19.6904 7.75 19 7.75H5Z" fill="black"/>
                                 <path d="M16.5 14C16.2239 14 16 13.7761 16 13.5C16 13.2239 16.2239 13 16.5 13C16.7761 13 17 13.2239 17 13.5C17 13.7761 16.7761 14 16.5 14Z" fill="black"/>
@@ -68,7 +68,7 @@ const ProfilePage: React.FC = () => {
                             </svg>
                             <span>Способы оплаты</span>
                         </li>
-                        <li className='profile-nav_item' onClick={() => setSelectedSection('messages')}>
+                        <li className={`profile-nav_item hover2 ${selectedSection === 'messages' ? 'profile-nav_item__active' : ''}`} onClick={() => setSelectedSection('messages')}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M17 12.5C17.2761 12.5 17.5 12.2761 17.5 12C17.5 11.7239 17.2761 11.5 17 11.5C16.7239 11.5 16.5 11.7239 16.5 12C16.5 12.2761 16.7239 12.5 17 12.5Z" fill="black"/>
                                 <path fillRule="evenodd" clipRule="evenodd" d="M17 12.25C17.1381 12.25 17.25 12.1381 17.25 12C17.25 11.8619 17.1381 11.75 17 11.75C16.8619 11.75 16.75 11.8619 16.75 12C16.75 12.1381 16.8619 12.25 17 12.25ZM15.75 12C15.75 11.3096 16.3096 10.75 17 10.75C17.6904 10.75 18.25 11.3096 18.25 12C18.25 12.6904 17.6904 13.25 17 13.25C16.3096 13.25 15.75 12.6904 15.75 12Z" fill="black"/>
@@ -80,7 +80,7 @@ const ProfilePage: React.FC = () => {
                             </svg>
                             <span>Сообщения</span>
                         </li>
-                        <li className='profile-nav_item' onClick={() => setSelectedSection('reviews')}>
+                        <li className={`profile-nav_item hover2 ${selectedSection === 'reviews' ? 'profile-nav_item__active' : ''}`} onClick={() => setSelectedSection('reviews')}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M5 3.75C4.30964 3.75 3.75 4.30964 3.75 5V19.8619L5.81386 17.2821C6.33573 16.6297 7.12584 16.25 7.96125 16.25H19C19.6904 16.25 20.25 15.6904 20.25 15V5C20.25 4.30964 19.6904 3.75 19 3.75H5ZM2.25 5C2.25 3.48122 3.48122 2.25 5 2.25H19C20.5188 2.25 21.75 3.48122 21.75 5V15C21.75 16.5188 20.5188 17.75 19 17.75H7.96125C7.58152 17.75 7.22238 17.9226 6.98516 18.2191L4.65417 21.1329C3.85698 22.1294 2.25 21.5657 2.25 20.2895V5Z" fill="black"/>
                             </svg>

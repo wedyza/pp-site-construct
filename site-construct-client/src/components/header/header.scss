@@ -26,13 +26,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8em;
+    transition: var(--transition);
 
     svg{
         path {
             stroke: var(--white-text);
         }
     }
+}
+
+.header_catalog:hover {
+    background-color: var(--accent);
+    box-shadow: 2px 2px 10px 0px var(--accent40);
 }
 
 .header_catalog__active {
@@ -58,6 +63,7 @@
     gap: 6px;
     align-items: center;
     justify-content: center;
+    transition: var(--transition);
 
     svg{
         height: 20px;
@@ -68,11 +74,10 @@
     }
 }
 
+.header_link:hover {
+    background-color: var(--black60);
+}
+
 .header-nav_text {
     color: var(--white-text);
-    font-weight: 500;
-    font-size: 0.6em;
-    line-height: 100%;
-    letter-spacing: 0%;
-
 }

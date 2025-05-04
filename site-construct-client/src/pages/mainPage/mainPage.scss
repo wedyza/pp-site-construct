@@ -4,10 +4,3 @@
     height: 186px;
     border-radius: var(--radius);
 }
-
-.main_goods-list {
-    margin-top: 32px;
-    display: grid;
-    gap: 24px;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}

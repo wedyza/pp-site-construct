@@ -86,7 +86,7 @@ const ProfilePaymentMethods: React.FC = () => {
                         onChange={(e) => setCardCvv(e.target.value)}
                         required
                     />
-                    <button className='payment-modal_form-btn text-btn'>Привязать</button>
+                    <button className='payment-modal_form-btn text-btn btn-black'>Привязать</button>
                 </form>
             </Modal>
         </div>

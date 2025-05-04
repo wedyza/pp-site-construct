@@ -162,25 +162,25 @@ const OrdersPage: React.FC = () => {
             <HeaderCategories />
             <div className="orders-tabs">
                 <button
-                    className={activeTab === 'current' ? 'orders-tab orders-tab__active' : 'orders-tab'}
+                    className={`orders-tab text-h2 ${activeTab === 'current' ? 'orders-tab__active' : ''}`}
                     onClick={() => setActiveTab('current')}
                 >
                     Текущие ({currentOrders.length})
                 </button>
                 <button
-                    className={activeTab === 'completed' ? 'orders-tab orders-tab__active' : 'orders-tab'}
+                    className={`orders-tab text-h2 ${activeTab === 'completed' ? 'orders-tab__active' : ''}`}
                     onClick={() => setActiveTab('completed')}
                 >
                     Завершённые ({completedOrders.length})
                 </button>
                 <button
-                    className={activeTab === 'purchased' ? 'orders-tab orders-tab__active' : 'orders-tab'}
+                    className={`orders-tab text-h2 ${activeTab === 'purchased' ? 'orders-tab__active' : ''}`}
                     onClick={() => setActiveTab('purchased')}
                 >
                     Купленные товары ({purchasedGoods.length})
                 </button>
                 <button
-                    className={activeTab === 'refunds' ? 'orders-tab orders-tab__active' : 'orders-tab'}
+                    className={`orders-tab text-h2 ${activeTab === 'refunds' ? 'orders-tab__active' : ''}`}
                     onClick={() => setActiveTab('refunds')}
                 >
                     Возвраты ({refundsGoods.length})

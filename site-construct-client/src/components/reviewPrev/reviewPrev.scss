@@ -1,6 +1,7 @@
 .review-prev {
-    background-color: #EDEDED;
-    border-radius: var(--radius);
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    border: 1px solid var(--black15);
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -27,13 +28,6 @@
     border-radius: 50%;
 }
 
-.review-prev_author-name {
-    font-weight: 700;
-    font-size: 0.9em;
-    line-height: 120%;
-    letter-spacing: 0%;
-}
-
 .review-prev_info {
     display: flex;
     gap: 16px;
@@ -41,32 +35,16 @@
     height: fit-content;
 }
 
-.review-prev_date {
-    font-size: 0.7em;
-    line-height: 120%;
-    letter-spacing: 0%;
-}
-
 .review-prev_rating {
     display: flex;
     gap: 4px;
     align-items: center;
-    font-weight: 700;
-    font-size: 0.9em;
-    line-height: 120%;
-    letter-spacing: 0%;
 }
 
 .review-prev_body {
     display: flex;
     justify-content: space-between;
     gap: 16px;
-}
-
-.review-prev_text {
-    font-size: 0.7em;
-    line-height: 120%;
-    letter-spacing: 0%;
 }
 
 .review-prev_imgs {

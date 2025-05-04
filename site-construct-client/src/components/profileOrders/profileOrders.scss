@@ -4,3 +4,31 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
 }
+
+.profile-item {
+    border-radius: var(--big-radius);
+    background-color: var(--white-gray);
+    height: fit-content;
+}
+
+.profile-item_header {
+    padding: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--temp-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-item_body {
+    padding: 24px;
+    padding-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile-item_link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}

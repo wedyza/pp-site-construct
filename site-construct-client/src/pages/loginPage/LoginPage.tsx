@@ -38,6 +38,7 @@ const LoginPage: React.FC = () => {
     };
 
     useEffect(() => {
+        console.log(token);
         if (token) {
             navigate('/');
         }
@@ -53,20 +54,20 @@ const LoginPage: React.FC = () => {
             />
 
             <div className='login-content'>
-                <h1 className='login-title'>Войдите</h1>
+                <h1 className='login-title text-h1'>Войдите</h1>
 
                 {step === 'email' && (
                     <form className='login-form' onSubmit={handleGetCode}>
                         <input
                             type='email'
-                            className='login-form_input'
+                            className='login-form_input text-n14'
                             placeholder='Введите почту'
                             value={email}
                             onChange={(e) => dispatch(setEmail(e.target.value))}
                             required
                             disabled={loading}
                         />
-                        <button type='submit' className='login-form_btn' disabled={loading}>
+                        <button type='submit' className='text-btn login-form_btn btn-black' disabled={loading}>
                             {loading ? 'Отправляем код...' : 'Получить код'}
                         </button>
                         {error && <div className="error">{error}</div>}
@@ -81,10 +82,10 @@ const LoginPage: React.FC = () => {
                     </>
                 )}
 
-                <div className='to-reg'>
+                <div className='to-reg text-n16'>
                     <p className='to-reg_text'>Нет аккаунта?</p>
                     <Link to='/register' className='to-reg_link'>
-                        <p className='to-reg_link-text'>Создайте его!</p>
+                        <p className='to-reg_link-text hover-def'>Создайте его!</p>
                     </Link>
                 </div>
             </div>

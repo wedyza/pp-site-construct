@@ -170,7 +170,7 @@ const CategoryPage: React.FC = () => {
             <HeaderCategories />
             <div className="main-content">
                 <div className="category-page_header">
-                    <h1 className="category-header_title text-h1">Электроника и гаджеты / Смартфоны и аксессуары</h1>
+                    <h1 className="category-header_title text-h1 hover1">Электроника и гаджеты / Смартфоны и аксессуары</h1>
                     <div className="category-header_subcats text-n14">
                         {subcategories.map((subcat, index) => (
                             <DropdownSubcategory

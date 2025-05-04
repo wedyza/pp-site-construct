@@ -3,7 +3,6 @@ import './registerPage.scss';
 import { Link } from 'react-router-dom';
 import login1 from '../../img/login1.png';
 import login2 from '../../img/login2.png';
-import logo from '../../img/Kaufen.svg';
 import LoginGallery from '../../components/loginGallery/LoginGallery';
 import CodeInputForm from '../../components/codeInputForm/CodeInputForm';
 import CustomRadio from '../../components/customRadio/CustomRadio';
@@ -87,7 +86,7 @@ const RegisterPage: React.FC = () => {
                                 label="Мужчина"
                                 />
                             </div>
-                        <button type='submit' className='login-form_btn'>
+                        <button type='submit' className='login-form_btn btn-black'>
                             Получить код
                         </button>
                     </form>

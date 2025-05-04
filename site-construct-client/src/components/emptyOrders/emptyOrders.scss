@@ -25,12 +25,13 @@
 }
 
 .empty-orders_link {
-    background-color: var(--temp-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 13px 0;
-    border-radius: var(--radius);
+}
+
+.empty-orders_link-text {
+    color: var(--background);
 }
 
 .empty-orders_arrow {

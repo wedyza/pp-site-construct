@@ -14,9 +14,6 @@
 }
 
 .login-gallery_counter {
-    font-size: 0.7em;
-    line-height: 120%;
-    letter-spacing: 0%;
     margin-left: auto;
 }
 
@@ -44,11 +41,9 @@
     align-items: flex-start;
     gap: 24px;
     width: 192px;
-    font-size: 0.7em;
-    line-height: 120%;
-    letter-spacing: 0%;
     margin-top: 48px;
     margin-left: 48px;
+    color: var(--black60);
 }
 
 .login-gallery_img {

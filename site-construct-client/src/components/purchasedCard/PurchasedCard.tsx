@@ -10,25 +10,25 @@ const PurchasedCard: React.FC<OrderCardProps> = ({ order }) => {
     return (
         <div className="order-card">
             <div className='order_good-card_info'>
-                <p className='order-card_id'>№{order.id}</p>
-                <p className='order-card_status'>{order.status}</p>
+                <p className='order-card_id text-card'>№{order.id}</p>
+                <p className='order-card_status text-n14'>{order.status}</p>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>Дата оформления заказа</p>
-                    <p className='order-card_info-item__value'>{order.placement_date}</p>
+                    <p className='order-card_info-item__label text-n14'>Дата оформления заказа</p>
+                    <p className='order-card_info-item__value text-n16'>{order.placement_date}</p>
                 </div>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>В пункт выдачи</p>
-                    <p className='order-card_info-item__value'>{order.address}</p>
+                    <p className='order-card_info-item__label text-n14'>В пункт выдачи</p>
+                    <p className='order-card_info-item__value text-n16'>{order.address}</p>
                 </div>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>Дата доставки</p>
-                    <p className='order-card_info-item__value'>{order.delivery_date}</p>
+                    <p className='order-card_info-item__label text-n14'>Дата доставки</p>
+                    <p className='order-card_info-item__value text-n16'>{order.delivery_date}</p>
                 </div>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>Оплачено</p>
-                    <p className='order-card_info-item__value'>{order.price} ₽</p>
+                    <p className='order-card_info-item__label text-n14'>Оплачено</p>
+                    <p className='order-card_info-item__value text-n16'>{order.price} ₽</p>
                 </div>
-                <div className='order-card_action order-card_rate'>
+                <div className='order-card_action text-n14 order-card_rate'>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M2.75 1.8125C2.23223 1.8125 1.8125 2.23223 1.8125 2.75V13.8964L3.3604 11.9616C3.7518 11.4723 4.34438 11.1875 4.97094 11.1875H13.25C13.7678 11.1875 14.1875 10.7678 14.1875 10.25V2.75C14.1875 2.23223 13.7678 1.8125 13.25 1.8125H2.75ZM0.6875 2.75C0.6875 1.61091 1.61091 0.6875 2.75 0.6875H13.25C14.3891 0.6875 15.3125 1.61091 15.3125 2.75V10.25C15.3125 11.3891 14.3891 12.3125 13.25 12.3125H4.97094C4.68614 12.3125 4.41678 12.442 4.23887 12.6643L2.49063 14.8497C1.89274 15.597 0.6875 15.1742 0.6875 14.2171V2.75Z" fill="black"/>
                     </svg>

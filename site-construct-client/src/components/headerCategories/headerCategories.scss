@@ -13,12 +13,10 @@
     background-color: var(--background);
 }
 
-.header-categories_item {
-    font-size: 0.8em;
-    line-height: 120%;
-    letter-spacing: 0%;
-}
-
 .header-categories_dot svg circle {
     fill: var(--accent);
+}
+
+.header-categories_item {
+    cursor: pointer;
 }

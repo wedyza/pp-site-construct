@@ -61,7 +61,7 @@ const ReviewsPage: React.FC = () => {
                                 </svg>
                             </button>
                         </div>
-                        <button className='product_basket-btn'>
+                        <button className='product_basket-btn btn-black text-btn'>
                             В корзину
                         </button>
                     </div>

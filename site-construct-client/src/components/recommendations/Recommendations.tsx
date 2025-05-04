@@ -39,7 +39,7 @@ const goods: Good[] = [
 const Recommendations: React.FC = () => {
     return (
         <div className='order-page_rec'>
-            <h2 className='order-page_rec-title'>Рекомендуем для вас</h2>
+            <h2 className='order-page_rec-title text-h2'>Рекомендуем для вас</h2>
             <ul className='main_goods-list'>
                 {goods.map((good, index) => (
                     <li key={index} className="main_good"><GoodsCard good={good} /></li>

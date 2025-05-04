@@ -21,7 +21,7 @@ const RefundForm: React.FC<RefundModalProps> = ({ setIsOpenFirst, setIsOpenSecon
 
             <button
                 type="submit"
-                className="text-btn refund-form_submit-btn"
+                className="text-btn refund-form_submit-btn btn-black"
                 onClick={() => {
                     setIsOpenFirst(false);
                     setIsOpenSecond(true);

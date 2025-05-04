@@ -16,42 +16,42 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     return (
         <div className="order-card order-card__wide">
             <div className='order-card_info'>
-                <p className='order-card_id'>№{order.id}</p>
-                <p className='order-card_status'>{order.status}</p>
+                <p className='order-card_id text-card'>№{order.id}</p>
+                <p className='order-card_status text-n14'>{order.status}</p>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>Дата оформления заказа</p>
-                    <p className='order-card_info-item__value'>{order.placement_date}</p>
+                    <p className='order-card_info-item__label text-n14'>Дата оформления заказа</p>
+                    <p className='order-card_info-item__value text-n16'>{order.placement_date}</p>
                 </div>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>В пункт выдачи</p>
-                    <p className='order-card_info-item__value'>{order.address}</p>
+                    <p className='order-card_info-item__label text-n14'>В пункт выдачи</p>
+                    <p className='order-card_info-item__value text-n16'>{order.address}</p>
                 </div>
                 <div className='order-card_info-item'>
-                    <p className='order-card_info-item__label'>
+                    <p className='order-card_info-item__label text-n14'>
                         {order.status === 'Получен' ? 'Дата доставки' : 'Ожидаемая дата доставки'}
                     </p>
-                    <p className='order-card_info-item__value'>{order.delivery_date}</p>
+                    <p className='order-card_info-item__value text-n16'>{order.delivery_date}</p>
                 </div>
                 <div className='order-card_info-item order-card_info-item__price'>
-                    <p className='order-card_info-item__label'>Оплачено</p>
-                    <p className={`order-card_info-item__value ${order.status !== 'Получен' && 'order-card_price__bold'}`}>{order.price} ₽</p>
+                    <p className='order-card_info-item__label text-n14'>Оплачено</p>
+                    <p className={`order-card_info-item__value text-n16 ${order.status !== 'Получен' && 'order-card_price__bold'}`}>{order.price} ₽</p>
                 </div>
                 {order.status === 'Создан' && (
                     <div className='order-card_actions'>
-                            <div className='order-card_action order-card_cancel'>
+                            <div className='order-card_action text-n14 order-card_cancel'>
                                 <span>Отменить заказ</span>
                             </div>
                     </div>
                 )}
                 {order.status === 'Получен' && (
                     <div className='order-card_actions'>
-                        <div className='order-card_action order-card_rate'>
+                        <div className='order-card_action text-n14 order-card_rate'>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M2.75 1.8125C2.23223 1.8125 1.8125 2.23223 1.8125 2.75V13.8964L3.3604 11.9616C3.7518 11.4723 4.34438 11.1875 4.97094 11.1875H13.25C13.7678 11.1875 14.1875 10.7678 14.1875 10.25V2.75C14.1875 2.23223 13.7678 1.8125 13.25 1.8125H2.75ZM0.6875 2.75C0.6875 1.61091 1.61091 0.6875 2.75 0.6875H13.25C14.3891 0.6875 15.3125 1.61091 15.3125 2.75V10.25C15.3125 11.3891 14.3891 12.3125 13.25 12.3125H4.97094C4.68614 12.3125 4.41678 12.442 4.23887 12.6643L2.49063 14.8497C1.89274 15.597 0.6875 15.1742 0.6875 14.2171V2.75Z" fill="black"/>
                             </svg>
                             <span>Оставить отзыв и оценить заказ</span>
                         </div>
-                        <div className='order-card_action order-card_refund'>
+                        <div className='order-card_action text-n14 order-card_refund'>
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clipPath="url(#clip0_197_1764)">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M9 2.0625C5.16852 2.0625 2.0625 5.16852 2.0625 9C2.0625 12.8315 5.16852 15.9375 9 15.9375C12.8315 15.9375 15.9375 12.8315 15.9375 9C15.9375 5.16852 12.8315 2.0625 9 2.0625ZM0.9375 9C0.9375 4.5472 4.5472 0.9375 9 0.9375C13.4528 0.9375 17.0625 4.5472 17.0625 9C17.0625 13.4528 13.4528 17.0625 9 17.0625C4.5472 17.0625 0.9375 13.4528 0.9375 9Z" fill="black"/>

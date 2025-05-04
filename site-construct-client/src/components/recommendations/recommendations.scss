@@ -1,0 +1,10 @@
+.order-page_rec-title {
+    margin-top: 48px;
+}
+
+.main_goods-list {
+    margin-top: 32px;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}

@@ -8,7 +8,7 @@ const HeaderCategories: React.FC = () => {
         <ul className="header-categories">
             {categories.map((category, index) => (
                 <React.Fragment key={index}>
-                    <li className="header-categories_item">{category}</li>
+                    <li className="header-categories_item text-n16 hover1">{category}</li>
                     {index < categories.length - 1 && (
                         <li className="header-categories_dot">
                             <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -48,7 +48,7 @@ const CodeInputForm: React.FC<CodeInputFormProps> = ({ onSubmit }) => {
                     />
                 ))}
             </div>
-            <button type='submit' className='login-form_btn login-form_code-btn'>
+            <button type='submit' className='login-form_btn login-form_code-btn btn-black'>
                 Войти
             </button>
         </form>

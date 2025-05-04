@@ -169,10 +169,10 @@ const CatalogModal: React.FC<CatalogModalProps> = ({ isOpen, onClose }) => {
                 <div className="catalog-subcat_panel">
                     {subcategories.map((subcat, index) => (
                         <div className="catalog-subcat_block" key={index}>
-                            <Link to='/category' className="catalog-subcat_title text-h2">{subcat.title}</Link>
+                            <Link to='/category' className="catalog-subcat_title text-h2 hover2">{subcat.title}</Link>
                             <div className="catalog-subcat_list">
                                 {subcat.items.map((item, i) => (
-                                    <Link to='/category' className="catalog-subcat_item text-n16" key={i}>
+                                    <Link to='/category' className="catalog-subcat_item text-n16 hover2" key={i}>
                                         {item}
                                     </Link>
                                 ))}
