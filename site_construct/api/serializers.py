@@ -180,3 +180,4 @@ class MarketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Market
         fields = '__all__'
+        read_only_fields = ('user',)

@@ -47,7 +47,7 @@ class RegisterView(APIView):
         user.otp = otp
         user.otp_expires = timezone.now() + timezone.timedelta(minutes=15)
         user.save()
-        # send_otp_email(new_user.data.email, otp)
+        send_otp_email(new_user.data['email'], otp)
 
         
         return Response(
@@ -74,7 +74,7 @@ class LoginView(APIView):
         user.otp_expires = timezone.now() + timezone.timedelta(minutes=15)
         user.save()
 
-        # send_otp_email(email.data["email"], otp)
+        send_otp_email(email.data["email"], otp)
 
         return Response(
             {"message": "Письмо с одноразовым кодом отправлено вам на почту. Он действителен в течении 15 минут"},

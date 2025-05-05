@@ -19,7 +19,8 @@ from .views import (
     RecipentViewSet,
     OrderViewSet,
     CharacteristicViewSet,
-    GetMyWishlistView
+    GetMyWishlistView,
+    MarketViewSet
 )
 
 router = routers.DefaultRouter()
@@ -33,7 +34,7 @@ router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
 router.register("recipents", RecipentViewSet, basename='recipents')
 router.register("orders", OrderViewSet, basename='orders')
 router.register("characteristics", CharacteristicViewSet)
-
+router.register("markets", MarketViewSet)
 
 
 urlpatterns = [

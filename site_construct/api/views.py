@@ -264,7 +264,6 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
 
         return Response(order.data)
 
-        return Response('h')
 
     # def perform_create(self, serializer):
     #     serializer.save(user=self.request.user)
@@ -296,3 +295,6 @@ class MarketViewSet(viewsets.ModelViewSet):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
     permission_classes = (SellerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
