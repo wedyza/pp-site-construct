@@ -27,7 +27,7 @@ class CharacteristicSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "user_type", "name", "sex")
+        fields = ("email", "user_type", "name", "sex", "id")
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):

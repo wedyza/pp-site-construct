@@ -82,6 +82,8 @@ class CustomAbstractUser(AbstractUser):
     last_name = None
     name = models.CharField('Имя', null=True, max_length=50)
     otp_expires = models.DateTimeField('Время жизни otp', null=True, blank=True)
-
+    is_superuser = None
+    is_staff = None
+    date_joined = None
     def __str__(self):
         return self.email
