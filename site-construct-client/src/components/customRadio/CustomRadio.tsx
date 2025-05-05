@@ -3,9 +3,9 @@ import './customRadio.scss';
 
 interface CustomRadioProps {
     name: string;
-    value: string;
+    value: 'MALE' | 'FEMALE';
     checked: boolean;
-    onChange: (value: string) => void;
+    onChange: (value: 'MALE' | 'FEMALE') => void;
     label?: string;
 }
 

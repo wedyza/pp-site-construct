@@ -32,6 +32,25 @@ export const createOtp = createAsyncThunk(
     }
 );
 
+export const registerUser = createAsyncThunk(
+    'auth/registerUser',
+    async (
+        { email, name, sex }: { email: string; name: string; sex: 'MALE' | 'FEMALE' },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axiosInstance.post('/auth/register', {
+                email,
+                name,
+                sex,
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Ошибка регистрации');
+        }
+    }
+);
+
 export const validateOtp = createAsyncThunk(
     'auth/validateOtp',
     async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
@@ -83,7 +102,19 @@ const authSlice = createSlice({
             .addCase(validateOtp.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-            });
+            })
+            .addCase(registerUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(registerUser.fulfilled, (state) => {
+                state.loading = false;
+                state.step = 'otp';
+            })
+            .addCase(registerUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
     },
 });
 

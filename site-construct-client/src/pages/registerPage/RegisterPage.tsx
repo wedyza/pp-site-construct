@@ -1,62 +1,65 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './registerPage.scss';
-import { Link } from 'react-router-dom';
-import login1 from '../../img/login1.png';
-import login2 from '../../img/login2.png';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginGallery from '../../components/loginGallery/LoginGallery';
 import CodeInputForm from '../../components/codeInputForm/CodeInputForm';
 import CustomRadio from '../../components/customRadio/CustomRadio';
-
-const pages = [
-    {
-        text: 'Покупай с лёгкостью. Живи с удовольствием.',
-        image: login1,
-    },
-    {
-        text: 'Честные отзывы, честные цены, честные покупки',
-        image: login2,
-    },
-];
+import { useAppDispatch } from '../../store/hooks';
+import { registerUser, setEmail, validateOtp } from '../../store/authSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { authPages } from '../../constants';
 
 const RegisterPage: React.FC = () => {
-    const [selected, setSelected] = useState<string | undefined>(undefined);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { email, step, loading, error, token } = useSelector((state: RootState) => state.auth);
+    const [selected, setSelected] = useState<'MALE' | 'FEMALE' | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(0);
-    const [isCodeStep, setIsCodeStep] = useState(false);
-    const [email, setEmail] = useState('');
+    const [emailInput, setEmailInput] = useState('');
     const [name, setName] = useState('');
 
     const goToPage = (direction: 'prev' | 'next') => {
         setCurrentPage((prev) =>
-            direction === 'prev' ? Math.max(0, prev - 1) : Math.min(pages.length - 1, prev + 1)
+            direction === 'prev' ? Math.max(0, prev - 1) : Math.min(authPages.length - 1, prev + 1)
         );
     };
 
-    const handleGetCode = (e: React.FormEvent) => {
+    const handleGetCode = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Запрашиваем код для:', email);
-        setIsCodeStep(true);
+        if (!selected) return;
+        try {
+            await dispatch(registerUser({ email: emailInput, name, sex: selected })).unwrap();
+            dispatch(setEmail(emailInput));
+        } catch (error) {
+            console.error('Ошибка регистрации:', error);
+        }
     };
-
+    
     const handleLogin = (code: string[]) => {
-        console.log('Пытаемся войти с кодом:', { email, code: code.join('') });
+        dispatch(validateOtp({ email, otp: code.join('') }));
     };
+    
+    useEffect(() => {
+        if (token) navigate('/');
+    }, [token]);
 
     return (
         <div className="login-page">
             <LoginGallery
-                pages={pages}
+                pages={authPages}
                 currentPage={currentPage}
                 onPrev={() => goToPage('prev')}
                 onNext={() => goToPage('next')}
             />
 
             <div className='login-content'>
-                <h1 className='login-title'>Создайте аккаунт</h1>
-                {!isCodeStep ? (
+                <h1 className='login-title text-h1'>Создайте аккаунт</h1>
+                {step === 'email' && (
                     <form className='login-form' onSubmit={handleGetCode}>
                         <input
                             type='text'
-                            className='login-form_input'
+                            className='login-form_input text-n14'
                             placeholder='Ваше имя'
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -64,37 +67,44 @@ const RegisterPage: React.FC = () => {
                         />
                         <input
                             type='email'
-                            className='login-form_input'
+                            className='login-form_input text-n14'
                             placeholder='Почта'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={emailInput}
+                            onChange={(e) => setEmailInput(e.target.value)}
                             required
                         />
                         <div className="login-form__radio">
                             <CustomRadio
                                 name=""
-                                value="female"
-                                checked={selected === 'female'}
+                                value="FEMALE"
+                                checked={selected === 'FEMALE'}
                                 onChange={setSelected}
                                 label="Женщина"
                             />
                             <CustomRadio
                                 name=""
-                                value="male"
-                                checked={selected === 'male'}
+                                value="MALE"
+                                checked={selected === 'MALE'}
                                 onChange={setSelected}
                                 label="Мужчина"
                                 />
                             </div>
-                        <button type='submit' className='login-form_btn btn-black'>
-                            Получить код
+                        <button type='submit' className='text-btn login-form_btn btn-black' disabled={loading}>
+                            {loading ? 'Отправляем код...' : 'Получить код'}
                         </button>
+                        {error && <div className="error">{error}</div>}
                     </form>
-                ) : (
-                    <CodeInputForm onSubmit={handleLogin} />
                 )}
 
-                <div className='to-reg'>
+                {step === 'otp' && (
+                    <>
+                        <CodeInputForm onSubmit={handleLogin} />
+                        {loading && <p className="loading-text">Проверяем код...</p>}
+                        {error && <div className="error">{error}</div>}
+                    </>
+                )}
+
+                <div className='to-reg text-n16'>
                     <p className='to-reg_text'>
                         Уже есть аккаунт?
                     </p>

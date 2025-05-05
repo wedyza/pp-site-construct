@@ -3,17 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { createOtp, validateOtp, setEmail } from '../../store/authSlice';
-
 import './loginPage.scss';
-import login1 from '../../img/login1.png';
-import login2 from '../../img/login2.png';
 import LoginGallery from '../../components/loginGallery/LoginGallery';
 import CodeInputForm from '../../components/codeInputForm/CodeInputForm';
-
-const pages = [
-    { text: 'Покупай с лёгкостью. Живи с удовольствием.', image: login1 },
-    { text: 'Честные отзывы, честные цены, честные покупки', image: login2 },
-];
+import { authPages } from '../../constants';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -33,7 +26,7 @@ const LoginPage: React.FC = () => {
 
     const goToPage = (direction: 'prev' | 'next') => {
         setCurrentPage((prev) =>
-            direction === 'prev' ? Math.max(0, prev - 1) : Math.min(pages.length - 1, prev + 1)
+            direction === 'prev' ? Math.max(0, prev - 1) : Math.min(authPages.length - 1, prev + 1)
         );
     };
 
@@ -47,7 +40,7 @@ const LoginPage: React.FC = () => {
     return (
         <div className="login-page">
             <LoginGallery
-                pages={pages}
+                pages={authPages}
                 currentPage={currentPage}
                 onPrev={() => goToPage('prev')}
                 onNext={() => goToPage('next')}
