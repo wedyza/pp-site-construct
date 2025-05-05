@@ -11,8 +11,8 @@ interface AuthState {
 
 const initialState: AuthState = {
     email: '',
-    token: null,
-    step: 'email',
+    token: localStorage.getItem('token'),
+    step: localStorage.getItem('token') ? 'authenticated' : 'email',
     loading: false,
     error: null,
 };
@@ -74,6 +74,7 @@ const authSlice = createSlice({
             state.token = null;
             state.step = 'email';
             state.email = '';
+            localStorage.removeItem('token');
         }
     },
     extraReducers: (builder) => {
@@ -98,6 +99,7 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.token = action.payload.token;
                 state.step = 'authenticated';
+                localStorage.setItem('token', action.payload.token);
             })
             .addCase(validateOtp.rejected, (state, action) => {
                 state.loading = false;

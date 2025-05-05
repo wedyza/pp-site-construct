@@ -10,11 +10,19 @@ import LoginPage from './pages/loginPage/LoginPage';
 import ReviewsPage from './pages/reviewsPage/ReviewsPage';
 import CategoryPage from './pages/categoryPage/CategoryPage';
 import RegisterPage from './pages/registerPage/RegisterPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <Routes>
-        <Route path="/" element={<MainPage />} />
+      <Route path="/" element={<MainPage />} />
+
+      <Route element={<ProtectedRoute onlyGuest />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/product" element={<ProductPage />} />
@@ -22,8 +30,7 @@ function App() {
         <Route path="/favourites" element={<FavouritesPage />} />
         <Route path="/basket" element={<BasketPage />} />
         <Route path="/category" element={<CategoryPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+      </Route>
     </Routes>
   );
 }
