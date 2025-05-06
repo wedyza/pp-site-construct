@@ -1,9 +1,4 @@
 #type: ignore
-
-from fastapi import status, HTTPException
-from sqlalchemy.orm import Session
-from .models import User
-from sqlalchemy.sql import text
 import httpx
 
 MONOLITH_URL = "http://localhost:8000/api/v1/"

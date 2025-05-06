@@ -3,11 +3,7 @@
 from sqlalchemy import create_engine, Integer, Text, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from .config import settings
-import abc
 from sqlalchemy import TIMESTAMP, Column, ForeignKey, String, Boolean, text
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
 
 # SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOSTNAME}:{settings.DATABASE_PORT}/{settings.POSTGRES_DB}"
 SQLALCHEMY_DATABASE_URL = "sqlite:///./messages.db"

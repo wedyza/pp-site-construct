@@ -2,7 +2,6 @@
 
 from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, Response, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from app.config import settings
 from sqlalchemy.orm import Session
 from .oauth2 import require_user
 from .database import get_db, Message
@@ -41,7 +40,7 @@ def custom_openapi():
 app = FastAPI()
 
 origins = [
-    settings.CLIENT_ORIGIN,
+    'http://localhost:3000',
 ]
 
 app.add_middleware(
