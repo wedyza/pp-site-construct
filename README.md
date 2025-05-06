@@ -10,43 +10,15 @@ https://github.com/wedyza/pp-site-construct.git
 cd pp-site-construct
 ```
 
-Сменить ветку на нужную
-```
-git checkout backend
-```
-
-Cоздать и активировать виртуальное окружение:
+Далее необходимо собрать докер оркестр
 
 ```
-python -m venv env
+docker compose up
 ```
 
-```
-Windows: source env/Scripts/activate
-Linux: source env/bin/activate
-```
-
-Установить зависимости из файла requirements.txt:
+После этого зайти в бэкенд контейнер и выполнить миграции
 
 ```
-pip install -r requirements.txt
+docker exec -i -t monolith_app python manage.py migrate
 ```
-
-Перейти в папку проекта
-```
-cd site_contructor
-```
-
-Выполнить миграции:
-
-```
-python manage.py migrate
-```
-
-Запустить проект:
-
-```
-python manage.py runserver
-```
-
 Также, для корректной работы, необходимо заменить содержимое файла библиотеки django: django/core/email/backends/smtp.py на значение [этого файла](https://github.com/django/django/blob/main/django/core/mail/backends/smtp.py)
