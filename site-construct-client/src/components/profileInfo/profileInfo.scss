@@ -35,10 +35,14 @@
     align-self: flex-start;
     width: 53%;
     height: 50px;
-    background-color: var(--black15);
-    border-radius: var(--radius);
-    color: var(--black40);
     margin-top: 24px;
+    border-radius: var(--radius);
+}
+
+.profile-info_form-btn__inactive {
+    background-color: var(--black15);
+    color: var(--black40);
+    cursor: default;
 }
 
 
@@ -104,4 +108,3 @@
         transform: translateX(14px);
     }
 }
-  

@@ -41,7 +41,7 @@ export const registerUser = createAsyncThunk(
         try {
             const response = await axiosInstance.post('/auth/register', {
                 email,
-                name,
+                first_name: name,
                 sex,
             });
             return response.data;

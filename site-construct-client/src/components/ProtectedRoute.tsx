@@ -10,6 +10,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ onlyGuest }) => {
     const token = useAppSelector((state) => state.auth.token);
     const isAuthenticated = Boolean(token);
     console.log(token);
+    
     if (onlyGuest && isAuthenticated) {
         return <Navigate to="/" replace />;
     }

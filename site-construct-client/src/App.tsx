@@ -16,6 +16,9 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
+      <Route path="/product" element={<ProductPage />} />
+      <Route path="/reviews" element={<ReviewsPage />} />
+      <Route path="/category" element={<CategoryPage />} />
 
       <Route element={<ProtectedRoute onlyGuest />}>
         <Route path="/login" element={<LoginPage />} />
@@ -25,11 +28,8 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/product" element={<ProductPage />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/favourites" element={<FavouritesPage />} />
         <Route path="/basket" element={<BasketPage />} />
-        <Route path="/category" element={<CategoryPage />} />
       </Route>
     </Routes>
   );

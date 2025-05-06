@@ -87,8 +87,8 @@ const RegisterPage: React.FC = () => {
                                 checked={selected === 'MALE'}
                                 onChange={setSelected}
                                 label="Мужчина"
-                                />
-                            </div>
+                            />
+                        </div>
                         <button type='submit' className='text-btn login-form_btn btn-black' disabled={loading}>
                             {loading ? 'Отправляем код...' : 'Получить код'}
                         </button>
