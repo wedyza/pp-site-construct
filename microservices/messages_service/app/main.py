@@ -37,7 +37,7 @@ def custom_openapi():
     }
     app.openapi_schema = openapi_schema
     return app.openapi_schema
-app = FastAPI()
+app = FastAPI(docs_url="/api/v1/messages/docs", openapi_url="/api/v1/messages/openapijson")
 
 origins = [
     'http://localhost:3000',

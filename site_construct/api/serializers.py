@@ -27,7 +27,7 @@ class CharacteristicSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "user_type", "name", "sex", "id")
+        fields = ("email", "user_type", "first_name", "last_name", "sex", "id")
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):
@@ -155,8 +155,8 @@ class UserLoginSerializer(serializers.Serializer):
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'sex', 'name')
-        required = ('emai', 'name')
+        fields = ('email', 'sex', 'first_name', 'last_name')
+        required = ('emai', 'first_name')
 
 
 class UserLoginOTPSerializer(serializers.Serializer):

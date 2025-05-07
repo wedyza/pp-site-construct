@@ -34,8 +34,9 @@ def custom_openapi():
         }
     }
     app.openapi_schema = openapi_schema
+    # app.openapi_schema["servers"] = [{"url": "/api/v1/messages/"}]
     return app.openapi_schema
-app = FastAPI()
+app = FastAPI(docs_url="/api/v1/notifications/docs", openapi_url="/api/v1/notifications/openapi.json")
 
 origins = [
     'http://localhost:3000',

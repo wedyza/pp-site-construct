@@ -24,34 +24,55 @@ services:
     restart: always
     env_file: ./.env
     ports:
-      - '6500:5432'
+      - 5432:5432
     volumes:
       - pg_data:/var/lib/postgresql/data
   
   message_microservice:
     build: ./microservices/messages_service
     container_name: messages_service
-    command: uvicorn app.main:app --reload --port 8080
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    # ports:
+    #   - 8000:8000
     volumes:
       - message_volume:/messages.db
-    network_mode: host
+    # network_mode: host
   
   notifications_microservice:
     build: ./microservices/notifications_service
     container_name: notifications_service
-    command: uvicorn app.main:app --reload --port 8081
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    # ports:
+    #   - 8080:8000
     volumes:
       - notification_volume:/notifications.db
-    network_mode: host
-  
+    # network_mode: host
+    
   monolith_app:
     build: ./site_construct
     container_name: monolith_app
-    network_mode: host
+    volumes:
+      - static:/static/
+    # ports:
+    #   - 8000:8000
+    # network_mode: host
+    depends_on:
+      - db
 
+  nginx:
+    build: ./nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - monolith_app
+      - notifications_microservice
+      - message_microservice
+    volumes:
+      - static:/static/
 volumes:
   minio-storage:
   minio-config:
   pg_data:
   message_volume:
   notification_volume:
+  static:
