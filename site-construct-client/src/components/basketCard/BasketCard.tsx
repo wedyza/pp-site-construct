@@ -1,9 +1,26 @@
 import { useState } from 'react';
 import CustomCheckbox from '../customCheckbox/CustomCheckbox';
 import './basketCard.scss'
+import { Good } from '../../store/goodsSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import { updateBasketAndRefetch } from '../../store/basketSlice';
 
-const BasketCard: React.FC = () => {
+interface Props {
+    good: Good;
+    count: number;
+}
+
+const BasketCard: React.FC<Props> = ({ good, count: initialCount }) => {
+    const [count, setCount] = useState(initialCount);
     const [isChecked, setIsChecked] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleCountChange = async (newCount: number) => {
+        if (newCount < 1) return;
+        setCount(newCount);
+        await dispatch(updateBasketAndRefetch({ good_item: good.id, count: newCount }));
+    };
 
     return (
         <div className='basket-card'>
@@ -17,10 +34,10 @@ const BasketCard: React.FC = () => {
             <div className='basket-card_img'></div>
             <div className='basket-card_info'>
                 <p className="basket-card_price text-price2">
-                    5 520 ₽
+                    {good.price} ₽
                 </p>
                 <p className="basket-card_name text-n16">
-                    Специальное чистящее средство для посудомоечной машины Интенсивный очиститель Сомат Intensve Machine Cleaner, 250 мл
+                    {good.name}
                 </p>
                 <div className="basket-card_actions">
                     <button className='basket-card_btn'>
@@ -38,12 +55,12 @@ const BasketCard: React.FC = () => {
             </div>
             <div className="basket-card_set">
                 <div className='basket-card_count text-h2'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg onClick={() => handleCountChange(count - 1)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M7.25 12C7.25 11.5858 7.58579 11.25 8 11.25H16C16.4142 11.25 16.75 11.5858 16.75 12C16.75 12.4142 16.4142 12.75 16 12.75H8C7.58579 12.75 7.25 12.4142 7.25 12Z" fill="black"/>
                         <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="black"/>
                     </svg>
-                    <span>1</span>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <span>{count}</span>
+                    <svg onClick={() => handleCountChange(count + 1)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V11.25H16C16.4142 11.25 16.75 11.5858 16.75 12C16.75 12.4142 16.4142 12.75 16 12.75H12.75V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V12.75H8C7.58579 12.75 7.25 12.4142 7.25 12C7.25 11.5858 7.58579 11.25 8 11.25H11.25V8C11.25 7.58579 11.5858 7.25 12 7.25Z" fill="black"/>
                         <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="black"/>
                     </svg>

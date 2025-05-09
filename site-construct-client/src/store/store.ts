@@ -3,6 +3,7 @@ import authReducer from './authSlice';
 import userReducer from './userSlice';
 import paymentMethodsReducer from './paymentMethodsSlice';
 import goodsReducer from './goodsSlice';
+import basketReducer from './basketSlice';
 
 const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
         paymentMethods: paymentMethodsReducer,
         user: userReducer,
         goods: goodsReducer,
+        basket: basketReducer,
     },
 });
 

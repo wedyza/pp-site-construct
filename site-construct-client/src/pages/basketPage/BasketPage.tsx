@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './basketPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
 import { Link } from 'react-router-dom';
 import BasketCard from '../../components/basketCard/BasketCard';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchBasketWithGoods } from '../../store/basketSlice';
 
 const BasketPage: React.FC = () => {
-    const [isChecked, setIsChecked] = useState(false);
+    const dispatch = useAppDispatch();
+    const { items } = useAppSelector((state) => state.basket);
 
+    useEffect(() => {
+        dispatch(fetchBasketWithGoods());
+    }, [dispatch]);
+
+    const [isChecked, setIsChecked] = useState(false);
     return (
         <div className='page-content'>
             <Header />
@@ -29,12 +37,16 @@ const BasketPage: React.FC = () => {
                         </button>
                     </div>
                     <ul className='basket_list'>
-                        <li className='basket_list-item'>
-                            <BasketCard />
-                        </li>
-                        <li className='basket_list-item'>
-                            <BasketCard />
-                        </li>
+                        {items.map(({ item, good }) =>
+                            good ? (
+                                <li className="basket_list-item" key={item.good_item}>
+                                    <BasketCard
+                                        good={good}
+                                        count={item.count}
+                                    />
+                                </li>
+                            ) : null
+                        )}
                     </ul>
                 </div>
                 <div className='basket-placement'>
