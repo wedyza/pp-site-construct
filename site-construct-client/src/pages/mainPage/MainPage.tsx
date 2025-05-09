@@ -1,46 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './mainPage.scss'
 import GoodsCard from '../../components/goodCard/GoodCard';
-import { Good } from '../../api/api'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
 import { Link } from 'react-router-dom';
-
-
-const goods: Good[] = [
-    {
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999
-    },
-    {
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999
-    },
-    {
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999
-    },
-    {
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999
-    },
-    {
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999
-    },
-    {
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999
-    },
-];
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchGoods } from '../../store/goodsSlice';
 
 const MainPage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const goods = useAppSelector((state) => state.goods.items);
+    //const loading = useAppSelector((state) => state.goods.loading);
+
+    useEffect(() => {
+        dispatch(fetchGoods());
+    }, [dispatch]);
+
     return (
         <div className='page-content'>
             <Header />
