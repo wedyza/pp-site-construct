@@ -1,15 +1,28 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './productPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
 import Recommendations from '../../components/recommendations/Recommendations';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ReviewPrev from '../../components/reviewPrev/ReviewPrev';
 import ProductGallery from '../../components/productGallery/ProductGallery';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchGoodById } from '../../store/goodsSlice';
+import { formatPrice } from '../../utils/formatPrice';
 
 
 const ProductPage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
     const reviewsRef = useRef<HTMLDivElement | null>(null);
+    const dispatch = useAppDispatch();
+    
+    const { selectedItem, loading, error } = useAppSelector((state) => state.goods);
+
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchGoodById(Number(id)));
+        }
+    }, [dispatch, id]);
   
     const HEADER_HEIGHT = 137;
 
@@ -20,6 +33,9 @@ const ProductPage: React.FC = () => {
         }
     };
 
+    if (loading) return <div>Загрузка...</div>;
+    if (!selectedItem) return <div>Товар не найден</div>;
+
     return (
         <div className='page-content'>
             <Header />
@@ -29,7 +45,7 @@ const ProductPage: React.FC = () => {
                     <ProductGallery />
                     <div className='product-info'>
                         <h1 className='product-name text-h1'>
-                            Робот мойщик окон с распылением
+                            {selectedItem.name}
                         </h1>
                         <h2 className='product-info_title text-h2 product_subtitle'>
                             О товаре
@@ -58,7 +74,7 @@ const ProductPage: React.FC = () => {
                             <div className="product-basket_info">
                                 <div className="product-basket_info-text">
                                     <div className="product_price text-price2">
-                                        5 520 ₽
+                                        {formatPrice(selectedItem.price)} ₽
                                     </div>
                                     <div className="product_delivery text-desc">
                                         Доставка 15 апреля

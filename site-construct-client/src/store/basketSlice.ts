@@ -64,7 +64,6 @@ export const fetchBasketWithGoods = createAsyncThunk<
 
                 const good = {
                     ...goodResp.data,
-                    id: item.id,
                 };
 
                 return {
