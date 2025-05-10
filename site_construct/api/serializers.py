@@ -13,7 +13,8 @@ from .models import (
     Recipent,
     Transaction,
     ItemCharacteristic,
-    Comment
+    Comment,
+    Like
 )
 from django.contrib.auth import get_user_model
 from django_enum.drf import EnumField
@@ -96,11 +97,14 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         'get_rate',
         read_only=True
     )
-
+    in_wishlist = serializers.SerializerMethodField(
+        'get_in_wishlist',
+        read_only=True
+    )
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id')
 
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
@@ -124,6 +128,14 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         basket_ids = BasketItem.objects.filter(basket__in=Basket.objects.filter(user=user).filter(visible=False)).values_list('good_item_id', flat=True).distinct()
 
         return obj.id in basket_ids
+    
+    def get_in_wishlist(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        
+        wishlist = Like.objects.filter(user=user).values_list("item_id", flat=True)
+        return obj.id in wishlist
         
 
 
