@@ -27,6 +27,7 @@ from .serializers import (
     DeliveryMethodSerializer,
     GoodCategorySerializer,
     GoodItemCreateSerializer,
+    GoodItemInWishListSerializer,
     GoodItemRetrieveSerializer,
     GoodItemSerializer,
     ItemApplyCharacteristic,
@@ -306,12 +307,12 @@ class GetMyWishlistView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
-        user = self.request.user
+        user = request.user
         wishlist = Like.objects.filter(user=user).select_related("item").all()
 
         items = [like.item for like in wishlist]
 
-        serializer = GoodItemSerializer(data=items, many=True)
+        serializer = GoodItemInWishListSerializer(data=items, many=True)
         serializer.is_valid()
         return Response(serializer.data)
     

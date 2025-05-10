@@ -51,6 +51,36 @@ class GoodItemCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'price': {'required': True}}
 
 
+class GoodItemInWishListSerializer(serializers.ModelSerializer):
+    # category = GoodCategorySerializer()
+    characteristics = serializers.SerializerMethodField(
+        'get_characteristics',
+        read_only=True
+    )
+    rate = serializers.SerializerMethodField(
+        'get_rate',
+        read_only=True
+    )
+
+    class Meta:
+        model = GoodItem
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'id')
+
+    def get_characteristics(self, obj):
+        connection = ItemCharacteristic.objects.filter(item=obj).all()
+        return_list = []
+
+        for conn in connection:
+            characteristic = Characteristics.objects.get(id=conn.characteristic.id)
+            return_list.append({
+                'title': characteristic.title,
+                'value': conn.body
+            })
+        return return_list
+    
+    def get_rate(self, obj):
+        return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+    
 
 class GoodItemSerializer(serializers.ModelSerializer):
     # category = GoodCategorySerializer()
@@ -159,7 +189,8 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
             return 0
         
         basket_item = BasketItem.objects.filter(basket__in=Basket.objects.filter(user=user).filter(visible=True)).filter(good_item=obj).first()
-
+        if basket_item is None:
+            return 0
         return basket_item.count
 
 
