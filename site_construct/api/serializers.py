@@ -62,11 +62,15 @@ class GoodItemSerializer(serializers.ModelSerializer):
         'get_rate',
         read_only=True
     )
+    in_wishlist = serializers.SerializerMethodField(
+        'get_in_wishlist',
+        read_only=True
+    )
 
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'in_wishlist', 'id')
 
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
@@ -82,6 +86,14 @@ class GoodItemSerializer(serializers.ModelSerializer):
     
     def get_rate(self, obj):
         return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+    
+    def get_in_wishlist(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        
+        wishlist = Like.objects.filter(user=user).values_list("item_id", flat=True)
+        return obj.id in wishlist
     
 
 class GoodItemRetrieveSerializer(serializers.ModelSerializer):
@@ -101,10 +113,14 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         'get_in_wishlist',
         read_only=True
     )
+    basket_count = serializers.SerializerMethodField(
+        'get_basket_count',
+        read_only=True
+    )
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count')
 
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
@@ -137,8 +153,14 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         wishlist = Like.objects.filter(user=user).values_list("item_id", flat=True)
         return obj.id in wishlist
         
+    def get_basket_count(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return 0
+        
+        basket_item = BasketItem.objects.filter(basket__in=Basket.objects.filter(user=user).filter(visible=True)).filter(good_item=obj).first()
 
-
+        return basket_item.count
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
