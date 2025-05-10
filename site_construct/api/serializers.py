@@ -3,6 +3,7 @@ from .models import (
     Basket,
     BasketItem,
     Characteristics,
+    CommentReply,
     Market,
     Order,
     DeliveryMethod,
@@ -11,10 +12,12 @@ from .models import (
     PaymentMethod,
     Recipent,
     Transaction,
-    ItemCharacteristic
+    ItemCharacteristic,
+    Comment
 )
 from django.contrib.auth import get_user_model
 from django_enum.drf import EnumField
+from django.db.models import Avg
 
 User = get_user_model()
 
@@ -40,16 +43,29 @@ class GoodCategorySerializer(serializers.ModelSerializer):
         # read_only_fields = ('parent', )
 
 
+class GoodItemCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoodItem
+        fields = ('category', 'name', 'description', 'price', 'market')
+        extra_kwargs = {'price': {'required': True}}
+
+
+
 class GoodItemSerializer(serializers.ModelSerializer):
     # category = GoodCategorySerializer()
     characteristics = serializers.SerializerMethodField(
         'get_characteristics',
         read_only=True
     )
+    rate = serializers.SerializerMethodField(
+        'get_rate',
+        read_only=True
+    )
+
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate')
 
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
@@ -62,6 +78,54 @@ class GoodItemSerializer(serializers.ModelSerializer):
                 'value': conn.body
             })
         return return_list
+    
+    def get_rate(self, obj):
+        return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+    
+
+class GoodItemRetrieveSerializer(serializers.ModelSerializer):
+    able_to_comment = serializers.SerializerMethodField(
+        'get_able_to_comment',
+        read_only=True
+    )
+    characteristics = serializers.SerializerMethodField(
+        'get_characteristics',
+        read_only=True
+    )
+    rate = serializers.SerializerMethodField(
+        'get_rate',
+        read_only=True
+    )
+
+
+    class Meta:
+        model = GoodItem
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment')
+
+    def get_characteristics(self, obj):
+        connection = ItemCharacteristic.objects.filter(item=obj).all()
+        return_list = []
+
+        for conn in connection:
+            characteristic = Characteristics.objects.get(id=conn.characteristic.id)
+            return_list.append({
+                'title': characteristic.title,
+                'value': conn.body
+            })
+        return return_list
+    
+    def get_rate(self, obj):
+        return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+    
+    def get_able_to_comment(self, obj):
+        user = self.context['request'].user
+
+        basket_ids = BasketItem.objects.filter(basket__in=Basket.objects.filter(user=user).filter(visible=False)).values_list('good_item_id', flat=True).distinct()
+
+        return obj.id in basket_ids
+        
+
+
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
@@ -126,7 +190,7 @@ class BasketSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ("recipent", "payment_method", "delivery_method")
         read_only_fields = ('user', "payment_total")
         extra_kwargs = {'payment_method': {'required': True}, 'delivery_method': {'required': True}}
 
@@ -179,5 +243,25 @@ class ItemApplyCharacteristic(serializers.ModelSerializer):
 class MarketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Market
+        fields = '__all__'
+        read_only_fields = ('user',)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ('user',)
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('item', 'body', 'rate')
+
+
+class CommentReplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentReply
         fields = '__all__'
         read_only_fields = ('user',)

@@ -98,6 +98,7 @@ class PaymentMethod(models.Model):  # Надо добавить картинки
     card_body = models.CharField('Номер карты', max_length=16, null=False)
     card_expire_date = models.DateField('Дата окончания действия карты', null=False)
     card_cvv_code = models.IntegerField('CVC код', null=False)
+    bank_name = models.CharField("Название банка", max_length=50, null=True)
 
 
     def __str__(self) -> str:
@@ -251,9 +252,9 @@ class Comment(models.Model):
     item = models.ForeignKey(
         GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
     )
-    order = models.ForeignKey(
-        Order, null=False, on_delete=models.CASCADE, verbose_name="Заказ"
-    )
+    # order = models.ForeignKey(
+    #     Order, null=False, on_delete=models.CASCADE, verbose_name="Заказ"
+    # )
     body = models.TextField("Тело", max_length=500)
     rate = models.IntegerField(
         "Рейтинг", default=0, validators=[MinValueValidator(0), MaxValueValidator(10)]

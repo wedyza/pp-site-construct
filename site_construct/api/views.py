@@ -6,6 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from .models import (
     Basket,
     BasketItem,
+    CommentReply,
     DeliveryMethod,
     GoodCategory,
     GoodItem,
@@ -14,13 +15,19 @@ from .models import (
     Recipent,
     Order,
     Characteristics,
-    Like
+    Like,
+    Comment
 )
 from .serializers import (
     BasketItemCreateSerializer,
     BasketItemSerializer,
+    CommentCreateSerializer,
+    CommentReplySerializer,
+    CommentSerializer,
     DeliveryMethodSerializer,
     GoodCategorySerializer,
+    GoodItemCreateSerializer,
+    GoodItemRetrieveSerializer,
     GoodItemSerializer,
     ItemApplyCharacteristic,
     MarketSerializer,
@@ -85,10 +92,18 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
 
 class GoodItemViewSet(viewsets.ModelViewSet):
     queryset = GoodItem.objects.all()
-    serializer_class = GoodItemSerializer  # тоже самое, что и сверху + добавить еще фильтр по категориям скорее всего
-    permission_classes = (OwnerOrReadOnly,)
+    # serializer_class = GoodItemSerializer  # тоже самое, что и сверху + добавить еще фильтр по категориям скорее всего
+    # permission_classes = (OwnerOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ("name",)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return GoodItemCreateSerializer
+        if self.action == 'list':
+            return GoodItemSerializer
+        return GoodItemRetrieveSerializer
+
 
     @action(detail=True, methods=['POST'], url_path='apply_characteristic', serializer_class=ItemApplyCharacteristic)
     def apply_characteristic(self, request, pk):
@@ -116,6 +131,14 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             like.save()
 
         return Response('success')
+    
+
+    @action(detail=True, methods=['GET'], url_path='comments')
+    def get_comments(self, request, pk):
+        comments = Comment.objects.filter(item_id=pk).all()
+        comments_serializer = CommentSerializer(data=comments, many=True)
+        comments_serializer.is_valid()
+        return Response(comments_serializer.data)
 
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
@@ -261,7 +284,6 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
         basket.visible = False
         basket.save()
         order.save(basket=basket, payment_total=sum_total, user=self.request.user)
-
         return Response(order.data)
 
 
@@ -295,6 +317,54 @@ class MarketViewSet(viewsets.ModelViewSet):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
     permission_classes = (SellerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CommentViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin, mixins.RetrieveModelMixin):
+    # serializer_class = CommentSerializer
+
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CommentSerializer
+        return CommentCreateSerializer
+
+    @action(methods=['GET'], detail=True, url_path='replies')
+    def get_replies(self, request, pk):
+        comment_replies = CommentReply.objects.filter(comment_id=pk).all()
+        comments = CommentReplySerializer(data=comment_replies, many=True)
+        comments.is_valid()
+        return Response(comments.data)
+
+
+
+    def get_queryset(self):
+        return Comment.objects.filter(user=self.request.user).all()
+    
+    def create(self, request, *args, **kwargs):
+        comment = CommentCreateSerializer(data=request.data)
+
+        if not comment.is_valid():
+            return Response(comment.errors)        
+
+        basket_ids = BasketItem.objects.filter(basket__in=Basket.objects.filter(user=self.request.user).filter(visible=False)).values_list('good_item_id', flat=True).distinct()
+
+        if comment.initial_data['item'] not in basket_ids:
+            return Response({'detail': "You did not ordered this item yet"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        comment.save(user=self.request.user)
+        return Response(comment.data)
+    
+
+class CommentReplyViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    serializer_class = CommentReplySerializer
+    permission_classes = (SellerOrReadOnly,)
+    
+    def get_queryset(self):
+        return CommentReply.objects.filter(user=self.request.user).all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
