@@ -70,8 +70,9 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
             .filter(apply=True)
             .all()
         )
-
+        
         page = self.paginate_queryset(items)
+
         if page is not None:
             serializer = GoodItemSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -97,6 +98,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (permissions.AllowAny,)
     filterset_fields = ("name",)
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
