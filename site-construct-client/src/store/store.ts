@@ -4,6 +4,7 @@ import userReducer from './userSlice';
 import paymentMethodsReducer from './paymentMethodsSlice';
 import goodsReducer from './goodsSlice';
 import basketReducer from './basketSlice';
+import wishlistReducer from './wishlistSlice';
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         user: userReducer,
         goods: goodsReducer,
         basket: basketReducer,
+        wishlist: wishlistReducer,
     },
 });
 

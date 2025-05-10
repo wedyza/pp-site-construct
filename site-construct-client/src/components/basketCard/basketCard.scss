@@ -47,6 +47,16 @@
     gap: 12px;
 }
 
+.basket-card_count-btn {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.basket-card_count-value {
+    cursor: default;
+}
+
 .basket-card_checkbox-container {
     position: absolute;
     background-color: var(--white-gray);

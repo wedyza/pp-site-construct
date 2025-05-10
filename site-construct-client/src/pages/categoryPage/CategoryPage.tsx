@@ -4,38 +4,56 @@ import HeaderCategories from '../../components/headerCategories/HeaderCategories
 import Header from '../../components/header/Header';
 import DropdownSubcategory from '../../components/dropdownSubcategory/DropdownSubcategory';
 import GoodsCard from '../../components/goodCard/GoodCard';
-import { Good } from '../../api/api';
+import { Good } from '../../store/goodsSlice';
 
 const goods: Good[] = [
     {
+        id: 0,
         name: 'Платье летнее для прогулок',
         description: '',
-        price: 4999
+        price: 4999,
+        in_wishlist: false,
+        market: 1
     },
     {
+        id: 0,
         name: 'Пальто осеннее загадочное',
         description: '',
-        price: 14999
+        price: 14999,
+        in_wishlist: false,
+        market: 1
     },
     {
+        id: 0,
         name: 'Платье летнее для прогулок',
         description: '',
-        price: 4999
+        price: 4999,
+        in_wishlist: false,
+        market: 1
     },
     {
+        id: 0,
         name: 'Пальто осеннее загадочное',
         description: '',
-        price: 14999
+        price: 14999,
+        in_wishlist: false,
+        market: 1
     },
     {
+        id: 0,
         name: 'Платье летнее для прогулок',
         description: '',
-        price: 4999
+        price: 4999,
+        in_wishlist: false,
+        market: 1
     },
     {
+        id: 0,
         name: 'Пальто осеннее загадочное',
         description: '',
-        price: 14999
+        price: 14999,
+        in_wishlist: false,
+        market: 1
     },
 ];
 

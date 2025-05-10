@@ -13,6 +13,7 @@ export interface Good {
     characteristics?: string;
     category?: number;
     market: number;
+    in_wishlist: boolean;
 }
 
 interface GoodsState {
@@ -65,6 +66,24 @@ export const fetchGoodById = createAsyncThunk<
     }
 });
 
+export const toggleWishlist = createAsyncThunk<
+    { id: number },
+    number,
+    { state: RootState }
+>('goods/toggleWishlist', async (id, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    try {
+        await axiosInstance.post(`/goods/${id}/switch_wishlist/`, {}, {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
+        return { id };
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка переключения вишлиста');
+    }
+});
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -95,6 +114,18 @@ const goodsSlice = createSlice({
             .addCase(fetchGoodById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(toggleWishlist.fulfilled, (state, action) => {
+                const { id } = action.payload;
+
+                const index = state.items.findIndex((item) => item.id === id);
+                if (index !== -1) {
+                    state.items[index].in_wishlist = !state.items[index].in_wishlist;
+                }
+
+                if (state.selectedItem?.id === id) {
+                    state.selectedItem.in_wishlist = !state.selectedItem.in_wishlist;
+                }
             });
     },
 });

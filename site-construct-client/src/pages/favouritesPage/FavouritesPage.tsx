@@ -1,52 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './favouritesPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
-import { Good } from '../../api/api';
 import { Link } from 'react-router-dom';
 import GoodsCard from '../../components/goodCard/GoodCard';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchWishlist } from '../../store/wishlistSlice';
 
-
-const goods: Good[] = [
-    {
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999,
-        isFav: true
-    },
-    {
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999,
-        isFav: true
-    },
-    {
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999,
-        isFav: true
-    },
-    {
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999,
-        isFav: true
-    },
-    {
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999,
-        isFav: true
-    },
-    {
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999,
-        isFav: true
-    },
-];
 
 const FavouritesPage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { items: goods/*, loading, error*/ } = useAppSelector((state) => state.wishlist);
+
+    useEffect(() => {
+        dispatch(fetchWishlist());
+    }, [dispatch]);
+
     return (
         <div className='page-content'>
             <Header />

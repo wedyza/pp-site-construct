@@ -7,7 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import ReviewPrev from '../../components/reviewPrev/ReviewPrev';
 import ProductGallery from '../../components/productGallery/ProductGallery';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchGoodById } from '../../store/goodsSlice';
+import { fetchGoodById, toggleWishlist } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
 
 
@@ -16,7 +16,7 @@ const ProductPage: React.FC = () => {
     const reviewsRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useAppDispatch();
     
-    const { selectedItem, loading, error } = useAppSelector((state) => state.goods);
+    const { selectedItem, loading/*, error*/ } = useAppSelector((state) => state.goods);
 
     useEffect(() => {
         if (id) {
@@ -35,6 +35,12 @@ const ProductPage: React.FC = () => {
 
     if (loading) return <div>Загрузка...</div>;
     if (!selectedItem) return <div>Товар не найден</div>;
+    
+    const handleToggleWishlist = (e: React.MouseEvent ) => {
+        e.stopPropagation();
+        e.preventDefault();
+        dispatch(toggleWishlist(selectedItem.id));
+    };
 
     return (
         <div className='page-content'>
@@ -80,10 +86,17 @@ const ProductPage: React.FC = () => {
                                         Доставка 15 апреля
                                     </div>
                                 </div>
-                                <button className='product_fav'>
-                                    <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd" clipRule="evenodd" d="M15.3053 2.25C13.9937 2.25 12.7335 2.78909 11.8047 3.75232L11.5395 4.02714C11.3982 4.17365 11.2034 4.25641 10.9998 4.25642C10.7962 4.25642 10.6013 4.17365 10.46 4.02714L10.1949 3.75229C8.26309 1.74988 5.12529 1.74988 3.19352 3.7523C1.26883 5.74739 1.26883 8.97705 3.19352 10.9721L10.4886 18.534C10.7573 18.8126 11.2054 18.8232 11.4874 18.5573C13.1657 16.9409 14.7608 15.247 16.368 13.5402C17.1737 12.6847 17.9823 11.8259 18.806 10.9721C19.7292 10.0156 20.25 8.71777 20.25 7.36222C20.25 6.00674 19.7294 4.70909 18.8061 3.7524C17.8773 2.78925 16.617 2.25 15.3053 2.25ZM10.9999 2.44228C12.1757 1.35872 13.7069 0.75 15.3053 0.75C17.0313 0.75 18.679 1.45977 19.8854 2.71074C21.0832 3.95181 21.75 5.6248 21.75 7.36222C21.75 9.0997 21.0831 10.7728 19.8854 12.0137C19.089 12.8393 18.2938 13.6836 17.4945 14.5323C15.871 16.2562 14.2301 17.9985 12.5256 19.64L12.5216 19.6438C11.6426 20.4779 10.2505 20.4476 9.40903 19.5754L2.11399 12.0136C-0.37133 9.43736 -0.37133 5.28707 2.11399 2.71085C4.54605 0.189845 8.46239 0.100323 10.9999 2.44228Z" fill="black"/>
-                                    </svg>
+                                
+                                <button className='product_fav' onClick={handleToggleWishlist}>
+                                    {selectedItem.in_wishlist ? (
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M11.9999 3.94228C13.1757 2.85872 14.7069 2.25 16.3053 2.25C18.0313 2.25 19.679 2.95977 20.8854 4.21074C22.0832 5.45181 22.75 7.1248 22.75 8.86222C22.75 10.5997 22.0831 12.2728 20.8854 13.5137C20.089 14.3393 19.2938 15.1836 18.4945 16.0323C16.871 17.7562 15.2301 19.4985 13.5256 21.14L13.5216 21.1438C12.6426 21.9779 11.2505 21.9476 10.409 21.0754L3.11399 13.5136C0.62867 10.9374 0.62867 6.78707 3.11399 4.21085C5.54605 1.68984 9.46239 1.60032 11.9999 3.94228Z" fill="black"/>
+                                        </svg>
+                                    ) : (
+                                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M15.3053 1.75C13.9937 1.75 12.7335 2.28909 11.8047 3.25232L11.5395 3.52714C11.3982 3.67365 11.2034 3.75641 10.9998 3.75642C10.7962 3.75642 10.6013 3.67365 10.46 3.52714L10.1949 3.25229C8.26309 1.24988 5.12529 1.24988 3.19352 3.2523C1.26883 5.24739 1.26883 8.47705 3.19352 10.4721L10.4886 18.034C10.7573 18.3126 11.2054 18.3232 11.4874 18.0573C13.1657 16.4409 14.7608 14.747 16.368 13.0402C17.1737 12.1847 17.9823 11.3259 18.806 10.4721C19.7292 9.5156 20.25 8.21777 20.25 6.86222C20.25 5.50674 19.7294 4.20909 18.8061 3.2524C17.8773 2.28925 16.617 1.75 15.3053 1.75ZM10.9999 1.94228C12.1757 0.85872 13.7069 0.25 15.3053 0.25C17.0313 0.25 18.679 0.959767 19.8854 2.21074C21.0832 3.45181 21.75 5.1248 21.75 6.86222C21.75 8.5997 21.0831 10.2728 19.8854 11.5137C19.089 12.3393 18.2938 13.1836 17.4945 14.0323C15.871 15.7562 14.2301 17.4985 12.5256 19.14L12.5216 19.1438C11.6426 19.9779 10.2505 19.9476 9.40903 19.0754L2.11399 11.5136C-0.37133 8.93736 -0.37133 4.78707 2.11399 2.21085C4.54605 -0.310155 8.46239 -0.399677 10.9999 1.94228Z" fill="black"/>
+                                        </svg>
+                                    )}
                                 </button>
                             </div>
                             <button className='text-btn product_basket-btn btn-black'>
