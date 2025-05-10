@@ -1,4 +1,5 @@
 import { Good } from '../../api/api';
+import { formatPrice } from '../../utils/formatPrice';
 import './goodCard.scss'
 
 
@@ -22,7 +23,7 @@ const GoodsCard: React.FC<GoodsCardProps> = ({ good }) => {
             </button>
             <div className="good-card_img"></div>
             <div className="goods-card_info">
-                <span className="goods-card_price">{good.price} ₽</span>
+                <span className="goods-card_price">{good.price && formatPrice(good.price)} ₽</span>
                 <span className="goods-card_name text-n14">{good.name}</span>
                 <div className="goods-card_rating">
                     <div className="goods-card_rating__stars text-n14">

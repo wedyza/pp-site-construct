@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
+import { RootState } from './store';
 
 export interface Good {
     id: number;
@@ -26,9 +27,18 @@ const initialState: GoodsState = {
     error: null,
 };
 
-export const fetchGoods = createAsyncThunk('goods/fetchGoods', async (_, { rejectWithValue }) => {
+export const fetchGoods = createAsyncThunk<
+    Good[],
+    void,
+    { state: RootState }
+>('goods/fetchGoods', async (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
     try {
-        const response = await axiosInstance.get('/goods/');
+        const response = await axiosInstance.get('/goods/', {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
         return response.data;
     } catch (err: any) {
         return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товаров');
