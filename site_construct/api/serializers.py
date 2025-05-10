@@ -119,7 +119,8 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
     
     def get_able_to_comment(self, obj):
         user = self.context['request'].user
-
+        if user.is_anonymous:
+            return False
         basket_ids = BasketItem.objects.filter(basket__in=Basket.objects.filter(user=user).filter(visible=False)).values_list('good_item_id', flat=True).distinct()
 
         return obj.id in basket_ids

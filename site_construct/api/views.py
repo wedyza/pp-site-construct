@@ -95,6 +95,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     # serializer_class = GoodItemSerializer  # тоже самое, что и сверху + добавить еще фильтр по категориям скорее всего
     # permission_classes = (OwnerOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
+    permission_classes = (permissions.AllowAny,)
     filterset_fields = ("name",)
 
     def get_serializer_class(self):
