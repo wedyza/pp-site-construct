@@ -150,7 +150,7 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count', 'basket_id')
 
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
@@ -192,6 +192,17 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         if basket_item is None:
             return 0
         return basket_item.count
+    
+    def get_basket_id(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return None
+        
+        basket_item = BasketItem.objects.filter(good_item=obj).filter(user=user).filter(visible=True).first()
+
+        if basket_item is None:
+            return None
+        return basket_item.id
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
@@ -223,7 +234,7 @@ class RecipentSerializer(serializers.ModelSerializer):
 class BasketItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = BasketItem
-        fields = ('good_item', 'count', 'basket')
+        fields = ('good_item', 'count', 'basket', 'id')
         read_only_fields = ("basket",)
         
 
