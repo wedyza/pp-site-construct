@@ -17,6 +17,30 @@ const BasketPage: React.FC = () => {
     }, [dispatch]);
 
     const [isChecked, setIsChecked] = useState(false);
+    
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+    const toggleSelectAll = () => {
+        if (selectedIds.length === items.length) {
+            setSelectedIds([]);
+        } else {
+            const allIds = items.map(({ item }) => item.good_item);
+            setSelectedIds(allIds);
+        }
+    };
+
+    const clearAll = () => {
+        setSelectedIds([]);
+    };
+
+    const handleToggleSingle = (id: number) => {
+        setSelectedIds((prev) =>
+            prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+        );
+    };
+
+    const isAllSelected = selectedIds.length === items.length && items.length > 0;
+
     return (
         <div className='page-content'>
             <Header />
@@ -24,15 +48,15 @@ const BasketPage: React.FC = () => {
             <div className="main-content basket-page">
                 <div className='basket_content'>
                     <div className='basket-actions'>
-                        <button className='basket-btn text-n16 basket_select-all'>
+                        <button className='basket-btn text-n16 basket_select-all' onClick={toggleSelectAll}>
                             <CustomCheckbox
-                                checked={isChecked}
-                                onChange={() => setIsChecked(!isChecked)}
+                                checked={isAllSelected}
+                                onChange={toggleSelectAll}
                                 checkboxClass='basket_checkbox'
                             />
                             Выбрать все
                         </button>
-                        <button className='basket-btn text-n16'>
+                        <button className='basket-btn text-n16' onClick={clearAll}>
                             Очистить все
                         </button>
                     </div>
@@ -43,6 +67,8 @@ const BasketPage: React.FC = () => {
                                     <BasketCard
                                         good={good}
                                         count={item.count}
+                                        isChecked={selectedIds.includes(item.good_item)}
+                                        onToggle={() => handleToggleSingle(item.good_item)}
                                     />
                                 </li>
                             ) : null

@@ -10,11 +10,12 @@ import { formatPrice } from '../../utils/formatPrice';
 interface Props {
     good: Good;
     count: number;
+    isChecked: boolean;
+    onToggle: () => void;
 }
 
-const BasketCard: React.FC<Props> = ({ good, count: initialCount }) => {
+const BasketCard: React.FC<Props> = ({ good, count: initialCount, isChecked, onToggle }) => {
     const [count, setCount] = useState(initialCount);
-    const [isChecked, setIsChecked] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
 
     const handleCountChange = async (newCount: number) => {
@@ -28,7 +29,7 @@ const BasketCard: React.FC<Props> = ({ good, count: initialCount }) => {
             <div className="basket-card_checkbox-container">
                 <CustomCheckbox
                     checked={isChecked}
-                    onChange={() => setIsChecked(!isChecked)}
+                    onChange={() => onToggle()}
                     checkboxClass='basket-card_checkbox'
                 />
             </div>

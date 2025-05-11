@@ -210,7 +210,7 @@ const ProductPage: React.FC = () => {
                 <div className="product-package">
                     <h2 className='product-package_title product_subtitle text-h2'>Комплектация</h2>
                     <p className='product-package_text text-n16'>
-                        Робот-мойщик, сменные салфетки из микрофибры - 12 шт.(+2 салфетки на роботе), кольцо для салфетки - 2 шт., блок питания с удлинителем - 4м., кабель питания -  1,5 м., страховочный шнур - 4,5 м., инструкция, пульт ДУ
+                        {selectedItem.description}
                     </p>
                 </div>
                 <div className='product-reviews' ref={reviewsRef}>
