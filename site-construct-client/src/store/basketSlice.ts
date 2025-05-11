@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
-import { Good } from './goodsSlice';
+import { Good, toggleWishlist } from './goodsSlice';
 
 export interface BasketItem {
     good_item: number;
@@ -80,16 +80,16 @@ export const fetchBasketWithGoods = createAsyncThunk<
 
 export const updateBasketItem = createAsyncThunk<
     BasketItem,
-    { good_item: number; count: number },
+    { id: number; count: number },
     { state: RootState }
 >(
     'basket/updateBasketItem',
-    async ({ good_item, count }, { getState, rejectWithValue }) => {
+    async ({ id, count }, { getState, rejectWithValue }) => {
         const token = getState().auth.token;
 
         try {
             const response = await axiosInstance.patch(
-                `/me/basket-items/${good_item}/`,
+                `/me/basket-items/${id}/`,
                 { count },
                 {
                     headers: {
@@ -106,13 +106,13 @@ export const updateBasketItem = createAsyncThunk<
 
 export const updateBasketAndRefetch = createAsyncThunk<
     void,
-    { good_item: number; count: number },
+    { id: number; count: number },
     { state: RootState }
 >(
     'basket/updateBasketAndRefetch',
-    async ({ good_item, count }, { dispatch, rejectWithValue }) => {
+    async ({ id, count }, { dispatch, rejectWithValue }) => {
         try {
-            await dispatch(updateBasketItem({ good_item, count })).unwrap();
+            await dispatch(updateBasketItem({ id, count })).unwrap();
             await dispatch(fetchBasketWithGoods()).unwrap();
         } catch (err: any) {
             return rejectWithValue('Ошибка при обновлении и загрузке корзины');
@@ -120,6 +120,43 @@ export const updateBasketAndRefetch = createAsyncThunk<
     }
 );
 
+export const removeBasketItem = createAsyncThunk<
+    number,
+    number,
+    { state: RootState }
+>(
+    'basket/removeBasketItem',
+    async (id, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+
+        try {
+            await axiosInstance.delete(`/me/basket-items/${id}/`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return id;
+        } catch (err: any) {
+            return rejectWithValue('Ошибка удаления товара из корзины');
+        }
+    }
+);
+
+export const removeAndRefetchBasket = createAsyncThunk<
+    void,
+    number,
+    { dispatch: any }
+>(
+    'basket/removeAndRefetchBasket',
+    async (id, { dispatch, rejectWithValue }) => {
+        try {
+            await dispatch(removeBasketItem(id)).unwrap();
+            await dispatch(fetchBasketWithGoods()).unwrap();
+        } catch (err: any) {
+            return rejectWithValue('Ошибка при удалении и обновлении корзины');
+        }
+    }
+);
 
 const basketSlice = createSlice({
     name: 'basket',
@@ -151,6 +188,21 @@ const basketSlice = createSlice({
             })
             .addCase(updateBasketItem.rejected, (state, action) => {
                 state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(toggleWishlist.fulfilled, (state, action) => {
+                const { id } = action.payload;
+
+                const index = state.items.findIndex((i) => i.good?.id === id);
+                if (index !== -1 && state.items[index].good) {
+                    state.items[index].good!.in_wishlist = !state.items[index].good!.in_wishlist;
+                }
+            })
+            .addCase(removeBasketItem.fulfilled, (state, action) => {
+                const id = action.payload;
+                state.items = state.items.filter((i) => i.item.id !== id);
+            })
+            .addCase(removeBasketItem.rejected, (state, action) => {
                 state.error = action.payload as string;
             });
     },

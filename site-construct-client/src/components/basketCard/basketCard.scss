@@ -27,6 +27,14 @@
     gap: 12px;
 }
 
+.basket-card_btn {
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .basket-card_set {
     display: flex;
     flex-direction: column;

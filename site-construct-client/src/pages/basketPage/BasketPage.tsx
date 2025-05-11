@@ -11,12 +11,11 @@ import { fetchBasketWithGoods } from '../../store/basketSlice';
 const BasketPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { items } = useAppSelector((state) => state.basket);
+    console.log(items);
 
     useEffect(() => {
         dispatch(fetchBasketWithGoods());
     }, [dispatch]);
-
-    const [isChecked, setIsChecked] = useState(false);
     
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -24,7 +23,7 @@ const BasketPage: React.FC = () => {
         if (selectedIds.length === items.length) {
             setSelectedIds([]);
         } else {
-            const allIds = items.map(({ item }) => item.good_item);
+            const allIds = items.map(({ item }) => item.id);
             setSelectedIds(allIds);
         }
     };
@@ -63,12 +62,13 @@ const BasketPage: React.FC = () => {
                     <ul className='basket_list'>
                         {items.map(({ item, good }) =>
                             good ? (
-                                <li className="basket_list-item" key={item.good_item}>
+                                <li className="basket_list-item" key={item.id}>
                                     <BasketCard
                                         good={good}
+                                        id={item.id}
                                         count={item.count}
-                                        isChecked={selectedIds.includes(item.good_item)}
-                                        onToggle={() => handleToggleSingle(item.good_item)}
+                                        isChecked={selectedIds.includes(item.id)}
+                                        onToggle={() => handleToggleSingle(item.id)}
                                     />
                                 </li>
                             ) : null
