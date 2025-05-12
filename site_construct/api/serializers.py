@@ -69,21 +69,27 @@ class GoodItemInWishListSerializer(serializers.ModelSerializer):
         fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'id')
 
     def get_characteristics(self, obj):
-        connection = ItemCharacteristic.objects.filter(item=obj).all()
         return_list = []
+        if obj.category == None:
+            return return_list
         obj_characteristic_categories = unwrap_categories(obj.category)
-
         for category in obj_characteristic_categories:
-            characteristics = category.characteristics
-            print(characteristics)
-
-
-        # for conn in connection:
-        #     return_list.append({
-        #         'title': characteristic.title,
-        #         'value': conn.body
-        #     })
-        return 'пенис'
+            characteristics = category.characteristics.filter(itemcharacteristic__item=obj).all()
+            if len(characteristics) > 0:
+                answer = []
+                for c in characteristics:
+                    connection = ItemCharacteristic.objects.filter(item=obj).filter(characteristic=c).first()
+                    answer.append({
+                        'title': c.title,
+                        'value': connection.body,
+                    })
+                return_list.append({
+                    "title": category.title,
+                    "id": category.id,
+                    "characteristics": answer
+                })
+        return return_list
+    
     
     def get_rate(self, obj):
         return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
@@ -110,21 +116,27 @@ class GoodItemSerializer(serializers.ModelSerializer):
         fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'in_wishlist', 'id')
 
     def get_characteristics(self, obj):
-        connection = ItemCharacteristic.objects.filter(item=obj).all()
         return_list = []
+        if obj.category == None:
+            return return_list
         obj_characteristic_categories = unwrap_categories(obj.category)
-
         for category in obj_characteristic_categories:
-            characteristics = category.characteristics
-            print(characteristics)
-
-
-        # for conn in connection:
-        #     return_list.append({
-        #         'title': characteristic.title,
-        #         'value': conn.body
-        #     })
-        return 'пенис'
+            characteristics = category.characteristics.filter(itemcharacteristic__item=obj).all()
+            if len(characteristics) > 0:
+                answer = []
+                for c in characteristics:
+                    connection = ItemCharacteristic.objects.filter(item=obj).filter(characteristic=c).first()
+                    answer.append({
+                        'title': c.title,
+                        'value': connection.body,
+                    })
+                return_list.append({
+                    "title": category.title,
+                    "id": category.id,
+                    "characteristics": answer
+                })
+        return return_list
+    
     
     
     def get_rate(self, obj):
@@ -170,10 +182,10 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count', 'basket_id')
 
     def get_characteristics(self, obj):
-        # connection = ItemCharacteristic.objects.filter(item=obj).all()
         return_list = []
+        if obj.category == None:
+            return return_list
         obj_characteristic_categories = unwrap_categories(obj.category)
-        # print(connection)
         for category in obj_characteristic_categories:
             characteristics = category.characteristics.filter(itemcharacteristic__item=obj).all()
             if len(characteristics) > 0:
@@ -189,13 +201,6 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
                     "id": category.id,
                     "characteristics": answer
                 })
-
-
-        # for conn in connection:
-        #     return_list.append({
-        #         'title': characteristic.title,
-        #         'value': conn.body
-        #     })
         return return_list
     
     
