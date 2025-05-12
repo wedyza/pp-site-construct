@@ -3,9 +3,11 @@ from rest_framework import viewsets, mixins, permissions, status, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
+from .functions import unwrap_categories
 from .models import (
     Basket,
     BasketItem,
+    CharacteristicsCategory,
     CommentReply,
     DeliveryMethod,
     GoodCategory,
@@ -21,6 +23,7 @@ from .models import (
 from .serializers import (
     BasketItemCreateSerializer,
     BasketItemSerializer,
+    CharacteristicsCategoryResponseSerializer,
     CommentCreateSerializer,
     CommentReplySerializer,
     CommentSerializer,
@@ -31,6 +34,7 @@ from .serializers import (
     GoodItemRetrieveSerializer,
     GoodItemSerializer,
     ItemApplyCharacteristic,
+    ListApply,
     MarketSerializer,
     PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
@@ -39,7 +43,8 @@ from .serializers import (
     OrderToBuyerSerializer,
     OrderCreateSerializer,
     CharacteristicCreateSerializer,
-    CharacteristicSerializer
+    CharacteristicSerializer,
+    CharacteristicCategorySerializer
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -63,6 +68,7 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="items",
         pagination_class=CustomPagination,
+        serializer_class=GoodItemSerializer
     )
     def get_items(self, request, pk):
         items = (
@@ -75,21 +81,16 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
         page = self.paginate_queryset(items)
 
         if page is not None:
-            serializer = GoodItemSerializer(page, many=True)
+            serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = GoodItemSerializer(items, many=True)
+        serializer = self.get_serializer(items, many=True)
         return Response(serializer.data)
 
-    @action(methods=["GET"], url_path='characteristics', detail=True, serializer_class=CharacteristicSerializer)
+    @action(methods=["GET"], url_path='characteristics', detail=True)
     def get_characteristics(self, request, pk):
-        characteristics = Characteristics.objects.filter(category_id=pk).all()
-        category = GoodCategory.objects.get(id=pk)
-        if category.parent != None:
-            parent_characteristics = Characteristics.objects.filter(category_id=category.parent.id).all()
-            characteristics = characteristics.union(parent_characteristics)
-        
-        characteristics = CharacteristicSerializer(characteristics, many=True)
+        characteristics = unwrap_categories(GoodCategory.objects.get(id=pk))
+        characteristics = CharacteristicsCategoryResponseSerializer(characteristics, many=True)
         return Response(characteristics.data)
 
 class GoodItemViewSet(viewsets.ModelViewSet):
@@ -102,24 +103,32 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def get_serializer_class(self):
+        if self.action == 'apply_characteristic':
+            return ListApply
         if self.request.method == 'POST':
             return GoodItemCreateSerializer
         if self.action == 'list':
             return GoodItemSerializer
         return GoodItemRetrieveSerializer
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
-    @action(detail=True, methods=['POST'], url_path='apply_characteristic', serializer_class=ItemApplyCharacteristic)
+
+    @action(detail=True, methods=['POST'], url_path='apply_characteristic', serializer_class=ListApply)
     def apply_characteristic(self, request, pk):
         item = GoodItem.objects.get(id=pk)
         payload = self.serializer_class(data = request.data)
 
         if not payload.is_valid():
             return Response({'error': "Не обнаружено "}, status=status.HTTP_400_BAD_REQUEST)
-        
-        characteristic = Characteristics.objects.get(id=payload.data['characteristic'])
-        item.characteristics.add(characteristic, through_defaults={'body': payload.data['body']})
-        return Response({'success': "Успено"}, status=status.HTTP_200_OK)
+
+        for another_characteristic in payload.data['characteristics']:        
+            characteristic = Characteristics.objects.get(id=another_characteristic['characteristic'])
+            item.characteristics.add(characteristic, through_defaults={'body': another_characteristic['body']})
+        return Response({'success': "Успешно"}, status=status.HTTP_200_OK)
     
 
     @action(detail=True, methods=['POST'], url_path='switch_wishlist', permission_classes=(permissions.IsAuthenticated,))
@@ -372,3 +381,9 @@ class CommentReplyViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixi
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class CharacteristicCategoryViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    serializer_class = CharacteristicCategorySerializer
+    permission_classes = (AdminOrReadOnly, )
+    queryset = CharacteristicsCategory.objects.all()

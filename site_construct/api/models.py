@@ -27,10 +27,23 @@ class GoodCategory(models.Model):
         verbose_name_plural = "Категории"
 
 
-class Characteristics(models.Model):
+class CharacteristicsCategory(models.Model):
     category = models.ForeignKey(
         GoodCategory,
         verbose_name='Категория',
+        on_delete=models.CASCADE,
+        related_name='characteristics_categories'
+    )
+    title = models.CharField('Название категории', max_length=50)
+
+    def __str__(self):
+        return self.title
+
+
+class Characteristics(models.Model):
+    category = models.ForeignKey(
+        CharacteristicsCategory,
+        verbose_name='Категория характеристик',
         on_delete=models.CASCADE,
         related_name='characteristics'
     )

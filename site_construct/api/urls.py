@@ -22,7 +22,8 @@ from .views import (
     GetMyWishlistView,
     MarketViewSet,
     CommentViewSet,
-    CommentReplyViewSet
+    CommentReplyViewSet,
+    CharacteristicCategoryViewSet
 )
 
 router = routers.DefaultRouter()
@@ -39,6 +40,7 @@ router.register("characteristics", CharacteristicViewSet)
 router.register("markets", MarketViewSet)
 router.register("comments", CommentViewSet, basename="comments")
 router.register("comments-replies", CommentReplyViewSet, basename="comments-replies")
+router.register("characteristics-categories", CharacteristicCategoryViewSet)
 
 
 urlpatterns = [

@@ -3,6 +3,7 @@ from .models import (
     Basket,
     BasketItem,
     Characteristics,
+    CharacteristicsCategory,
     CommentReply,
     Market,
     Order,
@@ -19,13 +20,14 @@ from .models import (
 from django.contrib.auth import get_user_model
 from django_enum.drf import EnumField
 from django.db.models import Avg
+from .functions import unwrap_categories
 
 User = get_user_model()
 
 class CharacteristicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Characteristics
-        fields = ('title',)
+        fields = ('title', 'id')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -69,14 +71,19 @@ class GoodItemInWishListSerializer(serializers.ModelSerializer):
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
         return_list = []
+        obj_characteristic_categories = unwrap_categories(obj.category)
 
-        for conn in connection:
-            characteristic = Characteristics.objects.get(id=conn.characteristic.id)
-            return_list.append({
-                'title': characteristic.title,
-                'value': conn.body
-            })
-        return return_list
+        for category in obj_characteristic_categories:
+            characteristics = category.characteristics
+            print(characteristics)
+
+
+        # for conn in connection:
+        #     return_list.append({
+        #         'title': characteristic.title,
+        #         'value': conn.body
+        #     })
+        return 'пенис'
     
     def get_rate(self, obj):
         return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
@@ -105,21 +112,27 @@ class GoodItemSerializer(serializers.ModelSerializer):
     def get_characteristics(self, obj):
         connection = ItemCharacteristic.objects.filter(item=obj).all()
         return_list = []
+        obj_characteristic_categories = unwrap_categories(obj.category)
 
-        for conn in connection:
-            characteristic = Characteristics.objects.get(id=conn.characteristic.id)
-            return_list.append({
-                'title': characteristic.title,
-                'value': conn.body
-            })
-        return return_list
+        for category in obj_characteristic_categories:
+            characteristics = category.characteristics
+            print(characteristics)
+
+
+        # for conn in connection:
+        #     return_list.append({
+        #         'title': characteristic.title,
+        #         'value': conn.body
+        #     })
+        return 'пенис'
+    
     
     def get_rate(self, obj):
         return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
     
     def get_in_wishlist(self, obj):
         user = self.context['request'].user
-        if user.is_anonymous:
+        if user.is_anonymous or user is None:
             return False
         
         wishlist = Like.objects.filter(user=user).values_list("item_id", flat=True)
@@ -147,22 +160,44 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         'get_basket_count',
         read_only=True
     )
+    basket_id = serializers.SerializerMethodField(
+        'get_basket_id',
+        read_only=True
+    )
 
     class Meta:
         model = GoodItem
         fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count', 'basket_id')
 
     def get_characteristics(self, obj):
-        connection = ItemCharacteristic.objects.filter(item=obj).all()
+        # connection = ItemCharacteristic.objects.filter(item=obj).all()
         return_list = []
+        obj_characteristic_categories = unwrap_categories(obj.category)
+        # print(connection)
+        for category in obj_characteristic_categories:
+            characteristics = category.characteristics.filter(itemcharacteristic__item=obj).all()
+            if len(characteristics) > 0:
+                answer = []
+                for c in characteristics:
+                    connection = ItemCharacteristic.objects.filter(item=obj).filter(characteristic=c).first()
+                    answer.append({
+                        'title': c.title,
+                        'value': connection.body,
+                    })
+                return_list.append({
+                    "title": category.title,
+                    "id": category.id,
+                    "characteristics": answer
+                })
 
-        for conn in connection:
-            characteristic = Characteristics.objects.get(id=conn.characteristic.id)
-            return_list.append({
-                'title': characteristic.title,
-                'value': conn.body
-            })
+
+        # for conn in connection:
+        #     return_list.append({
+        #         'title': characteristic.title,
+        #         'value': conn.body
+        #     })
         return return_list
+    
     
     def get_rate(self, obj):
         return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
@@ -198,7 +233,7 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return None
         
-        basket_item = BasketItem.objects.filter(good_item=obj).filter(user=user).filter(visible=True).first()
+        basket_item = BasketItem.objects.filter(good_item=obj).filter(basket=Basket.objects.filter(user=user).filter(visible=True).first()).first()
 
         if basket_item is None:
             return None
@@ -208,13 +243,13 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
 class PaymentMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentMethod
-        fields = ("card_body", "card_expire_date")
+        fields = ("card_body", "card_expire_date", 'bank_name')
 
 
 class PaymentMethodCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentMethod
-        fields = ("card_body", "card_expire_date", 'card_cvv_code')
+        fields = ("card_body", "card_expire_date", 'card_cvv_code', 'bank_name')
 
 
 class DeliveryMethodSerializer(serializers.ModelSerializer):
@@ -305,6 +340,18 @@ class UserLoginOTPSerializer(serializers.Serializer):
     otp = serializers.CharField()
 
 
+class CharacteristicCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CharacteristicsCategory
+        fields = '__all__'
+
+
+# class CharacteristicsCategoryCreateSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CharacteristicsCategory
+#         fields = ()
+
+
 class CharacteristicCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Characteristics
@@ -316,6 +363,9 @@ class ItemApplyCharacteristic(serializers.ModelSerializer):
         model = ItemCharacteristic
         fields = ('characteristic', 'body')
 
+
+class ListApply(serializers.Serializer):
+    characteristics = ItemApplyCharacteristic(many=True)
 
 class MarketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -342,3 +392,11 @@ class CommentReplySerializer(serializers.ModelSerializer):
         model = CommentReply
         fields = '__all__'
         read_only_fields = ('user',)
+
+
+class CharacteristicsCategoryResponseSerializer(serializers.ModelSerializer):
+    characteristics = CharacteristicSerializer(many=True)
+    
+    class Meta:
+        model = CharacteristicsCategory
+        fields = ('characteristics', 'title', 'id')
