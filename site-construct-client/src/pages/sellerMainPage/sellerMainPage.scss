@@ -1,0 +1,12 @@
+.seller-main {
+    display: grid;
+    grid-template-columns: 33% 1fr;
+    column-gap: 24px;
+    row-gap: 22px;
+}
+
+.seller-main_item {
+    height: 253px;
+    background-color: var(--temp-color);
+    border-radius: var(--big-radius);
+}

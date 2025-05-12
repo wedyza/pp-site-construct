@@ -11,6 +11,7 @@ import ReviewsPage from './pages/reviewsPage/ReviewsPage';
 import CategoryPage from './pages/categoryPage/CategoryPage';
 import RegisterPage from './pages/registerPage/RegisterPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import SellerMainPage from './pages/sellerMainPage/SellerMainPage';
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
       <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/reviews" element={<ReviewsPage />} />
       <Route path="/category" element={<CategoryPage />} />
+
+      {/* seller */}
+      <Route path="/seller" element={<SellerMainPage />} />
 
       <Route element={<ProtectedRoute onlyGuest />}>
         <Route path="/login" element={<LoginPage />} />
