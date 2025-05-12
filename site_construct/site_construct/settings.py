@@ -30,6 +30,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "94.190.123.143"]
 
 
@@ -186,4 +188,4 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 if DEBUG:
-    AWS_S3_ENDPOINT_URL = "http://localhost:9000"
+    AWS_S3_ENDPOINT_URL = "http://94.190.123.143:8000/media"
