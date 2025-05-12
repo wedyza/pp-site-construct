@@ -48,7 +48,7 @@ from .serializers import (
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from .permissions import AdminOrReadOnly, Owner, OwnerOrReadOnly, AdminOrModerator, SellerOrReadOnly
+from .permissions import AdminOrReadOnly, MarketPermission, Owner, OwnerOrReadOnly, AdminOrModerator, SellerOrReadOnly
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum
@@ -240,6 +240,7 @@ class UsersViewSet(
             serializer = self.serializer_class(request.user)
             return Response(serializer.data)
         if self.request.method == "PATCH":
+            print(request.data)
             serializer = self.serializer_class(
                 request.user, data=request.data, partial=True
             )
@@ -329,7 +330,7 @@ class GetMyWishlistView(views.APIView):
 class MarketViewSet(viewsets.ModelViewSet):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
-    permission_classes = (SellerOrReadOnly,)
+    permission_classes = (MarketPermission,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

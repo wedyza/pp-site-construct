@@ -77,6 +77,7 @@ class CustomAbstractUser(AbstractUser):
         choices=[(sex.name, sex.value) for sex in SexType],
         null=True
     )
+    avatar = models.ImageField('Аватар', upload_to='avatars', null=True)
     REQUIRED_FIELDS = []
     # name = models.CharField('Имя', null=True, max_length=50)
     otp_expires = models.DateTimeField('Время жизни otp', null=True, blank=True)

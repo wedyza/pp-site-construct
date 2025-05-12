@@ -33,7 +33,7 @@ class CharacteristicSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "user_type", "first_name", "last_name", "sex", "id")
+        fields = ("email", "user_type", "first_name", "last_name", "sex", "id", 'avatar')
 
 
 class GoodCategorySerializer(serializers.ModelSerializer):
@@ -246,15 +246,31 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
+    pay_system = serializers.SerializerMethodField(
+        'get_pay_system',
+        read_only=True
+    )
+    
     class Meta:
         model = PaymentMethod
-        fields = ("card_body", "card_expire_date", 'bank_name')
+        fields = ("card_body", "card_expire_date", 'pay_system')
 
+    def get_pay_system(self, obj):
+        if obj.card_body.startswith('22'):
+            return 'МИР'
+        elif obj.card_body.startswith('5'):
+            return 'Mastercard'
+        elif obj.card_body.startswith('4'):
+            return 'Visa'
+        elif obj.card_body.startswith('6'):
+            return 'UnionPay'
+        return 'Unknown'
+        
 
 class PaymentMethodCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentMethod
-        fields = ("card_body", "card_expire_date", 'card_cvv_code', 'bank_name')
+        fields = ("card_body", "card_expire_date", 'card_cvv_code')
 
 
 class DeliveryMethodSerializer(serializers.ModelSerializer):

@@ -111,7 +111,7 @@ class PaymentMethod(models.Model):  # Надо добавить картинки
     card_body = models.CharField('Номер карты', max_length=16, null=False)
     card_expire_date = models.DateField('Дата окончания действия карты', null=False)
     card_cvv_code = models.IntegerField('CVC код', null=False)
-    bank_name = models.CharField("Название банка", max_length=50, null=True)
+    # bank_name = models.CharField("Название банка", max_length=50, null=True)
 
 
     def __str__(self) -> str:
@@ -288,7 +288,7 @@ class ItemMedia(models.Model):
     item = models.ForeignKey(
         GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
     )
-    # source = models.ImageField()
+    source = models.ImageField('Картинка', upload_to='media ')
 
 
 class Message(models.Model):
@@ -351,4 +351,4 @@ class Market(models.Model):
     )
     name = models.CharField('Название', max_length=50)
     description = models.TextField('Описание')
-    # avatar = models.ImageField()
+    avatar = models.ImageField('Аватар', upload_to='markets', null=True)
