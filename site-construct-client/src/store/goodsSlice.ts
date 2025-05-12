@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
-import { addBasketItem } from './basketSlice';
+import { addBasketItem, removeBasketItem } from './basketSlice';
 
 export interface Good {
     id: number;
@@ -129,6 +129,14 @@ const goodsSlice = createSlice({
                 if (state.selectedItem?.id === id) {
                     state.selectedItem.in_wishlist = !state.selectedItem.in_wishlist;
                 }
+            })
+            .addCase(removeBasketItem.fulfilled, (state, action) => {
+                if (state.selectedItem) {
+                    state.selectedItem = {
+                        ...state.selectedItem,
+                        basket_count: 0,
+                    };
+                }              
             });
     },
 });

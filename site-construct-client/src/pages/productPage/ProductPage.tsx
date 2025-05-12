@@ -9,7 +9,7 @@ import ProductGallery from '../../components/productGallery/ProductGallery';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchGoodById, toggleWishlist } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
-import { addBasketItem, removeAndRefetchBasket, updateBasketAndRefetch } from '../../store/basketSlice';
+import { addBasketItem, removeAndRefetchBasket, removeBasketItem, updateBasketAndRefetch, updateBasketItem } from '../../store/basketSlice';
 
 
 const ProductPage: React.FC = () => {
@@ -27,9 +27,12 @@ const ProductPage: React.FC = () => {
 
     const handleCountChange = async (newCount: number) => {
         if (!selectedItem || !selectedItem.basket_id) return;
-        if (newCount < 1) dispatch(removeAndRefetchBasket(selectedItem.basket_id));
-        setCount(newCount);
-        await dispatch(updateBasketAndRefetch({ id: selectedItem.basket_id, count: newCount }));
+        if (newCount < 1) {
+            dispatch(removeBasketItem(selectedItem.basket_id));
+        } else {
+            setCount(newCount);
+            await dispatch(updateBasketItem({ id: selectedItem.basket_id, count: newCount }));
+        }
     };
 
     const handleAddToBasket = async () => {
