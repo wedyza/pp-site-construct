@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './productPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
@@ -9,6 +9,7 @@ import ProductGallery from '../../components/productGallery/ProductGallery';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchGoodById, toggleWishlist } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
+import { addBasketItem, removeAndRefetchBasket, updateBasketAndRefetch } from '../../store/basketSlice';
 
 
 const ProductPage: React.FC = () => {
@@ -17,6 +18,24 @@ const ProductPage: React.FC = () => {
     const dispatch = useAppDispatch();
     
     const { selectedItem, loading/*, error*/ } = useAppSelector((state) => state.goods);
+
+    const [count, setCount] = useState(selectedItem?.basket_count);
+    
+    useEffect(() => {
+        setCount(selectedItem?.basket_count);
+    }, [selectedItem]);
+
+    const handleCountChange = async (newCount: number) => {
+        if (!selectedItem || !selectedItem.basket_id) return;
+        if (newCount < 1) dispatch(removeAndRefetchBasket(selectedItem.basket_id));
+        setCount(newCount);
+        await dispatch(updateBasketAndRefetch({ id: selectedItem.basket_id, count: newCount }));
+    };
+
+    const handleAddToBasket = async () => {
+        await dispatch(addBasketItem({ good_item: Number(id), count: 1 }));
+        await dispatch(fetchGoodById(Number(id)));
+    };
 
     useEffect(() => {
         if (id) {
@@ -33,7 +52,7 @@ const ProductPage: React.FC = () => {
         }
     };
 
-    if (loading) return <div>Загрузка...</div>;
+    //if (loading) return <div>Загрузка...</div>;
     if (!selectedItem) return <div>Товар не найден</div>;
     
     const handleToggleWishlist = (e: React.MouseEvent ) => {
@@ -99,9 +118,31 @@ const ProductPage: React.FC = () => {
                                     )}
                                 </button>
                             </div>
-                            <button className='text-btn product_basket-btn btn-black'>
-                                В корзину
-                            </button>
+                            {count && count > 0 ? (
+                                <div className="product_basket-on">
+                                    <div className='text-btn product_basket-text'>
+                                        Товар в корзине
+                                        <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M0.969783 6.46967C1.26268 6.17678 1.73755 6.17678 2.03044 6.46967L5.50011 9.93934L14.9698 0.46967C15.2627 0.176777 15.7375 0.176777 16.0304 0.46967C16.3233 0.762563 16.3233 1.23744 16.0304 1.53033L6.03044 11.5303C5.73755 11.8232 5.26268 11.8232 4.96978 11.5303L0.969783 7.53033C0.67689 7.23744 0.67689 6.76256 0.969783 6.46967Z" fill="#FEFEFE"/>
+                                        </svg>
+                                    </div>
+                                    <div className='text-h2 product_basket-count'>
+                                        <svg onClick={() => handleCountChange(count - 1)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M7.25 12C7.25 11.5858 7.58579 11.25 8 11.25H16C16.4142 11.25 16.75 11.5858 16.75 12C16.75 12.4142 16.4142 12.75 16 12.75H8C7.58579 12.75 7.25 12.4142 7.25 12Z" fill="#FEFEFE"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="#FEFEFE"/>
+                                        </svg>
+                                        {count}
+                                        <svg onClick={() => handleCountChange(count + 1)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V11.25H16C16.4142 11.25 16.75 11.5858 16.75 12C16.75 12.4142 16.4142 12.75 16 12.75H12.75V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V12.75H8C7.58579 12.75 7.25 12.4142 7.25 12C7.25 11.5858 7.58579 11.25 8 11.25H11.25V8C11.25 7.58579 11.5858 7.25 12 7.25Z" fill="#FEFEFE"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="#FEFEFE"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            ) : (
+                                <button className='text-btn product_basket-btn btn-black' onClick={handleAddToBasket}>
+                                    В корзину
+                                </button>
+                            )}
                         </div>
                         <div className='product_to-reviews'>
                             <div className="product-rating">

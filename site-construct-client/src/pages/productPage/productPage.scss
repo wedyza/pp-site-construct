@@ -152,6 +152,39 @@
     justify-content: center;
 }
 
+.product_basket-on {
+    display: grid;
+    grid-template-columns: 65% 1fr;
+    gap: 2px;
+}
+
+.product_basket-count {
+    background-color: var(--black60);
+    border-radius: var(--radius);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--background);
+    cursor: default;
+
+    svg {
+        cursor: pointer;
+    }
+}
+
+.product_basket-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--black60);
+    cursor: default;
+    height: 50px;
+    border-radius: var(--radius);
+    color: var(--background);
+}
+
 /* product reviews */
 
 .product-reviews {

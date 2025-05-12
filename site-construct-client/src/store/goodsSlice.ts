@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
+import { addBasketItem } from './basketSlice';
 
 export interface Good {
     id: number;
@@ -14,6 +15,8 @@ export interface Good {
     category?: number;
     market: number;
     in_wishlist: boolean;
+    basket_count?: number;
+    basket_id?: number;
 }
 
 interface GoodsState {
@@ -105,7 +108,6 @@ const goodsSlice = createSlice({
             .addCase(fetchGoodById.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-                state.selectedItem = null;
             })
             .addCase(fetchGoodById.fulfilled, (state, action) => {
                 state.loading = false;
@@ -114,6 +116,7 @@ const goodsSlice = createSlice({
             .addCase(fetchGoodById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+                state.selectedItem = null;
             })
             .addCase(toggleWishlist.fulfilled, (state, action) => {
                 const { id } = action.payload;

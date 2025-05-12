@@ -158,6 +158,32 @@ export const removeAndRefetchBasket = createAsyncThunk<
     }
 );
 
+export const addBasketItem = createAsyncThunk<
+    void,
+    { good_item: number; count: number },
+    { state: RootState }
+>(
+    'basket/addBasketItem',
+    async ({ good_item, count }, { getState, dispatch, rejectWithValue }) => {
+        const token = getState().auth.token;
+
+        try {
+            await axiosInstance.post(
+                '/me/basket-items/',
+                { good_item, count },
+                {
+                    headers: {
+                        Authorization: `Token ${token}`,
+                    },
+                }
+            );
+            await dispatch(fetchBasketWithGoods());
+        } catch (err: any) {
+            return rejectWithValue('Ошибка при добавлении товара в корзину');
+        }
+    }
+);
+
 const basketSlice = createSlice({
     name: 'basket',
     initialState,
@@ -203,6 +229,17 @@ const basketSlice = createSlice({
                 state.items = state.items.filter((i) => i.item.id !== id);
             })
             .addCase(removeBasketItem.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(addBasketItem.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addBasketItem.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(addBasketItem.rejected, (state, action) => {
+                state.loading = false;
                 state.error = action.payload as string;
             });
     },

@@ -24,7 +24,7 @@ const FavouritesPage: React.FC = () => {
                 <ul className='main_goods-list fav_goods-list'>
                     {goods.map((good, index) => (
                         <li key={index} className="main_good">
-                            <Link to={'/product'}>
+                            <Link to={`/product/${good.id}`}>
                                 <GoodsCard good={good} />
                             </Link>
                         </li>
