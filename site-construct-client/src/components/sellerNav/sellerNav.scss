@@ -43,6 +43,20 @@
     display: flex;
     gap: 12px;
     align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.seller-nav_item__active::before {
+    content: '';
+    background-color: var(--s-background);
+    position: absolute;
+    top: -16px;
+    right: -24px;
+    left: -24px;
+    bottom: -16px;
+    z-index: -1;
+    border-radius: var(--radius);
 }
 
 .sellet-nav_item-img {

@@ -3,7 +3,7 @@ import './search.scss'
 const Search: React.FC = () => {
     return (
         <div className='header_search'>
-            <input type="text" className='search_input' />
+            <input type="text" className='search_input text-n14' placeholder='Начните вводить' />
             <button className='search_btn'>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" clipRule="evenodd" d="M16.4697 16.4697C16.7626 16.1768 17.2374 16.1768 17.5303 16.4697L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L16.4697 17.5303C16.1768 17.2374 16.1768 16.7626 16.4697 16.4697Z" fill="black"/>

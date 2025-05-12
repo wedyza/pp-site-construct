@@ -1,6 +1,9 @@
+import { Link, useLocation } from 'react-router-dom';
 import './sellerNav.scss'
 
 const SellerNav: React.FC = () => {
+    const location = useLocation();
+
     return (
         <div className='seller-nav'>
             <div className='seller-nav_head'>
@@ -24,7 +27,7 @@ const SellerNav: React.FC = () => {
                 </div>
             </div>
             <div className='seller-nav_body'>
-                <div className="seller-nav_item">
+                <Link to='/seller/orders' className={`seller-nav_item ${location.pathname === '/seller/orders' ? 'seller-nav_item__active' : ''}`}>
                     <div className="sellet-nav_item-img">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M0 0.624742V1.24974H0.996094H1.98828L2.02734 1.39427C2.05078 1.4763 2.54688 3.46849 3.13281 5.82005L4.20312 10.0974L3.85156 10.2693C3.22656 10.574 2.73828 11.1794 2.5625 11.8591C2.48438 12.1638 2.48047 12.7888 2.55859 13.1208C2.71484 13.7693 3.21094 14.406 3.8125 14.7185C4.39844 15.0193 3.83203 14.9997 11.4844 14.9997C18.2578 14.9997 18.3398 14.9997 18.4688 14.9216C18.6562 14.8044 18.75 14.6286 18.75 14.3747C18.75 14.1208 18.6562 13.9451 18.4688 13.8279C18.3398 13.7497 18.2578 13.7497 11.7188 13.7497C7.34766 13.7497 5.01172 13.7341 4.84766 13.7107C4.54297 13.6599 4.33984 13.5583 4.14062 13.3591C3.875 13.0935 3.80859 12.9255 3.80859 12.4997C3.80859 12.2107 3.82422 12.0974 3.88281 11.9919C4.03125 11.7107 4.21875 11.5271 4.48438 11.3982L4.74609 11.2693L12.0352 11.2576L19.3281 11.2497L19.3516 11.0622C19.3672 10.9607 19.5156 9.46068 19.6875 7.7263C19.9531 5.04662 20 4.46849 20 3.8513V3.12474H19.375H18.75V3.63646C18.75 3.98021 18.6602 5.0388 18.4766 6.88646C18.3281 8.39427 18.1953 9.71068 18.1797 9.81224L18.1562 9.99974H11.832H5.51172L5.47266 9.8513C5.44922 9.77318 4.90625 7.58959 4.25781 4.99974C3.60938 2.4099 3.06641 0.226304 3.04297 0.144273L3.00391 -0.000258446H1.50391H0V0.624742Z" fill="#02040F"/>
@@ -34,7 +37,7 @@ const SellerNav: React.FC = () => {
                         </svg>
                     </div>
                     <span className='seller-nav_item-text text-n16'>Мои заказы</span>
-                </div>
+                </Link>
                 <div className="seller-nav_item">
                     <div className="sellet-nav_item-img">
                         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">

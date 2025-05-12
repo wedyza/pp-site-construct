@@ -12,6 +12,7 @@ import CategoryPage from './pages/categoryPage/CategoryPage';
 import RegisterPage from './pages/registerPage/RegisterPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import SellerMainPage from './pages/sellerMainPage/SellerMainPage';
+import SellerOrdersPage from './pages/sellerOrdersPage/SellerOrdersPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
 
       {/* seller */}
       <Route path="/seller" element={<SellerMainPage />} />
+      <Route path="/seller/orders" element={<SellerOrdersPage />} />
 
       <Route element={<ProtectedRoute onlyGuest />}>
         <Route path="/login" element={<LoginPage />} />
