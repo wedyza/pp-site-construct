@@ -13,6 +13,13 @@ const SellerNav: React.FC = () => {
         { key: 'delivered', label: 'Доставлено (258)' },
         { key: 'returned', label: 'Возврат (31)' },
     ];
+    const goodsFilters = [
+        { key: 'all', label: 'Все (67)' },
+        { key: 'pending', label: 'На модерации (32)' },
+        { key: 'shipped', label: 'Активный (45)' },
+        { key: 'delivered', label: 'Приостановленный (258)' },
+        { key: 'returned', label: 'Снятый с продажи (31)' },
+    ];
 
     return (
         <div className='seller-nav'>
@@ -64,15 +71,31 @@ const SellerNav: React.FC = () => {
                         )
                     }
                 </div>
-                <div className="seller-nav_item">
-                    <div className="seller-nav_item-img">
-                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M10.3124 10.0718L2.4707 6.58657L3.02914 5.33008L10.9999 8.87265L18.9707 5.33008L19.5291 6.58657L11.6874 10.0718V19.7083H10.3124V10.0718Z" fill="#02040F"/>
-                            <path fillRule="evenodd" clipRule="evenodd" d="M10.4974 1.76266C10.8174 1.62045 11.1826 1.62045 11.5026 1.76266L19.2026 5.18489C19.6495 5.38351 19.9375 5.82668 19.9375 6.31573V15.6842C19.9375 16.1732 19.6495 16.6164 19.2026 16.815L11.5026 20.2373C11.1826 20.3795 10.8174 20.3795 10.4974 20.2373L2.7974 16.815C2.35051 16.6164 2.0625 16.1732 2.0625 15.6842V6.31573C2.0625 5.82668 2.35051 5.38351 2.7974 5.18489L10.4974 1.76266ZM3.4375 6.40509V15.5948L11 18.956L18.5625 15.5948V6.40509L11 3.04397L3.4375 6.40509Z" fill="#02040F"/>
-                            <path fillRule="evenodd" clipRule="evenodd" d="M6.24693 3.84571C6.40114 3.49874 6.80742 3.34247 7.15439 3.49668L15.0778 7.01818C15.5247 7.2168 15.8127 7.65998 15.8127 8.14902V11.4583C15.8127 11.838 15.5049 12.1458 15.1252 12.1458C14.7455 12.1458 14.4377 11.838 14.4377 11.4583V8.23838L6.59595 4.75317C6.24898 4.59896 6.09272 4.19268 6.24693 3.84571Z" fill="#02040F"/>
-                        </svg>
-                    </div>
-                    <span className='seller-nav_item-text text-n16'>Мои товары</span>
+                <div className={`seller-nav_item-container ${['/seller/goods', '/seller/good'].includes(location.pathname) ? 'seller-nav_item__active' : ''}`}>
+                    <Link to='/seller/goods' className='seller-nav_item' >
+                        <div className="seller-nav_item-img">
+                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M10.3124 10.0718L2.4707 6.58657L3.02914 5.33008L10.9999 8.87265L18.9707 5.33008L19.5291 6.58657L11.6874 10.0718V19.7083H10.3124V10.0718Z" fill="#02040F"/>
+                                <path fillRule="evenodd" clipRule="evenodd" d="M10.4974 1.76266C10.8174 1.62045 11.1826 1.62045 11.5026 1.76266L19.2026 5.18489C19.6495 5.38351 19.9375 5.82668 19.9375 6.31573V15.6842C19.9375 16.1732 19.6495 16.6164 19.2026 16.815L11.5026 20.2373C11.1826 20.3795 10.8174 20.3795 10.4974 20.2373L2.7974 16.815C2.35051 16.6164 2.0625 16.1732 2.0625 15.6842V6.31573C2.0625 5.82668 2.35051 5.38351 2.7974 5.18489L10.4974 1.76266ZM3.4375 6.40509V15.5948L11 18.956L18.5625 15.5948V6.40509L11 3.04397L3.4375 6.40509Z" fill="#02040F"/>
+                                <path fillRule="evenodd" clipRule="evenodd" d="M6.24693 3.84571C6.40114 3.49874 6.80742 3.34247 7.15439 3.49668L15.0778 7.01818C15.5247 7.2168 15.8127 7.65998 15.8127 8.14902V11.4583C15.8127 11.838 15.5049 12.1458 15.1252 12.1458C14.7455 12.1458 14.4377 11.838 14.4377 11.4583V8.23838L6.59595 4.75317C6.24898 4.59896 6.09272 4.19268 6.24693 3.84571Z" fill="#02040F"/>
+                            </svg>
+                        </div>
+                        <span className='seller-nav_item-text text-n16'>Мои товары</span>
+                    </Link>
+                    { location.pathname === '/seller/goods' && (
+                        <div className="seller-nav_item-list text-n16">
+                            {goodsFilters.map(({ key, label }) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setActiveFilter(key)}
+                                    className={`seller-nav_item-second ${activeFilter === key ? 'seller-nav_item-second__active' : ''}`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                        )
+                    }
                 </div>
                 <div className={`seller-nav_item-container ${location.pathname === '/seller/finance' ? 'seller-nav_item__active' : ''}`}>
                     <Link className="seller-nav_item" to='/seller/finance'>

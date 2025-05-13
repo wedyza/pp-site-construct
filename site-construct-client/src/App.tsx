@@ -15,6 +15,8 @@ import SellerMainPage from './pages/sellerMainPage/SellerMainPage';
 import SellerOrdersPage from './pages/sellerOrdersPage/SellerOrdersPage';
 import SellerOrderPage from './pages/sellerOrderPage/SellerOrderPage';
 import SellerFinancePage from './pages/sellerFinancePage/SellerFinancePage';
+import SellerGoodsPage from './pages/sellerGoodsPage/SellerGoodsPage';
+import SellerGoodPage from './pages/sellerGoodPage/SellerGoodPage';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
 
       {/* seller */}
       <Route path="/seller" element={<SellerMainPage />} />
+      <Route path="/seller/goods" element={<SellerGoodsPage />} />
+      <Route path="/seller/good" element={<SellerGoodPage />} />
       <Route path="/seller/orders" element={<SellerOrdersPage />} />
       <Route path="/seller/order" element={<SellerOrderPage />} />
       <Route path="/seller/finance" element={<SellerFinancePage />} />
