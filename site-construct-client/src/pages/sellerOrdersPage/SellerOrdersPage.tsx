@@ -28,7 +28,7 @@ const SellerOrdersPage: React.FC = () => {
                         </svg>
                     </div>
                 </div>
-                <div className='seller-orders_table text-n11'>
+                <div className='seller-orders_table seller-table text-n11'>
                     <div className='seller-orders_table-head seller-orders_table-row'>
                         <div className='seller-orders_table-cell'>Номер заказа</div>
                         <div className='seller-orders_table-cell'>Дата заказа</div>

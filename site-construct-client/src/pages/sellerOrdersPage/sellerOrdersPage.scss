@@ -1,6 +1,6 @@
 .seller-orders {
     background-color: var(--background);
-    border-radius: var(--radius);
+    border-radius: var(--big-radius);
     padding: 16px;
     padding-top: 24px;
 }
@@ -48,13 +48,15 @@
     gap: 24px;
 }
 
-.seller-orders_table {
+.seller-table {
     width: 100%;
     margin-top: 16px;
     border: 1px solid var(--black15);
     border-radius: var(--big-radius);
     display: grid;
-    //grid-template-columns: repeat(8, 1fr);
+}
+
+.seller-orders_table {
     grid-template-columns: 11% 12.5% 11% 1fr 11% 13% 14% 13%;
 }
 
