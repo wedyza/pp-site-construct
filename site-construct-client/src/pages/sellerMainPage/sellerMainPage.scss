@@ -15,7 +15,7 @@
 }
 
 .seller-main_second {
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr auto;
 }
 
 .seller-main_column {
@@ -34,6 +34,8 @@
 .seller-main_item-body {
     padding: 24px;
     padding-top: 12px;
+    position: relative;
+    height: calc(100% - 51px);
 }
 
 .seller-main_item-title {
@@ -121,4 +123,68 @@
 .seller-main_del-item-info {
     display: flex;
     justify-content: space-between;
+}
+
+.seller-main_rem-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    a:link {
+        color: var(--black60);
+    }
+}
+
+/*удалить*/
+.grafictemp {
+    height: 238px;
+    background-color: var(--temp-color);
+    padding-bottom: 32px;
+}
+
+/*удалить*/
+
+.seller-main_rem-table {
+    display: grid;
+    grid-template-columns: 15% 33% 22% 15% 1fr;
+    row-gap: 12px;
+    position: absolute;
+    top: 12px;
+    bottom: 27px;
+    left: 24px;
+    right: 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.seller-main_rem-head,
+.seller-main_rem-row {
+    display: contents;
+}
+
+.seller-main_rem-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.seller-main_rem-cell-img {
+    width: 7px;
+    height: 7px;
+    background-color: var(--green);
+    border-radius: 50%;
+}
+
+.seller-main_rem-head {
+    .seller-main_rem-cell {
+        border-top: 1px solid var(--black15);
+        border-bottom: 1px solid var(--black15);
+        padding: 6px 0;
+        margin-bottom: 4px;
+    }
 }

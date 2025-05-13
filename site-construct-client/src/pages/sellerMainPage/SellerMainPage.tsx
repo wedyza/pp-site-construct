@@ -131,15 +131,132 @@ const SellerMainPage: React.FC = () => {
                 </div>
                 <div className='seller-main_second seller-main_column'>
                     <div className='seller-main_item'>
-                        <h1 className='text-h3 seller-main_item-title'>Остатки товаров</h1>
+                        <div className='seller-main_item-title seller-main_rem-title'>
+                            <h1 className='text-h3'>
+                                Остатки товаров
+                            </h1>
+                            <Link to='' className='text-n14'>Подробнее</Link>
+                        </div>
                         <div className='seller-main_item-body'>
-                            
+                            <div className="seller-main_rem-table text-n11">
+                                <div className="seller-main_rem-head">
+                                    <p className="seller-main_rem-cell">№</p>
+                                    <p className="seller-main_rem-cell">Товар</p>
+                                    <p className="seller-main_rem-cell">Продажи за нед.</p>
+                                    <p className="seller-main_rem-cell">Остаток</p>
+                                    <p className="seller-main_rem-cell">Статус</p>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">1</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">2</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">3</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">4</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">5</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">6</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">7</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">8</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">9</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                                <div className="seller-main_rem-row">
+                                    <p className="seller-main_rem-cell">10</p>
+                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
+                                    <p className="seller-main_rem-cell">45</p>
+                                    <p className="seller-main_rem-cell">456</p>
+                                    <div className="seller-main_rem-cell">
+                                        <div className="seller-main_rem-cell-img"></div>
+                                        В наличии
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className='seller-main_item'>
-                        <h1 className='text-h3 seller-main_item-title'>Динамика продаж</h1>
+                        <div className='seller-main_item-title seller-main_dyn-title'>
+                            <h1 className='text-h3'>
+                                Динамика продаж
+                            </h1>
+                        </div>
                         <div className='seller-main_item-body'>
-                            
+                            <div className="grafictemp"></div>
                         </div>
                     </div>
                 </div>
