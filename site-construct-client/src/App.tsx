@@ -17,6 +17,7 @@ import SellerOrderPage from './pages/sellerOrderPage/SellerOrderPage';
 import SellerFinancePage from './pages/sellerFinancePage/SellerFinancePage';
 import SellerGoodsPage from './pages/sellerGoodsPage/SellerGoodsPage';
 import SellerGoodPage from './pages/sellerGoodPage/SellerGoodPage';
+import MakeOrderPage from './pages/makeOrderPage/MakeOrderPage';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/favourites" element={<FavouritesPage />} />
         <Route path="/basket" element={<BasketPage />} />
+        <Route path="/make-order" element={<MakeOrderPage />} />
       </Route>
     </Routes>
   );

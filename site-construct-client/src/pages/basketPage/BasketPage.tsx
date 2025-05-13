@@ -96,8 +96,8 @@ const BasketPage: React.FC = () => {
                             <span className='basket-placement_content__value text-price2'>5 520 ₽</span>
                         </div>
                     </div>
-                    <Link to='' className='basket-placement_link btn-black'>
-                        <span className='text-n16'>Перейти к оформлению</span>
+                    <Link to='/make-order' className='basket-placement_link btn-black text-n16'>
+                        <span className='basket-placement_link-text'>Перейти к оформлению</span>
                     </Link>
                 </div>
             </div>
