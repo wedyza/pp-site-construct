@@ -116,6 +116,9 @@ const SellerOrderPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <button className='seller-order_btn btn-black text-btn'>
+                    Заказ обработан и передан в доставку
+                </button>
             </div>
         </div>
     );
