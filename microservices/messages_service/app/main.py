@@ -93,7 +93,7 @@ async def post_message(receiver_id:int ,payload: CreateMessage, db: Session = De
     db.commit()
     db.refresh(message)
     
-    await manager.send_message(message.body, message.receiver_id, message.sender_id)
+    await manager.send_message(message, message.receiver_id, message.sender_id)
     return Response(json.dumps({'success': True}))
 
 
