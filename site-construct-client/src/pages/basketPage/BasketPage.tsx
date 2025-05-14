@@ -39,6 +39,19 @@ const BasketPage: React.FC = () => {
     const isAllSelected = selectedIds.length === items.length && items.length > 0;
     const selectedGoods = items.filter(({ item }) => selectedIds.includes(item.id));
 
+    useEffect(() => {
+        localStorage.setItem('selectedBasketIds', JSON.stringify(selectedIds));
+    }, [selectedIds]);
+
+    useEffect(() => {
+        const saved = localStorage.getItem('selectedBasketIds');
+        console.log(saved);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            dispatch(setSelectedItems(parsed));
+        }
+    }, [dispatch]);
+
     return (
         <div className='page-content'>
             <Header />

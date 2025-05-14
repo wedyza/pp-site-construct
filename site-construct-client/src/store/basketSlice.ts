@@ -15,11 +15,19 @@ interface BasketState {
     selectedIds: number[];
     loading: boolean;
     error: string | null;
-}
+}const loadSelectedIds = (): number[] => {
+    try {
+        const saved = localStorage.getItem('selectedBasketIds');
+        return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        console.error('Ошибка чтения selectedBasketIds из localStorage:', e);
+        return [];
+    }
+};
 
 const initialState: BasketState = {
     items: [],
-    selectedIds: [],
+    selectedIds: loadSelectedIds(),
     loading: false,
     error: null,
 };
