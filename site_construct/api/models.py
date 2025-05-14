@@ -167,6 +167,7 @@ class Basket(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
+    currently_for_order = models.BooleanField("Используется для заказов", default=False)
     visible = models.BooleanField("Видимая", default=True)
 
     class Meta:

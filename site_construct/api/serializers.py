@@ -288,10 +288,23 @@ class RecipentSerializer(serializers.ModelSerializer):
         read_only_fields = ('user',)
 
 class BasketItemSerializer(serializers.ModelSerializer):
+    chosen_for_order = serializers.SerializerMethodField(
+        'get_chosen_for_order'
+    )
+    good_item = GoodItemSerializer()
+
     class Meta:
         model = BasketItem
-        fields = ('good_item', 'count', 'basket', 'id')
-        read_only_fields = ("basket",)
+        fields = ('good_item', 'count', 'id', 'chosen_for_order')
+        read_only_fields = ("basket", "chosen_for_order")
+    
+    def get_chosen_for_order(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous or user is None:
+            return False
+        
+        basket = Basket.objects.filter(visible=True).filter(user=user).first()
+        return obj.basket != basket
         
 
 class BasketItemCreateSerializer(serializers.ModelSerializer):
@@ -303,12 +316,12 @@ class BasketItemCreateSerializer(serializers.ModelSerializer):
 
 class BasketSerializer(serializers.ModelSerializer):
     summary = serializers.SerializerMethodField()
-    items = BasketItemSerializer(many=True)
+    # items = BasketItemSerializer(many=True)
 
     class Meta:
         model = Basket
-        exclude = ("visible",)
-        read_only_fields = ("items",)
+        exclude = ("visible", "currently_for_order")
+        # read_only_fields = ("items",)
 
     def create(self, validated_data):
         basket = Basket.objects.create(**validated_data)
@@ -334,15 +347,26 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 
 class OrderToBuyerSerializer(serializers.ModelSerializer):
-    basket = BasketSerializer()
+    items = serializers.SerializerMethodField(
+        'get_items'
+    )
     payment_method = PaymentMethodSerializer()
     delivery_method = DeliveryMethodSerializer()
     transaction = TransactionSerializer()
 
     class Meta:
         model = Order
-        fields = ('transaction', 'basket', 'payment_method', 'delivery_method', 'recipent', 'status')
-        read_only_fields = ('basket', 'payment_method', 'delivery_method')
+        fields = ('transaction', 'items', 'payment_method', 'delivery_method', 'recipent', 'status')
+        read_only_fields = ('items', 'payment_method', 'delivery_method')
+    
+    def get_items(self, obj):
+        basket = obj.basket
+        basket_items = BasketItem.objects.filter(basket=basket).values_list('good_item', flat=True)
+        good_items = GoodItem.objects.filter(id__in=basket_items).all()
+        returning = GoodItemSerializer(data=good_items, many=True, context={'request': self.context['request']})
+        returning.is_valid()
+        return returning.data
+
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -421,3 +445,7 @@ class CharacteristicsCategoryResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = CharacteristicsCategory
         fields = ('characteristics', 'title', 'id')
+
+
+class SwitchSerializer(serializers.Serializer):
+    enable = serializers.BooleanField()

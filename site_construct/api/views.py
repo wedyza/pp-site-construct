@@ -39,6 +39,7 @@ from .serializers import (
     PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
     RecipentSerializer,
+    SwitchSerializer,
     UserSerializer,
     OrderToBuyerSerializer,
     OrderCreateSerializer,
@@ -51,7 +52,7 @@ from django.shortcuts import get_object_or_404
 from .permissions import AdminOrReadOnly, MarketPermission, Owner, OwnerOrReadOnly, AdminOrModerator, SellerOrReadOnly
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 User = get_user_model()
 
@@ -105,6 +106,8 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'apply_characteristic':
             return ListApply
+        if self.action == 'add_to_wishlist':
+            return SwitchSerializer
         if self.request.method == 'POST':
             return GoodItemCreateSerializer
         if self.action == 'list':
@@ -135,15 +138,19 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     def add_to_wishlist(self, request, pk):
         item = GoodItem.objects.get(id=pk)
         user = request.user
+        status = self.get_serializer(data=request.data)
 
+        if not status.is_valid():
+            return Response(status.errors)
         like = Like.objects.filter(item=item).filter(user=user).first()
-        if like is not None:
+        if like is not None and not status.data['enable']:
             like.delete()
-        else:
+        elif like is None:
             like = Like.objects.create(item=item, user=user)
             like.save()
-
-        return Response('success')
+        return Response({
+            'enabled': status.data['enable']
+        })
     
 
     @action(detail=True, methods=['GET'], url_path='comments')
@@ -185,6 +192,8 @@ class BasketItemViewSet(
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_serializer_class(self):
+        if self.action == 'switch_to_order':
+            return SwitchSerializer
         if self.request.method == 'POST':
             return BasketItemCreateSerializer
         return BasketItemSerializer
@@ -194,11 +203,12 @@ class BasketItemViewSet(
         basket = Basket.objects.filter(visible=True).filter(
             user__id=self.request.user.id
         )
+        basket_order = Basket.objects.filter(visible=False).filter(user=self.request.user).filter(currently_for_order=True).first()
         if len(basket) == 0:
             basket = Basket.objects.create(user_id=self.request.user.id)
         else:
             basket = basket.get()
-        basket_items = BasketItem.objects.filter(basket=basket)
+        basket_items = BasketItem.objects.filter(Q(basket=basket) | Q(basket=basket_order))
         return basket_items
 
     def create(self, request, *args, **kwargs):
@@ -221,6 +231,32 @@ class BasketItemViewSet(
         
         return Response(basket_item.data, status=status.HTTP_200_OK)
 
+
+    @action(detail=True, url_path='switch_to_order', methods=["POST"])
+    def switch_to_order(self, request, pk):
+        status = self.get_serializer(data=request.data)
+        
+        if not status.is_valid():
+            return Response(status.errors)
+        
+        basket_item = BasketItem.objects.get(id=pk)
+        
+        if status.data['enable']:
+            order_basket = Basket.objects.filter(user=request.user).filter(visible=False).filter(currently_for_order=True).first()
+
+            if order_basket is None:
+                order_basket = Basket.objects.create(user=request.user, visible=False, currently_for_order=True)
+                order_basket.save()
+
+            basket_item.basket = order_basket
+        else:
+            default_basket = Basket.objects.filter(user=request.user).filter(visible=True).first()  
+            basket_item.basket = default_basket
+        basket_item.save()
+
+        return Response({
+            'enabled': status.data['enable']
+        })
 
 
 class UsersViewSet(
@@ -279,9 +315,9 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
         if not order.is_valid():
             return Response(order.errors)
         
-        basket = Basket.objects.filter(visible=True).filter(
+        basket = Basket.objects.filter(visible=False).filter(
             user__id=self.request.user.id
-        ).first()
+        ).filter(currently_for_order=True).first()
 
         if basket is None:
             return Response({'error': 'Невозможно создать заказ с пустой корзиной!'}, status=status.HTTP_400_BAD_REQUEST)
@@ -295,7 +331,7 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
         if sum_total == 0:
             return Response({'error': 'Невозможно создать заказ с пустой корзиной!'}, status=status.HTTP_400_BAD_REQUEST)
 
-        basket.visible = False
+        basket.currently_for_order = False
         basket.save()
         order.save(basket=basket, payment_total=sum_total, user=self.request.user)
         return Response(order.data)
