@@ -186,6 +186,6 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_STORAGE_BUCKET_NAME = "local"
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-
-if DEBUG:
-    AWS_S3_ENDPOINT_URL = "http://94.190.123.143:8000/media"
+# AWS_S3_REGION_NAME = 'eu-west-1'
+# if DEBUG:
+AWS_S3_ENDPOINT_URL = "http://94.190.123.143:8000/media"

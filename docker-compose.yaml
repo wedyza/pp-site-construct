@@ -10,7 +10,7 @@ services:
       - "9000"
     volumes:  
       - minio-storage:/data  
-      - minio-config:/root/.minio  
+      # - minio-config:/root/.minio  
     environment:  
       - MINIO_ROOT_USER=miniouser  
       - MINIO_ROOT_PASSWORD=admin123
@@ -74,7 +74,7 @@ services:
       - static:/static/
 volumes:
   minio-storage:
-  minio-config:
+  # minio-config:
   pg_data:
   message_volume:
   notification_volume:
