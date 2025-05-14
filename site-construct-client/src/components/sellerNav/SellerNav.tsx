@@ -56,7 +56,7 @@ const SellerNav: React.FC = () => {
                         </div>
                         <span className='seller-nav_item-text text-n16'>Мои заказы</span>
                     </Link>
-                    { location.pathname === '/seller/orders' && (
+                    { ['/seller/orders', '/seller/order'].includes(location.pathname) && (
                         <div className="seller-nav_item-list text-n16">
                             {filters.map(({ key, label }) => (
                                 <button
@@ -82,7 +82,7 @@ const SellerNav: React.FC = () => {
                         </div>
                         <span className='seller-nav_item-text text-n16'>Мои товары</span>
                     </Link>
-                    { location.pathname === '/seller/goods' && (
+                    { ['/seller/goods', '/seller/good'].includes(location.pathname) && (
                         <div className="seller-nav_item-list text-n16">
                             {goodsFilters.map(({ key, label }) => (
                                 <button

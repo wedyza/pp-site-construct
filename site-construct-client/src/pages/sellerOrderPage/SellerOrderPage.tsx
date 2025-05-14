@@ -1,6 +1,5 @@
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerOrderPage.scss'
-import { Link } from 'react-router-dom';
 
 const SellerOrderPage: React.FC = () => {
     return (
