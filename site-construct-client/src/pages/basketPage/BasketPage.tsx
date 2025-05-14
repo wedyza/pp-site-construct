@@ -6,39 +6,38 @@ import { Link } from 'react-router-dom';
 import BasketCard from '../../components/basketCard/BasketCard';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchBasketWithGoods } from '../../store/basketSlice';
+import { clearSelectedItems, fetchBasketWithGoods, setSelectedItems } from '../../store/basketSlice';
 
 const BasketPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { items } = useAppSelector((state) => state.basket);
-    console.log(items);
+    const { items, selectedIds } = useAppSelector((state) => state.basket);
 
     useEffect(() => {
         dispatch(fetchBasketWithGoods());
     }, [dispatch]);
-    
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
     const toggleSelectAll = () => {
         if (selectedIds.length === items.length) {
-            setSelectedIds([]);
+            dispatch(clearSelectedItems());
         } else {
             const allIds = items.map(({ item }) => item.id);
-            setSelectedIds(allIds);
+            dispatch(setSelectedItems(allIds));
         }
     };
 
     const clearAll = () => {
-        setSelectedIds([]);
+        dispatch(clearSelectedItems());
     };
 
     const handleToggleSingle = (id: number) => {
-        setSelectedIds((prev) =>
-            prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
-        );
+        const updated = selectedIds.includes(id)
+            ? selectedIds.filter((i) => i !== id)
+            : [...selectedIds, id];
+        dispatch(setSelectedItems(updated));
     };
 
     const isAllSelected = selectedIds.length === items.length && items.length > 0;
+    const selectedGoods = items.filter(({ item }) => selectedIds.includes(item.id));
 
     return (
         <div className='page-content'>
@@ -78,22 +77,24 @@ const BasketPage: React.FC = () => {
                 <div className='basket-placement'>
                     <div className='basket-placement_content'>
                         <div className="basket-placement_list">
-                            <div className="basket-placement_list-item">
-                                <span className='basket-placement_list__label text-n14'>
-                                    Специальное чистящее средство для посудомоечной машины
-                                </span>
-                                <span className='basket-placement_list__value text-price1'>5 520 ₽</span>
-                            </div>
-                            <div className="basket-placement_list-item">
-                                <span className='basket-placement_list__label text-n14'>
-                                    Специальное чистящее средство для посудомоечной машины
-                                </span>
-                                <span className='basket-placement_list__value text-price1'>5 520 ₽</span>
-                            </div>
+                            {selectedGoods.map(({ good, item }) =>
+                                good ? (
+                                    <div key={item.id} className="basket-placement_list-item">
+                                        <span className='basket-placement_list__label text-n14'>
+                                            {good.name}
+                                        </span>
+                                        <span className='basket-placement_list__value text-price1'>
+                                            {good.price * item.count} ₽
+                                        </span>
+                                    </div>
+                                ) : null
+                            )}
                         </div>
                         <div className="basket-placement_sum">
                             <span className='basket-placement_content__label text-desc'>Итого:</span>
-                            <span className='basket-placement_content__value text-price2'>5 520 ₽</span>
+                            <span className='basket-placement_content__value text-price2'>
+                                {selectedGoods.reduce((sum, { good, item }) => sum + (good ? good.price * item.count : 0), 0).toLocaleString()} ₽
+                            </span>
                         </div>
                     </div>
                     <Link to='/make-order' className='basket-placement_link btn-black text-n16'>

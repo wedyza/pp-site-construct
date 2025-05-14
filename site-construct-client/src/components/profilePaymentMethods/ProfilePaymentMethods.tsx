@@ -7,7 +7,7 @@ import { fetchPaymentMethods, addPaymentMethod } from '../../store/paymentMethod
 
 const ProfilePaymentMethods: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { items: methods, loading } = useAppSelector((state) => state.paymentMethods);
+    const { items: methods/*, loading*/ } = useAppSelector((state) => state.paymentMethods);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [cardBody, setCardBody] = useState('');
@@ -28,7 +28,7 @@ const ProfilePaymentMethods: React.FC = () => {
         e.preventDefault();
         dispatch(
             addPaymentMethod({
-                card_body: cardBody,
+                card_body: cardBody.replace(/\s/g, ''),
                 card_expire_date: convertDate(cardDate),
                 card_cvv_code: cardCvv,
             })
@@ -38,6 +38,22 @@ const ProfilePaymentMethods: React.FC = () => {
             setCardDate('');
             setCardCvv('');
         });
+    };
+
+    const handleCardBodyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.slice(0, 16);
+        const formatted = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setCardBody(formatted);
+    };
+
+    const handleCardDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.slice(0, 4);
+        if (value.length > 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2);
+        }
+        setCardDate(value);
     };
 
     return (
@@ -63,7 +79,7 @@ const ProfilePaymentMethods: React.FC = () => {
                         className='payment-modal_input payment-modal_number text-n14'
                         placeholder='Номер карты'
                         value={cardBody}
-                        onChange={(e) => setCardBody(e.target.value)}
+                        onChange={handleCardBodyChange}
                         required
                     />
                     <input
@@ -71,7 +87,7 @@ const ProfilePaymentMethods: React.FC = () => {
                         className='payment-modal_input payment-modal_date text-n14'
                         placeholder='ММ/ГГ'
                         value={cardDate}
-                        onChange={(e) => setCardDate(e.target.value)}
+                        onChange={handleCardDateChange}
                         required
                     />
                     <input

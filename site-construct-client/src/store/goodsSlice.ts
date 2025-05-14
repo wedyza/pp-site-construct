@@ -17,6 +17,7 @@ export interface Good {
     in_wishlist: boolean;
     basket_count?: number;
     basket_id?: number;
+    rating?: number;
 }
 
 interface GoodsState {
@@ -40,12 +41,19 @@ export const fetchGoods = createAsyncThunk<
 >('goods/fetchGoods', async (_, { getState, rejectWithValue }) => {
     const token = getState().auth.token;
     try {
-        const response = await axiosInstance.get('/goods/', {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-        });
-        return response.data.results;
+        if (token) {
+            const response = await axiosInstance.get('/goods/', {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+        
+            return response.data.results;
+        } else {
+            const response = await axiosInstance.get('/goods/',);
+        
+            return response.data.results;
+        }
     } catch (err: any) {
         return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товаров');
     }
@@ -58,12 +66,17 @@ export const fetchGoodById = createAsyncThunk<
 >('goods/fetchGoodById', async (id, { getState, rejectWithValue }) => {
     const token = getState().auth.token;
     try {
-        const response = await axiosInstance.get(`/goods/${id}/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-        });
-        return response.data;
+        if (token) {
+            const response = await axiosInstance.get(`/goods/${id}/`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return response.data;
+        } else {
+            const response = await axiosInstance.get(`/goods/${id}/`);
+            return response.data;
+        }
     } catch (err: any) {
         return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товара');
     }

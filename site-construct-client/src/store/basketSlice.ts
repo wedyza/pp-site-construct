@@ -12,12 +12,14 @@ export interface BasketItem {
 
 interface BasketState {
     items: { item: BasketItem; good: Good | null }[];
+    selectedIds: number[];
     loading: boolean;
     error: string | null;
 }
 
 const initialState: BasketState = {
     items: [],
+    selectedIds: [],
     loading: false,
     error: null,
 };
@@ -187,7 +189,14 @@ export const addBasketItem = createAsyncThunk<
 const basketSlice = createSlice({
     name: 'basket',
     initialState,
-    reducers: {},
+    reducers: {
+        setSelectedItems(state, action) {
+            state.selectedIds = action.payload;
+        },
+        clearSelectedItems(state) {
+            state.selectedIds = [];
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchBasketWithGoods.pending, (state) => {
@@ -245,4 +254,5 @@ const basketSlice = createSlice({
     },
 });
 
+export const { setSelectedItems, clearSelectedItems } = basketSlice.actions;
 export default basketSlice.reducer;

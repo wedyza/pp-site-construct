@@ -6,6 +6,7 @@ import Header from '../../components/header/Header';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchGoods } from '../../store/goodsSlice';
+import { logout } from '../../store/authSlice';
 
 const MainPage: React.FC = () => {
     const dispatch = useAppDispatch();
