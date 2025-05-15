@@ -87,9 +87,15 @@ export const toggleWishlist = createAsyncThunk<
     number,
     { state: RootState }
 >('goods/toggleWishlist', async (id, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
+    const state = getState();
+    const token = state.auth.token;
+    const good = state.goods.items.find((item) => item.id === id);
+    if (!good) {
+        return rejectWithValue('Товар не найден');
+    }
+    const enable = !good.in_wishlist;
     try {
-        await axiosInstance.post(`/goods/${id}/switch_wishlist/`, {}, {
+        await axiosInstance.post(`/goods/${id}/switch_wishlist/`, { enable }, {
             headers: {
                 Authorization: `Token ${token}`,
             },
