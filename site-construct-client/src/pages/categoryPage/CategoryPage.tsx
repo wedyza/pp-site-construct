@@ -5,6 +5,9 @@ import Header from '../../components/header/Header';
 import DropdownSubcategory from '../../components/dropdownSubcategory/DropdownSubcategory';
 import GoodsCard from '../../components/goodCard/GoodCard';
 import { Good } from '../../store/goodsSlice';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchCategoryById, getCategoryPath } from '../../store/categoriesSlice';
 
 const goods: Good[] = [
     {
@@ -158,6 +161,19 @@ const subcategories = [
 ];
 
 const CategoryPage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const dispatch = useAppDispatch();
+
+    const { selected, loading, error } = useAppSelector((state) => state.categories);
+
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchCategoryById(Number(id)));
+        }
+    }, [id, dispatch]);
+
+
+
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -181,6 +197,8 @@ const CategoryPage: React.FC = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [openIndex]);
+    
+    const categoryPath = getCategoryPath(selected, useAppSelector((state) => state.categories.raw));
 
     return (
         <div className='page-content__no-pad'>
@@ -188,7 +206,7 @@ const CategoryPage: React.FC = () => {
             <HeaderCategories />
             <div className="main-content">
                 <div className="category-page_header">
-                    <h1 className="category-header_title text-h1 hover1">Электроника и гаджеты / Смартфоны и аксессуары</h1>
+                    <h1 className="category-header_title text-h1 hover1">{categoryPath.join(' / ')}</h1>
                     <div className="category-header_subcats text-n14">
                         {subcategories.map((subcat, index) => (
                             <DropdownSubcategory

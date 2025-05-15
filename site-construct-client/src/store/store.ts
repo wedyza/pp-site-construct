@@ -7,6 +7,7 @@ import basketReducer from './basketSlice';
 import wishlistReducer from './wishlistSlice';
 import commentsReducer from './commentsSlice';
 import usersReducer from './usersSlice';
+import categoriesReducer from './categoriesSlice';
 
 const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
         wishlist: wishlistReducer,
         comments: commentsReducer,
         users: usersReducer,
+        categories: categoriesReducer,
     },
 });
 

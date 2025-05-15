@@ -1,143 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './catalogModal.scss';
-import book from '../../img/book.svg'
+import book from '../../img/book.svg';
 import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchCategories } from '../../store/categoriesSlice';
 
-interface CatalogModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
+const CatalogModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+    const dispatch = useAppDispatch();
+    const { structured: categories, loading } = useAppSelector((state) => state.categories);
 
-interface CategoryData {
-    [category: string]: {
-        subcategories: {
-            title: string;
-            items: string[];
-        }[];
-    };
-}
-  
-const categories: CategoryData = {
-    "Электроника и гаджеты": {
-        subcategories: [
-            {
-            title: "Смартфоны и аксессуары",
-            items: [
-                "Смартфоны (iPhone, Samsung, Xiaomi)",
-                "Чехлы и плёнки",
-                "Зарядные устройства",
-                "Power Bank",
-                "Наушники (проводные и Bluetooth)",
-            ],
-            },
-            {
-            title: "Электроника для авто",
-            items: [
-                "Видеорегистраторы",
-                "Автомагнитолы",
-                "Парктроники",
-                "Зарядки в прикуриватель",
-                "Держатели для телефона",
-                "GPS-навигаторы",
-                "Камеры заднего вида",
-                "Bluetooth-адаптеры",
-                "Устройства слежения",
-            ],
-            },
-            {
-            title: "Аудио и видео техника",
-            items: [
-                "Колонки Bluetooth",
-                "Саундбары",
-                "Домашние кинотеатры",
-                "Портативные плееры",
-            ],
-            },
-            {
-            title: "Носимая электроника",
-            items: [
-                "Умные часы (Apple Watch, Galaxy Watch)",
-                "Фитнес-браслеты",
-                "Часы с GPS для детей",
-                "Браслеты здоровья",
-                "Аксессуары для часов",
-                "Зарядки для смарт-часов",
-                "Часы для пожилых",
-                "Спортивные часы",
-                "Умные кольца",
-            ],
-            },
-            {
-            title: "Умный дом и безопасность",
-            items: [
-                "Умные розетки",
-                "Лампочки",
-                "Системы видеонаблюдения",
-                "Датчики движения",
-                "Умные выключатели",
-                "Голосовые помощники",
-                "Видеозвонки",
-                "Термостаты",
-                "Сигнализация",
-            ],
-            },
-            {
-            title: "Компьютеры и ноутбуки",
-            items: ["Ноутбуки", "Моноблоки", "Периферия", "Аксессуары"],
-            },
-            {
-            title: "Игровая электроника",
-            items: [
-                "Игровые приставки (PlayStation, Xbox, Nintendo)",
-                "Геймпады и контроллеры",
-                "Игровые наушники",
-                "VR-очки",
-                "Игровые кресла",
-            ],
-            },
-            {
-            title: "Фото и видеотехника",
-            items: [
-                "Цифровые фотоаппараты",
-                "Экшн-камеры (GoPro и аналоги)",
-                "Штативы и стабилизаторы",
-                "Объективы",
-                "Освещение для съёмки",
-            ],
-            },
-            {
-            title: "Портативная техника",
-            items: [
-                "Электронные книги",
-                "Мини-проекторы",
-                "Карманные принтеры",
-                "Мини-кондиционеры",
-                "Пылесосы",
-                "Лазерные указки",
-                "Увлажнители USB",
-            ],
-            },
-        ],
-    },
+    console.log(categories);
 
-    "Одежда и обувь": { subcategories: [] },
-    "Дом и сад": { subcategories: [] },
-    "Здоровье": { subcategories: [] },
-    "Спорт и активный отдых": { subcategories: [] },
-    "Товары для животных": { subcategories: [] },
-    "Детские товары": { subcategories: [] },
-    "Канцтовары и книги": { subcategories: [] },
-    "Товары для праздников и подарки": { subcategories: [] },
-    "Игрушки и хобби": { subcategories: [] },
-    "Ювелирные изделия и аксессуары": { subcategories: [] },
-    "Мебель": { subcategories: [] },
-    "Товары для гейминга": { subcategories: [] },
-    "Канцелярия": { subcategories: [] },
-};
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
 
-const CatalogModal: React.FC<CatalogModalProps> = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (isOpen) {
+            dispatch(fetchCategories());
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = '';
@@ -145,16 +23,21 @@ const CatalogModal: React.FC<CatalogModalProps> = ({ isOpen, onClose }) => {
         return () => {
             document.body.style.overflow = '';
         };
-    }, [isOpen]);
+    }, [isOpen, dispatch]);
 
-    const [selectedCategory, setSelectedCategory] = useState<string>('Электроника и гаджеты');
+    useEffect(() => {
+        if (!selectedCategory && Object.keys(categories).length > 0) {
+            setSelectedCategory(Object.keys(categories)[0]);
+        }
+    }, [categories]);
+
     if (!isOpen) return null;
-    const subcategories = categories[selectedCategory]?.subcategories || [];
+    const subcategories = categories[selectedCategory]?.subcategories || {};
 
     return (
         <div className="catalog-modal">
             <ul className='catalog-cat_list text-n16'>
-                {Object.keys(categories).map((cat, index) => (
+                {Object.keys(categories).map((cat) => (
                     <li
                         key={cat}
                         className={`catalog-cat_item ${cat === selectedCategory ? 'catalog-cat_item__active' : ''}`}
@@ -167,13 +50,22 @@ const CatalogModal: React.FC<CatalogModalProps> = ({ isOpen, onClose }) => {
             </ul>
             <div className="catalog-subcat_panel-container">
                 <div className="catalog-subcat_panel">
-                    {subcategories.map((subcat, index) => (
-                        <div className="catalog-subcat_block" key={index}>
-                            <Link to='/category' className="catalog-subcat_title text-h2 hover2">{subcat.title}</Link>
+                    {Object.entries(subcategories).map(([subcatKey, subcatValue]) => (
+                        <div className="catalog-subcat_block" key={subcatKey}>
+                            <Link
+                                to={`/category/${subcatValue.data.id}`}
+                                className="catalog-subcat_title text-h2 hover2"
+                            >
+                                {subcatValue.data.title}
+                            </Link>
                             <div className="catalog-subcat_list">
-                                {subcat.items.map((item, i) => (
-                                    <Link to='/category' className="catalog-subcat_item text-n16 hover2" key={i}>
-                                        {item}
+                                {subcatValue.subcategories.map((item) => (
+                                    <Link
+                                        to={`/category/${item.id}`}
+                                        className="catalog-subcat_item text-n16 hover2"
+                                        key={item.id}
+                                    >
+                                        {item.title}
                                     </Link>
                                 ))}
                             </div>
