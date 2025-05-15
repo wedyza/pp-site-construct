@@ -5,13 +5,14 @@ from .models import (
     Characteristics,
     CharacteristicsCategory,
     CommentReply,
-    Market,
+    ItemMedia,
     Order,
     DeliveryMethod,
     GoodCategory,
     GoodItem,
     PaymentMethod,
     Recipent,
+    Refund,
     Transaction,
     ItemCharacteristic,
     Comment,
@@ -19,7 +20,7 @@ from .models import (
 )
 from django.contrib.auth import get_user_model
 from django_enum.drf import EnumField
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from .functions import unwrap_categories
 
 User = get_user_model()
@@ -46,11 +47,40 @@ class GoodCategorySerializer(serializers.ModelSerializer):
         # read_only_fields = ('parent', )
 
 
+class ItemMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemMedia
+        fields = ('source',)
+
+
 class GoodItemCreateSerializer(serializers.ModelSerializer):
+    media = ItemMediaSerializer(many=True, required=False)
+    
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'market')
+        fields = ('category', 'name', 'description', 'price', 'user', 'media')
         extra_kwargs = {'price': {'required': True}}
+
+    def update(self, instance, validated_data):
+        if 'media' in self.initial_data:
+            medias = self.initial_data.pop('media')
+            for media in medias:
+                print(media)
+                new_media = ItemMedia.objects.create(item=instance)
+                new_media.source.save(media.name, media)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        item = GoodItem.objects.create(**validated_data)
+        if 'media' not in self.initial_data:
+            return item
+        item.save()
+        medias = self.initial_data.pop('media')
+        for media in medias:
+            new_media = ItemMedia.objects.create(item=item)
+            new_media.source.save(media.name, media)
+        return item
+
 
 
 class GoodItemInWishListSerializer(serializers.ModelSerializer):
@@ -63,10 +93,11 @@ class GoodItemInWishListSerializer(serializers.ModelSerializer):
         'get_rate',
         read_only=True
     )
+    media = ItemMediaSerializer(many=True)
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'id')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'user', 'rate', 'id', 'media')
 
     def get_characteristics(self, obj):
         return_list = []
@@ -92,8 +123,17 @@ class GoodItemInWishListSerializer(serializers.ModelSerializer):
     
     
     def get_rate(self, obj):
-        return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+        return Comment.objects.filter(item=obj).aggregate(Avg('rate'), Count('rate'))
     
+
+class SimplifiedGoodItemSerializer(serializers.ModelSerializer):
+    media = ItemMediaSerializer(many=True)
+
+    class Meta:
+        model = GoodItem
+        fields = ('media', 'id', 'name', 'description', 'price', 'discount', 'category')
+        # exclude = ('visible', 'apply', 'characteristics')
+
 
 class GoodItemSerializer(serializers.ModelSerializer):
     # category = GoodCategorySerializer()
@@ -109,11 +149,12 @@ class GoodItemSerializer(serializers.ModelSerializer):
         'get_in_wishlist',
         read_only=True
     )
+    media = ItemMediaSerializer(many=True)
 
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'in_wishlist', 'id')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'user', 'rate', 'in_wishlist', 'id', 'media')
 
     def get_characteristics(self, obj):
         return_list = []
@@ -140,7 +181,7 @@ class GoodItemSerializer(serializers.ModelSerializer):
     
     
     def get_rate(self, obj):
-        return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+        return Comment.objects.filter(item=obj).aggregate(Avg('rate'), Count('rate'))
     
     def get_in_wishlist(self, obj):
         user = self.context['request'].user
@@ -176,10 +217,11 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
         'get_basket_id',
         read_only=True
     )
+    media = ItemMediaSerializer(many=True)
 
     class Meta:
         model = GoodItem
-        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'market', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count', 'basket_id')
+        fields = ('category', 'name', 'description', 'price', 'discount', 'visible', 'apply', 'characteristics', 'user', 'rate', 'able_to_comment', 'in_wishlist', 'id', 'basket_count', 'basket_id', 'media')
 
     def get_characteristics(self, obj):
         return_list = []
@@ -205,7 +247,7 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
     
     
     def get_rate(self, obj):
-        return Comment.objects.filter(item=obj).aggregate(Avg('rate'))['rate__avg']
+        return Comment.objects.filter(item=obj).aggregate(Avg('rate'), Count('rate'))
     
     def get_able_to_comment(self, obj):
         user = self.context['request'].user
@@ -291,7 +333,7 @@ class BasketItemSerializer(serializers.ModelSerializer):
     chosen_for_order = serializers.SerializerMethodField(
         'get_chosen_for_order'
     )
-    good_item = GoodItemSerializer()
+    # good_item = GoodItemSerializer()
 
     class Meta:
         model = BasketItem
@@ -305,7 +347,16 @@ class BasketItemSerializer(serializers.ModelSerializer):
         
         basket = Basket.objects.filter(visible=True).filter(user=user).first()
         return obj.basket != basket
-        
+  
+
+class SimplifiedBasketItemSerializer(serializers.ModelSerializer):
+    good_item = SimplifiedGoodItemSerializer()
+    
+    class Meta:
+        model = BasketItem
+        fields = ('good_item', 'count')
+        read_only_fields = ("basket",)
+
 
 class BasketItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -361,12 +412,33 @@ class OrderToBuyerSerializer(serializers.ModelSerializer):
     
     def get_items(self, obj):
         basket = obj.basket
-        basket_items = BasketItem.objects.filter(basket=basket).values_list('good_item', flat=True)
-        good_items = GoodItem.objects.filter(id__in=basket_items).all()
-        returning = GoodItemSerializer(data=good_items, many=True, context={'request': self.context['request']})
-        returning.is_valid()
-        return returning.data
+        basket_items = BasketItem.objects.filter(basket=basket).all()
+        basket_items = SimplifiedBasketItemSerializer(data=basket_items, many=True)
+        if basket_items.is_valid():
+            return basket_items.data
+        
+    
 
+class OrderToSellerSerializer(serializers.ModelSerializer):
+    items = serializers.SerializerMethodField(
+        'get_items'
+    )
+    payment_method = PaymentMethodSerializer()
+    delivery_method = DeliveryMethodSerializer()
+    transaction = TransactionSerializer()
+
+    class Meta:
+        model = Order
+        fields = ('transaction', 'items', 'payment_method', 'delivery_method', 'recipent', 'status')
+        read_only_fields = ('items', 'payment_method', 'delivery_method')
+    
+    def get_items(self, obj):
+        basket = obj.basket
+        request = self.context['request']
+        basket_items = BasketItem.objects.filter(basket=basket).filter(good_item__user=request.user).all()
+        basket_items = SimplifiedBasketItemSerializer(data=basket_items, many=True)
+        basket_items.is_valid()
+        return basket_items.data
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -412,13 +484,6 @@ class ItemApplyCharacteristic(serializers.ModelSerializer):
 class ListApply(serializers.Serializer):
     characteristics = ItemApplyCharacteristic(many=True)
 
-class MarketSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Market
-        fields = '__all__'
-        read_only_fields = ('user',)
-
-
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -449,3 +514,15 @@ class CharacteristicsCategoryResponseSerializer(serializers.ModelSerializer):
 
 class SwitchSerializer(serializers.Serializer):
     enable = serializers.BooleanField()
+
+
+class RefundCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Refund
+        fields = ('item', 'order', 'body')
+
+
+class RefundResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Refund
+        fields = '__all__'

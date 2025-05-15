@@ -12,13 +12,13 @@ from .models import (
     DeliveryMethod,
     GoodCategory,
     GoodItem,
-    Market,
     PaymentMethod,
     Recipent,
     Order,
     Characteristics,
     Like,
-    Comment
+    Comment,
+    Refund
 )
 from .serializers import (
     BasketItemCreateSerializer,
@@ -35,10 +35,12 @@ from .serializers import (
     GoodItemSerializer,
     ItemApplyCharacteristic,
     ListApply,
-    MarketSerializer,
+    OrderToSellerSerializer,
     PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
     RecipentSerializer,
+    RefundCreateSerializer,
+    RefundResponseSerializer,
     SwitchSerializer,
     UserSerializer,
     OrderToBuyerSerializer,
@@ -49,7 +51,7 @@ from .serializers import (
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from .permissions import AdminOrReadOnly, MarketPermission, Owner, OwnerOrReadOnly, AdminOrModerator, SellerOrReadOnly
+from .permissions import AdminOrReadOnly, Owner, OwnerOrReadOnly, AdminOrModerator, SellerOrReadOnly
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum, Q
@@ -108,7 +110,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             return ListApply
         if self.action == 'add_to_wishlist':
             return SwitchSerializer
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PATCH' or self.request.method == 'PUT':
             return GoodItemCreateSerializer
         if self.action == 'list':
             return GoodItemSerializer
@@ -299,14 +301,23 @@ class RecipentViewSet(viewsets.ModelViewSet):
 
 class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin):
     permission_classes = (OwnerOrReadOnly, )
-    
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("status",)
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return OrderToBuyerSerializer
+            if self.request.user.user_type == 'Покупатель':
+                return OrderToBuyerSerializer
+            else:
+                return OrderToSellerSerializer
         elif self.request.method == 'POST':
             return OrderCreateSerializer
 
     def get_queryset(self):
+        if self.request.user.user_type == 'Продавец':
+            bought_baskets = Basket.objects.filter(visible=False).filter(currently_for_order=False).filter().all()
+            baskets = BasketItem.objects.filter(basket__in=bought_baskets).select_related('good_item').filter(good_item__user=self.request.user).values_list('basket_id', flat=True).all()
+            return Order.objects.filter(basket_id__in=baskets).all()
         return Order.objects.filter(user=self.request.user).all()
     
     def create(self, request, *args, **kwargs): # сделать проверку на то, что получатель / способ оплаты принадлежит пользователю
@@ -322,10 +333,6 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
         if basket is None:
             return Response({'error': 'Невозможно создать заказ с пустой корзиной!'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # basket_items = BasketItem.objects.filter(basket=basket).all()
-
-        # if len(basket_items) == 0:
-        
         sum_total = BasketItem.objects.filter(basket=basket).select_related("good_item").aggregate(Sum('good_item__price'))['good_item__price__sum']
 
         if sum_total == 0:
@@ -336,12 +343,20 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
         order.save(basket=basket, payment_total=sum_total, user=self.request.user)
         return Response(order.data)
 
+    @action(detail=False, url_path='ended', methods=['GET'])
+    def get_ended(self, request):
+        orders = self.get_queryset().filter(Q(status="Получено") | Q(status="Отклонен") | Q(status="Возврат")).all()
+        orders_serializer = self.get_serializer(data=orders, many=True)
+        orders_serializer.is_valid()
+        return Response(orders_serializer.data)
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
-    
-    # @action(detail=True, )
-    
+    @action(detail=False, url_path='processing', methods=['GET'])
+    def get_processing(self, request):
+        orders = self.get_queryset().filter(Q(status="В пути") | Q(status="Доставлено") | Q(status="Оплачено") | Q(status="В обработке")).all()
+        orders_serializer = self.get_serializer(data=orders, many=True)
+        orders_serializer.is_valid()
+        return Response(orders_serializer.data)
+
 
 class CharacteristicViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
     permission_classes = (AdminOrReadOnly, )
@@ -362,15 +377,6 @@ class GetMyWishlistView(views.APIView):
         serializer.is_valid()
         return Response(serializer.data)
     
-
-class MarketViewSet(viewsets.ModelViewSet):
-    queryset = Market.objects.all()
-    serializer_class = MarketSerializer
-    permission_classes = (MarketPermission,)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
 
 class CommentViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin, mixins.RetrieveModelMixin):
     # serializer_class = CommentSerializer
@@ -424,3 +430,21 @@ class CharacteristicCategoryViewSet(viewsets.GenericViewSet, mixins.CreateModelM
     serializer_class = CharacteristicCategorySerializer
     permission_classes = (AdminOrReadOnly, )
     queryset = CharacteristicsCategory.objects.all()
+
+
+class RefundViewSet(viewsets.ModelViewSet):
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RefundCreateSerializer
+        return RefundResponseSerializer
+    
+    def get_queryset(self):
+        return Refund.objects.filter(user=self.request.user).all() #dodelat
+    
+    def create(self, request, *args, **kwargs):
+        payload = self.get_serializer(data=request.data)
+
+        if not payload.is_valid():
+            return Response(payload.errors)
+        payload.save(user=request.user, applied=True)
+        return Response(payload.data)

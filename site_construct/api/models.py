@@ -67,10 +67,10 @@ class GoodItem(models.Model):
         through='ItemCharacteristic',
         related_name='characteristics'
     )
-    market = models.ForeignKey(
-        'Market',
+    user = models.ForeignKey(
+        User,
         on_delete=models.CASCADE,
-        verbose_name='Магазин'
+        verbose_name='Продавец'
     )
 
     def __str__(self) -> str:
@@ -228,6 +228,7 @@ class Order(models.Model):
         choices=[(status.name, status.value) for status in OrderStatusChoices],
         default="В обработке",
     )
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
 
     class Meta:
         verbose_name = "Счет"
@@ -287,9 +288,9 @@ class CommentReply(models.Model):
 
 class ItemMedia(models.Model):
     item = models.ForeignKey(
-        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
+        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар", related_name='media'
     )
-    source = models.ImageField('Картинка', upload_to='media ')
+    source = models.ImageField('Картинка', upload_to='media')
 
 
 class Message(models.Model):
@@ -344,12 +345,16 @@ class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Market(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+class Refund(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
-    name = models.CharField('Название', max_length=50)
-    description = models.TextField('Описание')
-    avatar = models.ImageField('Аватар', upload_to='markets', null=True)
+    item = models.ForeignKey(
+        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар"
+    )
+    order = models.ForeignKey(
+        Order, null=False, on_delete=models.CASCADE, verbose_name="Заказ"
+    )
+    created_at = models.DateTimeField("создан", auto_now_add=True)
+    body = models.TextField("Тело", max_length=250)
+    applied = models.BooleanField("Одобрен", default=False)

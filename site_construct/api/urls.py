@@ -20,9 +20,9 @@ from .views import (
     OrderViewSet,
     CharacteristicViewSet,
     GetMyWishlistView,
-    MarketViewSet,
     CommentViewSet,
     CommentReplyViewSet,
+    RefundViewSet,
     CharacteristicCategoryViewSet
 )
 
@@ -37,11 +37,10 @@ router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
 router.register("recipents", RecipentViewSet, basename='recipents')
 router.register("orders", OrderViewSet, basename='orders')
 router.register("characteristics", CharacteristicViewSet)
-router.register("markets", MarketViewSet)
 router.register("comments", CommentViewSet, basename="comments")
 router.register("comments-replies", CommentReplyViewSet, basename="comments-replies")
 router.register("characteristics-categories", CharacteristicCategoryViewSet)
-
+router.register("refunds", RefundViewSet, basename="refunds")
 
 urlpatterns = [
     path("", include(router.urls)),
