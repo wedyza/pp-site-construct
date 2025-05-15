@@ -3,6 +3,11 @@ import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
 import { addBasketItem, removeBasketItem } from './basketSlice';
 
+export interface Rating {
+    rate__avg: number;
+    rate__count: number;
+}
+
 export interface Good {
     id: number;
     name: string;
@@ -17,7 +22,7 @@ export interface Good {
     in_wishlist: boolean;
     basket_count?: number;
     basket_id?: number;
-    rating?: number;
+    rate?: Rating;
 }
 
 interface GoodsState {
