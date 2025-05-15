@@ -33,7 +33,7 @@
 }
 
 .product_to-basket {
-    background-color: var(--second-color);
+    background-color: var(--white-gray);
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
@@ -55,7 +55,7 @@
 }
 
 .product_to-reviews {
-    background-color: var(--second-color);
+    background-color: var(--white-gray);
     border-radius: var(--radius);
     padding: 16px 24px;
     display: flex;
@@ -107,7 +107,7 @@
 .product-charc_card {
     break-inside: avoid;
     margin-bottom: 16px;
-    background-color: var(--light-color);
+    background-color: var(--white-gray);
     border-radius: var(--big-radius);
 }
 

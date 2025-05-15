@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './reviewsPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Recommendations from '../../components/recommendations/Recommendations';
 import ReviewCard from '../../components/reviewCard/ReviewCard';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchComments } from '../../store/commentsSlice';
 
 const ReviewsPage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const dispatch = useAppDispatch();    
+    const { selectedItem/*, loading, error*/ } = useAppSelector((state) => state.goods);
+
+    useEffect(() => {
+        if (selectedItem){
+            dispatch(fetchComments(selectedItem.id));
+        }
+    }, [dispatch, selectedItem]);
+    const comments = useAppSelector((state) => state.comments.comments);
+
     return (
         <div className='page-content'>
             <Header />
@@ -15,7 +28,7 @@ const ReviewsPage: React.FC = () => {
                 <div className='reviews-page_content'>
                     <div className='reviews-content'>
                         <div className="text-desc reviews-path">
-                            <Link to='/product'>Робот мойщик окон с распылением</Link>
+                            <Link to={`/product/${id}`}>Робот мойщик окон с распылением</Link>
                             <span> / Отзывы</span>
                         </div>
                         <div className="reviews-product">
@@ -40,8 +53,16 @@ const ReviewsPage: React.FC = () => {
 
                         </div>
                         <div className='reviews-list'>
-                            <ReviewCard />
-                            <ReviewCard />
+                            {comments.map((comment) => (
+                                <ReviewCard
+                                    key={comment.id}
+                                    commentId={comment.id}
+                                    userId={comment.user}
+                                    body={comment.body}
+                                    rate={comment.rate}
+                                    date={'14 апреля 2025'}
+                                />
+                            ))}
                         </div>
                     </div>
 

@@ -9,7 +9,8 @@ import ProductGallery from '../../components/productGallery/ProductGallery';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchGoodById, toggleWishlist } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
-import { addBasketItem, removeAndRefetchBasket, removeBasketItem, updateBasketAndRefetch, updateBasketItem } from '../../store/basketSlice';
+import { addBasketItem, removeBasketItem, updateBasketItem } from '../../store/basketSlice';
+import { fetchComments } from '../../store/commentsSlice';
 
 
 const ProductPage: React.FC = () => {
@@ -17,13 +18,20 @@ const ProductPage: React.FC = () => {
     const reviewsRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useAppDispatch();
     
-    const { selectedItem, loading/*, error*/ } = useAppSelector((state) => state.goods);
+    const { selectedItem/*, loading, error*/ } = useAppSelector((state) => state.goods);
 
     const [count, setCount] = useState(selectedItem?.basket_count);
     
     useEffect(() => {
         setCount(selectedItem?.basket_count);
     }, [selectedItem]);
+
+    useEffect(() => {
+        if (selectedItem){
+            dispatch(fetchComments(selectedItem.id));
+        }
+    }, [dispatch, selectedItem]);
+    const comments = useAppSelector((state) => state.comments.comments);
 
     const handleCountChange = async (newCount: number) => {
         if (!selectedItem || !selectedItem.basket_id) return;
@@ -262,7 +270,7 @@ const ProductPage: React.FC = () => {
                         <h2 className='product-reviews_title text-h1'>
                             Отзывы о товаре
                         </h2>
-                        <Link to='/reviews' className='product-reviews_link text-n14'>
+                        <Link to={`/reviews/${id}`} className='product-reviews_link text-n14'>
                             <span>Все отзывы</span>
                         </Link>
                         <div className='product-reviews_rating'>
@@ -279,12 +287,22 @@ const ProductPage: React.FC = () => {
                         </div>
                     </div>
                     <ul className='product-reviews_list'>
-                        <li className='product-review_prev'>
+                        {comments.map((comment) => (
+                            <li className='product-review_prev'>
+                                <ReviewPrev 
+                                    key={comment.id}
+                                    commentId={comment.id}
+                                    userId={comment.user}
+                                    body={comment.body}
+                                    rate={comment.rate}
+                                    date={'14 апреля 2025'}
+                                />
+                            </li>
+                        ))}
+                        
+                        {/* <li className='product-review_prev'>
                             <ReviewPrev />
-                        </li>
-                        <li className='product-review_prev'>
-                            <ReviewPrev />
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
                 <Recommendations />
