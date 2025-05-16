@@ -77,7 +77,6 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
         items = (
             GoodItem.objects.filter(category_id=pk)
             .filter(visible=True)
-            .filter(apply=True)
             .all()
         )
         
@@ -104,6 +103,11 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     filterset_fields = ("name",)
     pagination_class = CustomPagination
+
+    def get_queryset(self):
+        if not self.request.user.is_anonymous and self.request.user.user_type == 'Продавец':
+            return GoodItem.objects.filter(user=self.request.user).all()
+        return GoodItem.objects.filter(visible=True).all()
 
     def get_serializer_class(self):
         if self.action == 'apply_characteristic':
