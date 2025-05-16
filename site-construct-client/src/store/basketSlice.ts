@@ -12,10 +12,13 @@ export interface BasketItem {
 
 interface BasketState {
     items: { item: BasketItem; good: Good | null }[];
+    rawItems: BasketItem[];
     selectedIds: number[];
     loading: boolean;
     error: string | null;
-}const loadSelectedIds = (): number[] => {
+}
+
+const loadSelectedIds = (): number[] => {
     try {
         const saved = localStorage.getItem('selectedBasketIds');
         return saved ? JSON.parse(saved) : [];
@@ -27,6 +30,7 @@ interface BasketState {
 
 const initialState: BasketState = {
     items: [],
+    rawItems: [],
     selectedIds: loadSelectedIds(),
     loading: false,
     error: null,
@@ -258,6 +262,9 @@ const basketSlice = createSlice({
             .addCase(addBasketItem.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(fetchBasketItems.fulfilled, (state, action) => {
+                state.rawItems = action.payload;
             });
     },
 });

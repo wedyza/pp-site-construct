@@ -1,6 +1,23 @@
+import { Link } from 'react-router-dom';
 import './profileOrders.scss'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useEffect } from 'react';
+import { fetchWishlist } from '../../store/wishlistSlice';
+import { fetchBasketItems } from '../../store/basketSlice';
 
 const ProfileOrders: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { items: goods/*, loading, error*/ } = useAppSelector((state) => state.wishlist);
+    const rawItems = useAppSelector((state) => state.basket.rawItems);
+    const totalCount = rawItems.reduce((sum, item) => sum + item.count, 0);
+
+    useEffect(() => {
+        dispatch(fetchWishlist());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(fetchBasketItems());
+    }, [dispatch]);
     return (
         <div className='profile-orders'>
             <div className='profile-rate profile-item'>
@@ -31,14 +48,14 @@ const ProfileOrders: React.FC = () => {
                 </div>
                 <div className='profile-item_body'>
                     <span className='profile-item_info text-h2'>
-                        23 товара
+                        {goods.length} товара
                     </span>
-                    <div className='profile-item_link text-n14'>
+                    <Link to='/favourites' className='profile-item_link text-n14'>
                         <span>Перейти</span>
                         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L5.93934 7L0.46967 12.4697C0.176777 12.7626 0.176777 13.2374 0.46967 13.5303C0.762563 13.8232 1.23744 13.8232 1.53033 13.5303L7.53033 7.53033C7.82322 7.23744 7.82322 6.76256 7.53033 6.46967L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967Z" fill="black"/>
                         </svg>
-                    </div>
+                    </Link>
                 </div>
             </div>
             <div className='profile-basket profile-item'>
@@ -62,14 +79,14 @@ const ProfileOrders: React.FC = () => {
                 </div>
                 <div className='profile-item_body'>
                     <span className='profile-item_info text-h2'>
-                        22 товара
+                        {totalCount} товара
                     </span>
-                    <div className='profile-item_link text-n14'>
+                    <Link to='/basket' className='profile-item_link text-n14'>
                         <span>Перейти</span>
                         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L5.93934 7L0.46967 12.4697C0.176777 12.7626 0.176777 13.2374 0.46967 13.5303C0.762563 13.8232 1.23744 13.8232 1.53033 13.5303L7.53033 7.53033C7.82322 7.23744 7.82322 6.76256 7.53033 6.46967L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967Z" fill="black"/>
                         </svg>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </div>
