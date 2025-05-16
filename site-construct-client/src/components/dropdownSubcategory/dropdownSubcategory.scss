@@ -1,8 +1,3 @@
-// .dropdown-subcategory {
-//     position: relative;
-//     z-index: 100;
-// }
-
 .dropdown-title {
     display: grid;
     grid-template-columns: 1fr 9px;
@@ -11,6 +6,7 @@
 }
 
 .dropdown-title:hover {
+    color: var(--accent);
     svg path {
         fill: var(--accent);
     }
@@ -31,5 +27,13 @@
     z-index: 50;
     background-color: var(--background);
     width: 250px;
-    //width: 100%;
+}
+
+.dropdown-item {
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+        color: var(--accent);
+    }
 }

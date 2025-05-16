@@ -7,7 +7,7 @@ import GoodsCard from '../../components/goodCard/GoodCard';
 import { Good } from '../../store/goodsSlice';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchCategoryById, getCategoryPath } from '../../store/categoriesSlice';
+import { Category, fetchCategoryById, getCategoryPath } from '../../store/categoriesSlice';
 
 const goods: Good[] = [
     {
@@ -60,111 +60,11 @@ const goods: Good[] = [
     },
 ];
 
-const subcategories = [
-    {
-        title: "Смартфоны и аксессуары",
-        items: [
-            "Смартфоны (iPhone, Samsung, Xiaomi)",
-            "Чехлы и плёнки",
-            "Зарядные устройства",
-            "Power Bank",
-            "Наушники (проводные и Bluetooth)",
-        ],
-        },
-    {
-        title: "Электроника для авто",
-        items: [
-            "Видеорегистраторы",
-            "Автомагнитолы",
-            "Парктроники",
-            "Зарядки в прикуриватель",
-            "Держатели для телефона",
-            "GPS-навигаторы",
-            "Камеры заднего вида",
-            "Bluetooth-адаптеры",
-            "Устройства слежения",
-        ],
-    },
-    {
-        title: "Аудио и видео техника",
-        items: [
-            "Колонки Bluetooth",
-            "Саундбары",
-            "Домашние кинотеатры",
-            "Портативные плееры",
-        ],
-    },
-    {
-        title: "Носимая электроника",
-        items: [
-            "Умные часы (Apple Watch, Galaxy Watch)",
-            "Фитнес-браслеты",
-            "Часы с GPS для детей",
-            "Браслеты здоровья",
-            "Аксессуары для часов",
-            "Зарядки для смарт-часов",
-            "Часы для пожилых",
-            "Спортивные часы",
-            "Умные кольца",
-        ],
-    },
-    {
-        title: "Умный дом и безопасность",
-        items: [
-            "Умные розетки",
-            "Лампочки",
-            "Системы видеонаблюдения",
-            "Датчики движения",
-            "Умные выключатели",
-            "Голосовые помощники",
-            "Видеозвонки",
-            "Термостаты",
-            "Сигнализация",
-        ],
-    },
-    {
-        title: "Компьютеры и ноутбуки",
-        items: ["Ноутбуки", "Моноблоки", "Периферия", "Аксессуары"],
-    },
-    {
-        title: "Игровая электроника",
-        items: [
-            "Игровые приставки (PlayStation, Xbox, Nintendo)",
-            "Геймпады и контроллеры",
-            "Игровые наушники",
-            "VR-очки",
-            "Игровые кресла",
-        ],
-    },
-    {
-        title: "Фото и видеотехника",
-        items: [
-            "Цифровые фотоаппараты",
-            "Экшн-камеры (GoPro и аналоги)",
-            "Штативы и стабилизаторы",
-            "Объективы",
-            "Освещение для съёмки",
-        ],
-    },
-    {
-        title: "Портативная техника",
-        items: [
-            "Электронные книги",
-            "Мини-проекторы",
-            "Карманные принтеры",
-            "Мини-кондиционеры",
-            "Пылесосы",
-            "Лазерные указки",
-            "Увлажнители USB",
-        ],
-    },
-];
-
 const CategoryPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
 
-    const { selected, loading, error } = useAppSelector((state) => state.categories);
+    const { selected } = useAppSelector((state) => state.categories);
 
     useEffect(() => {
         if (id) {
@@ -175,11 +75,31 @@ const CategoryPage: React.FC = () => {
 
 
     const [openIndex, setOpenIndex] = useState<number | null>(null);
-    const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const containerRefs = useRef<(HTMLDivElement | null)[]>([]);const allCategories = useAppSelector((state) => state.categories.raw);
 
-    // const toggleSubcategory = (index: number) => {
-    //     setOpenIndex(prev => (prev === index ? null : index));
-    // };
+    const getTopLevelCategory = (category: Category | null, all: Category[]): Category | null => {
+        if (!category) return null;
+        const map = new Map<number, Category>();
+        all.forEach(c => map.set(c.id, c));
+        let current = category;
+        while (current.parent !== null) {
+            const parent = map.get(current.parent);
+            if (!parent) break;
+            current = parent;
+        }
+        return current;
+    };
+
+    const topLevelCategory = getTopLevelCategory(selected, allCategories);
+    const secondLevelCategories = allCategories.filter(cat => cat.parent === topLevelCategory?.id);
+
+    const thirdLevelCategoriesMap = new Map<number, Category[]>();
+    secondLevelCategories.forEach(sec => {
+        const children = allCategories.filter(c => c.parent === sec.id);
+        if (children.length > 0) {
+            thirdLevelCategoriesMap.set(sec.id, children);
+        }
+    });
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -208,11 +128,15 @@ const CategoryPage: React.FC = () => {
                 <div className="category-page_header">
                     <h1 className="category-header_title text-h1 hover1">{categoryPath.join(' / ')}</h1>
                     <div className="category-header_subcats text-n14">
-                        {subcategories.map((subcat, index) => (
+                        {secondLevelCategories.map((subcat) => (
                             <DropdownSubcategory
-                                key={index}
+                                key={subcat.id}
+                                id={subcat.id}
                                 title={subcat.title}
-                                items={subcat.items}
+                                items={(thirdLevelCategoriesMap.get(subcat.id) || []).map(child => ({
+                                    id: child.id,
+                                    title: child.title,
+                                }))}
                             />
                         ))}
                     </div>
