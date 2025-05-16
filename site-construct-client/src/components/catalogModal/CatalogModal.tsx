@@ -38,14 +38,15 @@ const CatalogModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
         <div className="catalog-modal">
             <ul className='catalog-cat_list text-n16'>
                 {Object.keys(categories).map((cat) => (
-                    <li
+                    <Link
+                        to={`/category/${categories[cat].data.id}`}
                         key={cat}
                         className={`catalog-cat_item ${cat === selectedCategory ? 'catalog-cat_item__active' : ''}`}
-                        onClick={() => setSelectedCategory(cat)}
+                        onMouseEnter={() => setSelectedCategory(cat)}
                     >
                         <img src={book} alt="" className='catalog-cat_img' />
                         <span className='catalog-cat_name'>{cat}</span>
-                    </li>
+                    </Link>
                 ))}
             </ul>
             <div className="catalog-subcat_panel-container">

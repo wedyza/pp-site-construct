@@ -1,14 +1,19 @@
 import './header.scss'
 import logo from '../../img/Kaufen.svg'
 import Search from '../search/Search';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import CatalogModal from '../catalogModal/CatalogModal';
 
 const Header: React.FC = () => {
     const [isCatalogOpen, setIsCatalogOpen] = useState(false);
     const toggleCatalog = () => setIsCatalogOpen(prev => !prev);
     const closeCatalog = () => setIsCatalogOpen(false);
+
+    const location = useLocation();
+    useEffect(() => {
+        closeCatalog();
+    }, [location])
 
     return (
         <div className='header-container'>

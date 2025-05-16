@@ -35,8 +35,11 @@
 }
 
 .catalog-cat_item__active {
-    color: var(--background);
     position: relative;
+
+    .catalog-cat_name {
+        color: var(--background);
+    }
 }
 
 .catalog-cat_item__active::before {
