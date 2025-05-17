@@ -10,7 +10,7 @@ export interface Order {
     price: number;
     address: string;
     status: string;
-    goods?: Good[]; // Замените тип, если есть точное определение товара
+    goods?: Good[];
 }
 
 interface OrderState {

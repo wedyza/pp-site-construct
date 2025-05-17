@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MainPage from './pages/mainPage/MainPage';
 import { Route, Routes } from 'react-router-dom';
 import OrdersPage from './pages/ordersPage/OrdersPage';
@@ -18,17 +18,29 @@ import SellerFinancePage from './pages/sellerFinancePage/SellerFinancePage';
 import SellerGoodsPage from './pages/sellerGoodsPage/SellerGoodsPage';
 import SellerGoodPage from './pages/sellerGoodPage/SellerGoodPage';
 import MakeOrderPage from './pages/makeOrderPage/MakeOrderPage';
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import { fetchUserInfo } from './store/userSlice';
+import MainRouter from './components/MainRouter';
 
 function App() {
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.token);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchUserInfo());
+      console.log(1);
+    }
+  }, [token, dispatch]);
+
   return (
     <Routes>
-      <Route path="/" element={<MainPage />} />
+      <Route path="/" element={<MainRouter />} />
       <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/reviews/:id" element={<ReviewsPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
 
       <Route element={<ProtectedRoute allowedRoles={['Продавец']} />}>
-          <Route path="/seller" element={<SellerMainPage />} />
           <Route path="/seller/goods" element={<SellerGoodsPage />} />
           <Route path="/seller/good" element={<SellerGoodPage />} />
           <Route path="/seller/orders" element={<SellerOrdersPage />} />

@@ -9,6 +9,7 @@ interface UserState {
     user_type: 'Администратор' | 'Продавец' | 'Покупатель' | undefined;
     loading: boolean;
     error: string | null;
+    loaded: boolean;
 }
 
 const initialState: UserState = {
@@ -19,6 +20,7 @@ const initialState: UserState = {
     user_type: undefined,
     loading: false,
     error: null,
+    loaded: false,
 };
 
 export const fetchUserInfo = createAsyncThunk(
@@ -78,22 +80,26 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchUserInfo.fulfilled, (state, action) => {
-                const { first_name, last_name, email, sex } = action.payload;
+                const { first_name, last_name, email, sex, user_type } = action.payload;
                 state.firstName = first_name;
                 state.lastName = last_name;
                 state.email = email;
+                state.user_type = user_type;
                 state.gender = sex;
                 state.loading = false;
+                state.loaded = true;
             })
             .addCase(fetchUserInfo.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+                state.loaded = true;
             })
             .addCase(updateUserInfo.fulfilled, (state, action) => {
-                const { first_name, last_name, email, sex } = action.payload;
+                const { first_name, last_name, email, sex, user_type } = action.payload;
                 state.firstName = first_name;
                 state.lastName = last_name;
                 state.email = email;
+                state.user_type = user_type;
                 state.gender = sex;
                 state.loading = false;
             })
