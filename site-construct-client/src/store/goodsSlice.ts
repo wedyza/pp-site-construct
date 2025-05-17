@@ -111,6 +111,24 @@ export const toggleWishlist = createAsyncThunk<
     }
 });
 
+export const createGood = createAsyncThunk<
+    Good,
+    { name: string; description: string; price: number },
+    { state: RootState }
+>('goods/createGood', async (data, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    try {
+        const response = await axiosInstance.post('/goods/', data, {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка создания товара');
+    }
+});
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -161,6 +179,18 @@ const goodsSlice = createSlice({
                         basket_count: 0,
                     };
                 }              
+            })
+            .addCase(createGood.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createGood.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items.push(action.payload);
+            })
+            .addCase(createGood.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
     },
 });

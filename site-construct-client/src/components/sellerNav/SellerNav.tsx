@@ -20,6 +20,11 @@ const SellerNav: React.FC = () => {
         { key: 'delivered', label: 'Приостановленный (258)' },
         { key: 'returned', label: 'Снятый с продажи (31)' },
     ];
+    
+    const isGoodsRoute =
+        location.pathname === '/seller/goods' ||
+        location.pathname === '/seller/good' ||
+        location.pathname.startsWith('/seller/good/');
 
     return (
         <div className='seller-nav'>
@@ -71,7 +76,7 @@ const SellerNav: React.FC = () => {
                         )
                     }
                 </div>
-                <div className={`seller-nav_item-container ${['/seller/goods', '/seller/good'].includes(location.pathname) ? 'seller-nav_item__active' : ''}`}>
+                <div className={`seller-nav_item-container ${isGoodsRoute ? 'seller-nav_item__active' : ''}`}>
                     <Link to='/seller/goods' className='seller-nav_item' >
                         <div className="seller-nav_item-img">
                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +87,7 @@ const SellerNav: React.FC = () => {
                         </div>
                         <span className='seller-nav_item-text text-n16'>Мои товары</span>
                     </Link>
-                    { ['/seller/goods', '/seller/good'].includes(location.pathname) && (
+                    { isGoodsRoute && (
                         <div className="seller-nav_item-list text-n16">
                             {goodsFilters.map(({ key, label }) => (
                                 <button
