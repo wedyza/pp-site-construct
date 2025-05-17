@@ -9,8 +9,6 @@ const CatalogModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
     const dispatch = useAppDispatch();
     const { structured: categories, loading } = useAppSelector((state) => state.categories);
 
-    console.log(categories);
-
     const [selectedCategory, setSelectedCategory] = useState<string>('');
 
     useEffect(() => {

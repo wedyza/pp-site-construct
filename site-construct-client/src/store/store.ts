@@ -8,6 +8,7 @@ import wishlistReducer from './wishlistSlice';
 import commentsReducer from './commentsSlice';
 import usersReducer from './usersSlice';
 import categoriesReducer from './categoriesSlice';
+import ordersReducer from './orderSlice';
 
 const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
         comments: commentsReducer,
         users: usersReducer,
         categories: categoriesReducer,
+        orders: ordersReducer,
     },
 });
 

@@ -18,10 +18,10 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             <div className='order-card_info'>
                 <p className='order-card_id text-card'>№{order.id}</p>
                 <p className='order-card_status text-n14'>{order.status}</p>
-                <div className='order-card_info-item'>
+                {/* <div className='order-card_info-item'>
                     <p className='order-card_info-item__label text-n14'>Дата оформления заказа</p>
                     <p className='order-card_info-item__value text-n16'>{order.placement_date}</p>
-                </div>
+                </div> */}
                 <div className='order-card_info-item'>
                     <p className='order-card_info-item__label text-n14'>В пункт выдачи</p>
                     <p className='order-card_info-item__value text-n16'>{order.address}</p>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ordersPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import PurchasedCard from '../../components/purchasedCard/PurchasedCard';
@@ -7,6 +7,8 @@ import OrderCard from '../../components/orderCard/OrderCard';
 import { Good } from '../../api/api';
 import Recommendations from '../../components/recommendations/Recommendations';
 import EmptyOrders from '../../components/emptyOrders/EmptyOrders';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchCompletedOrders, fetchCurrentOrders } from '../../store/orderSlice';
 
 export interface Order {
     id?: number;
@@ -20,97 +22,6 @@ export interface Order {
 
 const OrdersPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
-    
-    const currentOrders: Order[] = [
-        // {
-        //     id: 4565854,
-        //     placement_date: '6 марта',
-        //     delivery_date: '8 марта',
-        //     price: 704,
-        //     address: 'г. Екатеринбург ул. Малышева 15',
-        //     status: 'Создан',
-        //     goods: [
-        //         {
-        //             name: 'a',
-        //             description: 'b',
-        //         },
-        //     ]
-        // },
-        // {
-        //     id: 565854,
-        //     placement_date: '7 марта',
-        //     delivery_date: '9 марта',
-        //     price: 800,
-        //     address: 'г. Екатеринбург ул. Малышева 16',
-        //     status: 'В пути',
-        //     goods: [
-        //         {
-        //             name: 'a',
-        //             description: 'b',
-        //         },
-        //         {
-        //             name: 'a',
-        //             description: 'b',
-        //         },
-        //     ]
-        // },
-        // {
-        //     id: 565854,
-        //     placement_date: '7 марта',
-        //     delivery_date: '9 марта',
-        //     price: 800,
-        //     address: 'г. Екатеринбург ул. Малышева 16',
-        //     status: 'В пути',
-        //     goods: [
-        //         {
-        //             name: 'a',
-        //             description: 'b',
-        //         },
-        //         {
-        //             name: 'a',
-        //             description: 'b',
-        //         },
-        //         {
-        //             name: 'a',
-        //             description: 'b',
-        //         },
-        //     ]
-        // }
-    ];
-    const completedOrders: Order[] = [
-        {
-            id: 565854,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            price: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-                {
-                    name: 'a',
-                    description: 'b',
-                },
-            ]
-        },
-        {
-            id: 565854,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            price: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'Получен',
-            goods: [
-                {
-                    name: 'a',
-                    description: 'b',
-                }
-            ]
-        }
-    ];
     const purchasedGoods: Order[] = [
         {
             id: 65854,
@@ -155,6 +66,13 @@ const OrdersPage: React.FC = () => {
             status: 'возвращен'
         }
     ];
+    const dispatch = useAppDispatch();
+    const { currentOrders, completedOrders, loading } = useAppSelector(state => state.orders);
+
+    useEffect(() => {
+        dispatch(fetchCurrentOrders());
+        dispatch(fetchCompletedOrders());
+    }, [dispatch]);
 
     return (
         <div className='page-content'>
