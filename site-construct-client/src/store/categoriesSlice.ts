@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
+import { Good } from './goodsSlice';
 
 export interface Category {
     id: number;
@@ -26,6 +27,14 @@ interface CategoriesState {
     loading: boolean;
     error: string | null;
     selected: Category | null;
+    categoryGoods: {
+        [categoryId: number]: {
+            items: Good[];
+            count: number;
+            loading: boolean;
+            error: string | null;
+        };
+    };
 }
 
 const initialState: CategoriesState = {
@@ -34,6 +43,7 @@ const initialState: CategoriesState = {
     loading: false,
     error: null,
     selected: null,
+    categoryGoods: {},
 };
 
 export const fetchCategories = createAsyncThunk<Category[]>(
@@ -121,6 +131,25 @@ export const getCategoryPath = (category: Category | null, allCategories: Catego
     return path;
 };
 
+export const fetchGoodsByCategory = createAsyncThunk<
+    { categoryId: number; results: Good[]; count: number },
+    number
+>(
+    'categories/fetchGoodsByCategory',
+    async (categoryId, { rejectWithValue }) => {
+        try {
+            const res = await axiosInstance.get(`/good-categories/${categoryId}/items/`);
+            return {
+                categoryId,
+                results: res.data.results,
+                count: res.data.count,
+            };
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товаров категории');
+        }
+    }
+);
+
 const categoriesSlice = createSlice({
     name: 'categories',
     initialState,
@@ -153,6 +182,33 @@ const categoriesSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
                 state.selected = null;
+            })
+            .addCase(fetchGoodsByCategory.pending, (state, action) => {
+                const categoryId = action.meta.arg;
+                state.categoryGoods[categoryId] = {
+                    items: [],
+                    count: 0,
+                    loading: true,
+                    error: null,
+                };
+            })
+            .addCase(fetchGoodsByCategory.fulfilled, (state, action) => {
+                const { categoryId, results, count } = action.payload;
+                state.categoryGoods[categoryId] = {
+                    items: results,
+                    count,
+                    loading: false,
+                    error: null,
+                };
+            })
+            .addCase(fetchGoodsByCategory.rejected, (state, action) => {
+                const categoryId = action.meta.arg;
+                state.categoryGoods[categoryId] = {
+                    items: [],
+                    count: 0,
+                    loading: false,
+                    error: action.payload as string,
+                };
             });
     },
 });

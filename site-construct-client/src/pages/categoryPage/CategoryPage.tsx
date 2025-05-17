@@ -4,61 +4,9 @@ import HeaderCategories from '../../components/headerCategories/HeaderCategories
 import Header from '../../components/header/Header';
 import DropdownSubcategory from '../../components/dropdownSubcategory/DropdownSubcategory';
 import GoodsCard from '../../components/goodCard/GoodCard';
-import { Good } from '../../store/goodsSlice';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { Category, fetchCategoryById, getCategoryPath } from '../../store/categoriesSlice';
-
-const goods: Good[] = [
-    {
-        id: 0,
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999,
-        in_wishlist: false,
-        market: 1
-    },
-    {
-        id: 0,
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999,
-        in_wishlist: false,
-        market: 1
-    },
-    {
-        id: 0,
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999,
-        in_wishlist: false,
-        market: 1
-    },
-    {
-        id: 0,
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999,
-        in_wishlist: false,
-        market: 1
-    },
-    {
-        id: 0,
-        name: 'Платье летнее для прогулок',
-        description: '',
-        price: 4999,
-        in_wishlist: false,
-        market: 1
-    },
-    {
-        id: 0,
-        name: 'Пальто осеннее загадочное',
-        description: '',
-        price: 14999,
-        in_wishlist: false,
-        market: 1
-    },
-];
+import { Category, fetchCategories, fetchCategoryById, fetchGoodsByCategory, getCategoryPath } from '../../store/categoriesSlice';
 
 const CategoryPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -73,6 +21,10 @@ const CategoryPage: React.FC = () => {
     }, [id, dispatch]);
 
 
+
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, [dispatch]);
 
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const containerRefs = useRef<(HTMLDivElement | null)[]>([]);const allCategories = useAppSelector((state) => state.categories.raw);
@@ -119,6 +71,12 @@ const CategoryPage: React.FC = () => {
     }, [openIndex]);
     
     const categoryPath = getCategoryPath(selected, useAppSelector((state) => state.categories.raw));
+    const goodsData = useAppSelector((state) => state.categories.categoryGoods[Number(id)]);
+    useEffect(() => {
+        if (!goodsData) {
+            dispatch(fetchGoodsByCategory(Number(id)));
+        }
+    }, [dispatch, id]);
 
     return (
         <div className='page-content__no-pad'>
@@ -166,8 +124,12 @@ const CategoryPage: React.FC = () => {
                     </div>
                     <div className="category-page_products">
                         <ul className='main_goods-list category-page_products-list'>
-                            {goods.map((good, index) => (
-                                <li key={index} className="main_good"><GoodsCard good={good} /></li>
+                            {goodsData && goodsData.items.map((good, index) => (
+                                <li key={index} className="main_good">
+                                    <Link to={`/product/${good.id}`}>
+                                        <GoodsCard good={good} />
+                                    </Link>
+                                </li>
                             ))}
                         </ul>
                     </div>

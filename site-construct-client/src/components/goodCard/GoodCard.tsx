@@ -9,6 +9,7 @@ interface GoodsCardProps {
 }
 
 const GoodsCard: React.FC<GoodsCardProps> = ({ good }) => {
+    console.log(good.in_wishlist);
     const dispatch = useAppDispatch();
 
     const handleToggleWishlist = (e: React.MouseEvent ) => {
