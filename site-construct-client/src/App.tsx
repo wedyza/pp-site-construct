@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import MainPage from './pages/mainPage/MainPage';
 import { Route, Routes } from 'react-router-dom';
 import OrdersPage from './pages/ordersPage/OrdersPage';
 import ProfilePage from './pages/profilePage/ProfilePage';
@@ -11,7 +10,6 @@ import ReviewsPage from './pages/reviewsPage/ReviewsPage';
 import CategoryPage from './pages/categoryPage/CategoryPage';
 import RegisterPage from './pages/registerPage/RegisterPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import SellerMainPage from './pages/sellerMainPage/SellerMainPage';
 import SellerOrdersPage from './pages/sellerOrdersPage/SellerOrdersPage';
 import SellerOrderPage from './pages/sellerOrderPage/SellerOrderPage';
 import SellerFinancePage from './pages/sellerFinancePage/SellerFinancePage';

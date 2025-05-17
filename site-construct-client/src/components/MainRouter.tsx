@@ -4,9 +4,9 @@ import MainPage from '../pages/mainPage/MainPage';
 import SellerMainPage from '../pages/sellerMainPage/SellerMainPage';
 
 const MainRouter: React.FC = () => {
-    const { user_type, loaded } = useAppSelector((state) => state.user);
-
-    if (!loaded) {
+    const { user_type, loaded, loading } = useAppSelector((state) => state.user);
+    
+    if (!loaded && loading) {
         return <>Загрузка</>
     }
 

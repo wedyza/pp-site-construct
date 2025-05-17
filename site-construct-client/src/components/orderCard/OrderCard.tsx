@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './orderCard.scss'
-import { Order } from '../../pages/ordersPage/OrdersPage';
 import Modal from '../modal/Modal';
 import RefundForm from '../refundForm/RefundForm';
+import { Order } from '../../store/orderSlice';
+import { formatPrice } from '../../utils/formatPrice';
 
 interface OrderCardProps {
     order: Order;
@@ -34,7 +35,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 </div>
                 <div className='order-card_info-item order-card_info-item__price'>
                     <p className='order-card_info-item__label text-n14'>Оплачено</p>
-                    <p className={`order-card_info-item__value text-n16 ${order.status !== 'Получен' && 'order-card_price__bold'}`}>{order.price} ₽</p>
+                    <p className={`order-card_info-item__value text-n16 ${order.status !== 'Получен' && 'order-card_price__bold'}`}>{formatPrice(order.payment_total)} ₽</p>
                 </div>
                 {order.status === 'Создан' && (
                     <div className='order-card_actions'>
@@ -74,7 +75,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 )}
             </div>
             <div className='order-card_imgs'>
-                {order.goods && order.goods.map((good, index) => (
+                {order && order.items?.map((good, index) => (
                     <div className='order_good-img' key={index}>
                         <svg className='order-card_rate-arrow' width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M0.770001 1C0.770001 0.585786 1.10579 0.25 1.52 0.25L14 0.25C14.4142 0.25 14.75 0.585786 14.75 1V13.48C14.75 13.8942 14.4142 14.23 14 14.23C13.5858 14.23 13.25 13.8942 13.25 13.48V2.81066L1.53033 14.5303C1.23744 14.8232 0.762563 14.8232 0.46967 14.5303C0.176777 14.2374 0.176777 13.7626 0.46967 13.4697L12.1893 1.75L1.52 1.75C1.10579 1.75 0.770001 1.41421 0.770001 1Z" fill="black"/>

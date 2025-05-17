@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { fetchBasketWithGoods, setSelectedItems } from '../../store/basketSlice';
 import { fetchPaymentMethods } from '../../store/paymentMethodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
+import { createOrder } from '../../store/orderSlice';
 
 const MakeOrderPage: React.FC = () => {
     const [selectedMethodId, setSelectedMethodId] = useState<number | undefined>(1);
@@ -14,7 +15,7 @@ const MakeOrderPage: React.FC = () => {
     const { items, selectedIds } = useAppSelector((state) => state.basket);
     const selectedGoods = items.filter(({ item }) => selectedIds.includes(item.id));
     const { items: methods/*, loading*/ } = useAppSelector((state) => state.paymentMethods);
-    
+    console.log(methods);
     useEffect(() => {
         localStorage.setItem('selectedBasketIds', JSON.stringify(selectedIds));
     }, [selectedIds]);
@@ -26,6 +27,30 @@ const MakeOrderPage: React.FC = () => {
     useEffect(() => {
         dispatch(fetchPaymentMethods());
     }, [dispatch]);
+
+    const handleMakeOrder = async () => {
+        if (!selectedMethodId || selectedGoods.length === 0) {
+            console.log(selectedMethodId, selectedGoods);
+            return
+        };
+
+        const basketIds = selectedGoods.map(({ item }) => item.id);
+
+        try {
+            await dispatch(
+                createOrder({
+                    address: pickupPoint,
+                    payment_method: selectedMethodId,
+                    delivery_method: 1,
+                    basket_ids: basketIds,
+                })
+            ).unwrap();
+
+            alert('Заказ успешно оформлен!');
+        } catch (error: any) {
+            alert(`Ошибка: ${error}`);
+        }
+    };
 
     useEffect(() => {
         if (items.length > 0) {
@@ -109,7 +134,7 @@ const MakeOrderPage: React.FC = () => {
                                                 {good.name}
                                             </span>
                                             <span className='basket-placement_list__value text-price1'>
-                                                {good.price * item.count} ₽
+                                                {formatPrice(good.price * item.count)} ₽
                                             </span>
                                         </div>
                                     ) : null
@@ -120,7 +145,7 @@ const MakeOrderPage: React.FC = () => {
                                 <span className='basket-placement_content__value text-price2'>{selectedGoods.reduce((sum, { good, item }) => sum + (good ? good.price * item.count : 0), 0).toLocaleString()} ₽</span>
                             </div>
                         </div>
-                        <button className='order-make_link btn-black text-n16'>
+                        <button className='order-make_link btn-black text-n16'onClick={handleMakeOrder}>
                             <span className='basket-placement_link-text'>Перейти к оформлению</span>
                         </button>
                     </div>

@@ -7,6 +7,7 @@ import BasketCard from '../../components/basketCard/BasketCard';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearSelectedItems, fetchBasketWithGoods, setSelectedItems } from '../../store/basketSlice';
+import { formatPrice } from '../../utils/formatPrice';
 
 const BasketPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -97,7 +98,7 @@ const BasketPage: React.FC = () => {
                                             {good.name}
                                         </span>
                                         <span className='basket-placement_list__value text-price1'>
-                                            {good.price * item.count} ₽
+                                            {formatPrice(good.price * item.count)} ₽
                                         </span>
                                     </div>
                                 ) : null

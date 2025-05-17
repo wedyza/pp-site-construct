@@ -1,6 +1,6 @@
 import React from 'react';
 import './purchasedCard.scss'
-import { Order } from '../../pages/ordersPage/OrdersPage';
+import { Order } from '../../store/orderSlice';
 
 interface OrderCardProps {
     order: Order;
@@ -26,7 +26,7 @@ const PurchasedCard: React.FC<OrderCardProps> = ({ order }) => {
                 </div>
                 <div className='order-card_info-item'>
                     <p className='order-card_info-item__label text-n14'>Оплачено</p>
-                    <p className='order-card_info-item__value text-n16'>{order.price} ₽</p>
+                    <p className='order-card_info-item__value text-n16'>{order.payment_total} ₽</p>
                 </div>
                 <div className='order-card_action text-n14 order-card_rate'>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -7,10 +7,10 @@ export interface Order {
     id?: number;
     placement_date: string;
     delivery_date?: string;
-    price: number;
+    payment_total: number;
     address: string;
     status: string;
-    goods?: Good[];
+    items?: Good[];
 }
 
 interface OrderState {
@@ -61,6 +61,51 @@ export const fetchCompletedOrders = createAsyncThunk<Order[], void, { state: Roo
     }
 );
 
+export const createOrder = createAsyncThunk<
+    Order, 
+    { address: string; payment_method: number; delivery_method: number; basket_ids: number[] }, 
+    { state: RootState }
+>(
+    'orders/createOrder',
+    async ({ address, payment_method, delivery_method, basket_ids }, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+
+        try {
+            await Promise.all(
+                basket_ids.map((id) =>
+                    axiosInstance.post(
+                        `/me/basket-items/${id}/switch_to_order/`,
+                        { enable: 1 },
+                        {
+                            headers: {
+                                Authorization: `Token ${token}`,
+                            },
+                        }
+                    )
+                )
+            );
+
+            const response = await axiosInstance.post(
+                '/orders/',
+                {
+                    address,
+                    payment_method,
+                    delivery_method,
+                },
+                {
+                    headers: {
+                        Authorization: `Token ${token}`,
+                    },
+                }
+            );
+
+            return response.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка при создании заказа');
+        }
+    }
+);
+
 const orderSlice = createSlice({
     name: 'orders',
     initialState,
@@ -96,6 +141,18 @@ const orderSlice = createSlice({
                 state.loading = false;
             })
             .addCase(fetchCompletedOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(createOrder.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createOrder.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentOrders.push(action.payload);
+            })
+            .addCase(createOrder.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });
