@@ -11,7 +11,6 @@ from .models import (
     GoodCategory,
     GoodItem,
     PaymentMethod,
-    Recipent,
     Refund,
     Transaction,
     ItemCharacteristic,
@@ -320,15 +319,6 @@ class DeliveryMethodSerializer(serializers.ModelSerializer):
         model = DeliveryMethod
         fields = "__all__"
 
-
-class RecipentSerializer(serializers.ModelSerializer):
-    # user = UserSerializer()
-
-    class Meta:
-        model = Recipent
-        fields = "__all__"
-        read_only_fields = ('user',)
-
 class BasketItemSerializer(serializers.ModelSerializer):
     chosen_for_order = serializers.SerializerMethodField(
         'get_chosen_for_order'
@@ -387,7 +377,7 @@ class BasketSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ("recipent", "payment_method", "delivery_method")
+        fields = ("adress", "payment_method", "delivery_method")
         read_only_fields = ('user', "payment_total")
         extra_kwargs = {'payment_method': {'required': True}, 'delivery_method': {'required': True}}
 
@@ -407,7 +397,7 @@ class OrderToBuyerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('transaction', 'items', 'payment_method', 'delivery_method', 'recipent', 'status')
+        fields = ('transaction', 'items', 'payment_method', 'delivery_method', 'address', 'status', 'payment_total')
         read_only_fields = ('items', 'payment_method', 'delivery_method')
     
     def get_items(self, obj):
@@ -429,7 +419,7 @@ class OrderToSellerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('transaction', 'items', 'payment_method', 'delivery_method', 'recipent', 'status')
+        fields = ('transaction', 'items', 'payment_method', 'delivery_method', 'address', 'status', 'payment_total')
         read_only_fields = ('items', 'payment_method', 'delivery_method')
     
     def get_items(self, obj):

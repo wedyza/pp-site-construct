@@ -89,18 +89,7 @@ class ItemCharacteristic(models.Model):
     class Meta:
         unique_together = ('item', 'characteristic')
 
-class BaseMethod(models.Model):
-    title = models.CharField("Название", max_length=100)
-    description = models.TextField("Описание", max_length=500)
-
-    def __str__(self) -> str:
-        return self.title
-
-    class Meta:
-        abstract = True
-
-
-class PaymentMethod(models.Model):  # Надо добавить картинки + интеграция с MinIO
+class PaymentMethod(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -133,34 +122,6 @@ class DeliveryMethod(models.Model):
     class Meta:
         verbose_name = "Способ доставки"
         verbose_name_plural = "Способы доставки"
-
-
-class Recipent(models.Model):
-    first_name = models.CharField("Имя", max_length=50)
-    last_name = models.CharField("Фамилия", max_length=50)
-    middle_name = models.CharField("Отчество", max_length=50, null=True)
-    address = models.CharField("Адрес", max_length=150)
-    zip_code = models.CharField("Код почты", max_length=50)
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Пользователь"
-    )
-    phone_regex = RegexValidator(
-        regex=r'^\+7\d{10}$',
-        message='Номер телефона должен быть введен в формате +7XXXXXXXXXX.'
-    )
-    phone_number = models.CharField(
-        'Номер телефона',
-        validators=[phone_regex],
-        max_length=12,
-        unique=True
-    )
-
-    def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}{' ' + self.middle_name if self.middle_name is not None else ''}"
-
-    class Meta:
-        verbose_name = "Получатель"
-        verbose_name_plural = "Получатели"
 
 
 class Basket(models.Model):
@@ -204,9 +165,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, verbose_name="Пользователь"
     )
-    recipent = models.ForeignKey(
-        Recipent, verbose_name=("Получатель"), on_delete=models.DO_NOTHING
-    )
+    address = models.CharField("Адрес", null=False, max_length=100)
     basket = models.ForeignKey(
         Basket, null=True, on_delete=models.SET_NULL, verbose_name="Корзина"
     )
@@ -293,47 +252,47 @@ class ItemMedia(models.Model):
     source = models.ImageField('Картинка', upload_to='media')
 
 
-class Message(models.Model):
-    user_from = models.ForeignKey(
-        User,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name="Отправитель",
-        related_name="sended_messages",
-    )
-    user_to = models.ForeignKey(
-        User,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name="Получатель",
-        related_name="received_messagess",
-    )
-    body = models.TextField("тело сообщения", max_length=500)
-    created_at = models.DateTimeField("Время сообщения", auto_now_add=True)
+# class Message(models.Model):
+#     user_from = models.ForeignKey(
+#         User,
+#         null=False,
+#         on_delete=models.CASCADE,
+#         verbose_name="Отправитель",
+#         related_name="sended_messages",
+#     )
+#     user_to = models.ForeignKey(
+#         User,
+#         null=False,
+#         on_delete=models.CASCADE,
+#         verbose_name="Получатель",
+#         related_name="received_messagess",
+#     )
+#     body = models.TextField("тело сообщения", max_length=500)
+#     created_at = models.DateTimeField("Время сообщения", auto_now_add=True)
 
 
-class Notification(models.Model):
-    class NotificationType(Enum):
-        COMMENT = "Отзыв"
-        REFUND = "Возврат"
-        CHAT = "Чат"
-        NEW_ORDER = "Новый заказ"
-        ITEM_APPLIED = "Товар одобрен"
-        ORDER_STATUS_CHANGED = "Изменился статус заказа"
-        COMMENT_REPLIED = "Получен ответ на комментарий"
-        # discount
+# class Notification(models.Model):
+#     class NotificationType(Enum):
+#         COMMENT = "Отзыв"
+#         REFUND = "Возврат"
+#         CHAT = "Чат"
+#         NEW_ORDER = "Новый заказ"
+#         ITEM_APPLIED = "Товар одобрен"
+#         ORDER_STATUS_CHANGED = "Изменился статус заказа"
+#         COMMENT_REPLIED = "Получен ответ на комментарий"
+#         # discount
 
-    body = models.TextField("Тело", max_length=300)
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Пользователь"
-    )
-    notification_type = models.TextField(
-        "Тип уведомления",
-        choices=[
-            (notification.name, notification.value) for notification in NotificationType
-        ],
-    )
-    readed = models.BooleanField("Прочитано", default=False)
+#     body = models.TextField("Тело", max_length=300)
+#     user = models.ForeignKey(
+#         User, on_delete=models.CASCADE, verbose_name="Пользователь"
+#     )
+#     notification_type = models.TextField(
+#         "Тип уведомления",
+#         choices=[
+#             (notification.name, notification.value) for notification in NotificationType
+#         ],
+#     )
+#     readed = models.BooleanField("Прочитано", default=False)
 
 class Like(models.Model):
     user = models.ForeignKey(

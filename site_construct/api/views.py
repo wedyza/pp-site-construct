@@ -13,7 +13,6 @@ from .models import (
     GoodCategory,
     GoodItem,
     PaymentMethod,
-    Recipent,
     Order,
     Characteristics,
     Like,
@@ -38,7 +37,6 @@ from .serializers import (
     OrderToSellerSerializer,
     PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
-    RecipentSerializer,
     RefundCreateSerializer,
     RefundResponseSerializer,
     SwitchSerializer,
@@ -292,17 +290,6 @@ class UsersViewSet(
             return Response(serializer.errors)
 
 
-class RecipentViewSet(viewsets.ModelViewSet):
-    def get_queryset(self):
-        return Recipent.objects.filter(user=self.request.user).all()
-
-    serializer_class = RecipentSerializer
-    permission_classes = (OwnerOrReadOnly,)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
 class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin):
     permission_classes = (OwnerOrReadOnly, )
     filter_backends = (DjangoFilterBackend,)
@@ -310,10 +297,10 @@ class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Retrie
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            if self.request.user.user_type == 'Покупатель':
-                return OrderToBuyerSerializer
-            else:
+            if self.request.user.user_type == 'Продавец':
                 return OrderToSellerSerializer
+            else:
+                return OrderToBuyerSerializer
         elif self.request.method == 'POST':
             return OrderCreateSerializer
 

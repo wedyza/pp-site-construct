@@ -16,7 +16,6 @@ from .views import (
     DeliveryMethodViewSet,
     BasketItemViewSet,
     UsersViewSet,
-    RecipentViewSet,
     OrderViewSet,
     CharacteristicViewSet,
     GetMyWishlistView,
@@ -34,7 +33,6 @@ router.register("goods", GoodItemViewSet, basename='goods')
 router.register("payment-methods", PaymentMethodViewSet, basename='payment-methods')
 router.register("delivery-methods", DeliveryMethodViewSet)
 router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
-router.register("recipents", RecipentViewSet, basename='recipents')
 router.register("orders", OrderViewSet, basename='orders')
 router.register("characteristics", CharacteristicViewSet)
 router.register("comments", CommentViewSet, basename="comments")
