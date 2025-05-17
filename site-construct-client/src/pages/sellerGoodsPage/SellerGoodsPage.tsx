@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './sellerGoodsPage.scss'
 import { Link } from 'react-router-dom';
 import { fetchGoods } from '../../store/goodsSlice';
+import { formatPrice } from '../../utils/formatPrice';
 
 const SellerGoodsPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -70,7 +71,7 @@ const SellerGoodsPage: React.FC = () => {
                                 Электроприборы
                             </div>
                             <div className='seller-orders_table-cell'>Электроприборы</div>
-                            <div className='seller-orders_table-cell'>{good.price} ₽</div>
+                            <div className='seller-orders_table-cell'>{good.price && formatPrice(good.price)} ₽</div>
                             <div className='seller-orders_table-cell'>480 шт</div>
                             <div className='seller-orders_table-cell'>{good.rate?.rate__avg ? good.rate.rate__avg : '0'}</div>
                             <div className='seller-orders_table-cell'>

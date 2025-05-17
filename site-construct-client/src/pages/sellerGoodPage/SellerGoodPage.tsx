@@ -3,7 +3,8 @@ import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerGoodPage.scss'
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createGood, fetchGoodById } from '../../store/goodsSlice';
+import { createGood, fetchGoodById, updateGood } from '../../store/goodsSlice';
+import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 
 const SellerGoodPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -14,6 +15,7 @@ const SellerGoodPage: React.FC = () => {
     const [titleInput, setTitleInput] = useState('');
     const [priceInput, setPriceInput] = useState('');
     const [descInput, setDescInput] = useState('');
+    const [isVisible, setIsVisible] = useState(false);
     
     useEffect(() => {
         if (id) {
@@ -26,24 +28,34 @@ const SellerGoodPage: React.FC = () => {
             setTitleInput(selectedItem.name);
             setPriceInput(selectedItem.price.toString());
             setDescInput(selectedItem.description);
+            setIsVisible(!!selectedItem.visible);
         }
     }, [selectedItem, id]);
     
-
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        const price = parseFloat(priceInput);
+    const price = parseFloat(priceInput);
         if (!titleInput || !descInput || isNaN(price)) {
             alert('Пожалуйста, заполните все поля корректно');
             return;
         }
 
-        dispatch(createGood({
-            name: titleInput,
-            description: descInput,
-            price,
-        }));
+        if (id) {
+            dispatch(updateGood({
+                id: Number(id),
+                name: titleInput,
+                description: descInput,
+                price,
+                visible: isVisible,
+            }));
+        } else {
+            dispatch(createGood({
+                name: titleInput,
+                description: descInput,
+                price,
+            }));
+        }
     };
 
     return (
@@ -139,6 +151,16 @@ const SellerGoodPage: React.FC = () => {
                                 </li>
                             </ul>
                         </div>
+                        { id && (
+                            <div className='seller-good_vis'>
+                                <CustomCheckbox
+                                    checked={isVisible}
+                                    onChange={() => setIsVisible(!isVisible)}
+                                    checkboxClass="checkbox-visible"
+                                />
+                                <span className='text-n14'>Сделать товар видимым</span>
+                            </div>
+                        )}
                     </div>
                     <div className="seller-good_desc seller-good_item">
                         <h2 className='text-desc seller-order_title'>Описание товара</h2>

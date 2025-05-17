@@ -129,6 +129,29 @@ export const createGood = createAsyncThunk<
     }
 });
 
+export const updateGood = createAsyncThunk<
+    Good,
+    { id: number; name: string; description: string; price: number; visible: boolean },
+    { state: RootState }
+>('goods/updateGood', async ({ id, name, description, price, visible }, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    try {
+        const response = await axiosInstance.patch(`/goods/${id}/`, {
+            name,
+            description,
+            price,
+            visible,
+        }, {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка обновления товара');
+    }
+});
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -189,6 +212,22 @@ const goodsSlice = createSlice({
                 state.items.push(action.payload);
             })
             .addCase(createGood.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(updateGood.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateGood.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedItem = action.payload;
+                const index = state.items.findIndex(item => item.id === action.payload.id);
+                if (index !== -1) {
+                    state.items[index] = action.payload;
+                }
+            })
+            .addCase(updateGood.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });
