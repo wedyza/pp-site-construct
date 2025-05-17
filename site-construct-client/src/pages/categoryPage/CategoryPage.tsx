@@ -72,10 +72,9 @@ const CategoryPage: React.FC = () => {
     
     const categoryPath = getCategoryPath(selected, useAppSelector((state) => state.categories.raw));
     const goodsData = useAppSelector((state) => state.categories.categoryGoods[Number(id)]);
+    
     useEffect(() => {
-        if (!goodsData) {
-            dispatch(fetchGoodsByCategory(Number(id)));
-        }
+        dispatch(fetchGoodsByCategory(Number(id)));
     }, [dispatch, id]);
 
     return (
