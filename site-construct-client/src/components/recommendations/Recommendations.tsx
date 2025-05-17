@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './recommendations.scss'
 import GoodsCard from '../goodCard/GoodCard';
-import { fetchGoods, Good } from '../../store/goodsSlice';
+import { fetchGoods } from '../../store/goodsSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Link } from 'react-router-dom';
 

@@ -6,6 +6,7 @@ interface UserState {
     lastName: string;
     email: string;
     gender: 'MALE' | 'FEMALE' | undefined;
+    user_type: 'Администратор' | 'Продавец' | 'Покупатель' | undefined;
     loading: boolean;
     error: string | null;
 }
@@ -15,6 +16,7 @@ const initialState: UserState = {
     lastName: '',
     email: '',
     gender: undefined,
+    user_type: undefined,
     loading: false,
     error: null,
 };
