@@ -64,11 +64,11 @@ const SellerGoodsPage: React.FC = () => {
                         <div className='seller-orders_table-body seller-orders_table-row' key={index}>
                             <div className='seller-orders_table-cell'>{good.id}</div>
                             <div className='seller-orders_table-cell seller-order_table-imgs'>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
+                                {good.media?.map((img) => (
+                                    <div className='seller-order_table-img'>
+                                        <img src={img.source} alt="" />
+                                    </div>
+                                ))}
                             </div>
                             <div className='seller-orders_table-cell'>{good.name}</div>
                             <div className='seller-orders_table-cell'>

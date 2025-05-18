@@ -30,7 +30,11 @@ const GoodsCard: React.FC<GoodsCardProps> = ({ good }) => {
                     </svg>
                 )}
             </button>
-            <div className="good-card_img"></div>
+            <div className="good-card_img">
+                {good.media && good.media?.length > 0 && (
+                    <img src={good.media[0].source} alt="" />
+                )}
+            </div>
             <div className="goods-card_info">
                 <span className="goods-card_price">{good.price && formatPrice(good.price)} ₽</span>
                 <span className="goods-card_name text-n14">{good.name}</span>

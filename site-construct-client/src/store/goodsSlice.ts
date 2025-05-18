@@ -9,6 +9,11 @@ export interface Rating {
     rate__count: number;
 }
 
+interface MediaItem {
+    id: number;
+    source: string;
+}
+
 export interface Good {
     id: number;
     name: string;
@@ -24,6 +29,7 @@ export interface Good {
     basket_count?: number;
     basket_id?: number;
     rate?: Rating;
+    media?: MediaItem[];
 }
 
 interface GoodsState {

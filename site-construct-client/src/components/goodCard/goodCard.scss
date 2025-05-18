@@ -21,6 +21,12 @@
     width: 100%;
     background-color: var(--temp-color);
     border-radius: var(--radius);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }
 
 .goods-card_name {
