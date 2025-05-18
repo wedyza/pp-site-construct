@@ -3,6 +3,7 @@ import './sellerNav.scss'
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchUserInfo } from '../../store/userSlice';
+import { logout } from '../../store/authSlice';
 
 const SellerNav: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -14,6 +15,10 @@ const SellerNav: React.FC = () => {
 
     const location = useLocation();
     const [activeFilter, setActiveFilter] = useState('all');
+
+    const handleLogiut = () => {
+        dispatch(logout());
+    };
 
     const filters = [
         { key: 'all', label: 'Все (1567)' },
@@ -168,7 +173,7 @@ const SellerNav: React.FC = () => {
                     </div>
                     <span className='seller-nav_item-text text-n16'>Аналитика</span>
                 </div>
-                <div className="seller-nav_item seller-nav_item__logout">
+                <button className="seller-nav_item seller-nav_item__logout" onClick={handleLogiut}>
                     <div className="seller-nav_item-img">
                         <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M9.5 0.75C9.5 1.16421 9.16421 1.5 8.75 1.5H2.75C2.05964 1.5 1.5 2.05964 1.5 2.75V14.75C1.5 15.4404 2.05964 16 2.75 16H8.75C9.16421 16 9.5 16.3358 9.5 16.75C9.5 17.1642 9.16421 17.5 8.75 17.5H2.75C1.23122 17.5 0 16.2688 0 14.75V2.75C0 1.23122 1.23122 0 2.75 0H8.75C9.16421 0 9.5 0.335786 9.5 0.75Z" fill="#02040F"/>
@@ -176,7 +181,7 @@ const SellerNav: React.FC = () => {
                         </svg>
                     </div>
                     <span className='seller-nav_item-text text-n16'>Выйти</span>
-                </div>
+                </button>
             </div>
         </div>
     );

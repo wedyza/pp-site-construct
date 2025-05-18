@@ -78,7 +78,7 @@ const ProductPage: React.FC = () => {
             <HeaderCategories />
             <div className="main-content">
                 <div className='product_main-info'>
-                    <ProductGallery />
+                    <ProductGallery images={selectedItem.media} />
                     <div className='product-info'>
                         <h1 className='product-name text-h1'>
                             {selectedItem.name}

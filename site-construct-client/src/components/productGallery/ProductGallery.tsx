@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './productGallery.scss';
-import img1 from '../../img/Frame 7615.jpg';
-import img2 from '../../img/Frame 7616.jpg';
-import img3 from '../../img/Frame 7617.jpg';
-import img4 from '../../img/Frame 7618.jpg';
+import { MediaItem } from '../../store/goodsSlice';
 
-const images = [img1, img2, img3, img4];
+interface ProductGalleryProps {
+    images: MediaItem[] | undefined;
+}
 
-const ProductGallery: React.FC = () => {
-    const [selectedImage, setSelectedImage] = useState<string>(images[0]);
+const ProductGallery: React.FC<ProductGalleryProps> = ({images}) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (images && images.length > 0) {
+            setSelectedImage(images[0].source);
+        } else {
+            setSelectedImage(null);
+        }
+    }, [images]);
+
+    if (!images || images.length === 0 || !selectedImage) return null;
 
     return (
         <div className='product-gallery'>
@@ -17,9 +26,9 @@ const ProductGallery: React.FC = () => {
                     <div
                         key={index}
                         className='product-gallery_img'
-                        onClick={() => setSelectedImage(img)}
+                        onClick={() => setSelectedImage(img.source)}
                     >
-                        <img className='product-gallery_img-src' src={img} alt={`Gallery ${index + 1}`} />
+                        <img className='product-gallery_img-src' src={img.source} alt={`Gallery ${index + 1}`} />
                     </div>
                 ))}
             </div>

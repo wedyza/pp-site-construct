@@ -9,7 +9,7 @@ export interface Rating {
     rate__count: number;
 }
 
-interface MediaItem {
+export interface MediaItem {
     id: number;
     source: string;
 }
