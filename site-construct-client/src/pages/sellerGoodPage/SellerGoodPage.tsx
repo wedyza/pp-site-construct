@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerGoodPage.scss'
 import { useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import { applyCharacteristicsToGood, CharacteristicGroup } from '../../store/cha
 const SellerGoodPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const selectedItem = useAppSelector((state) => state.goods.selectedItem);
 
@@ -101,7 +102,7 @@ const SellerGoodPage: React.FC = () => {
                 }
             }
 
-            alert('Товар успешно сохранён и характеристики применены');
+            navigate('/seller/goods');
         } catch (err: any) {
             alert(err.message || 'Что-то пошло не так');
         }

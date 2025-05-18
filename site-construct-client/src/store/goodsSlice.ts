@@ -191,6 +191,27 @@ export const updateGoodForm = createAsyncThunk<
     }
 );
 
+export const deleteGood = createAsyncThunk<
+    number,
+    number,
+    { state: RootState }
+>(
+    'goods/deleteGood',
+    async (id, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            await axiosInstance.delete(`/goods/${id}/`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return id;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка удаления товара');
+        }
+    }
+);
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -296,6 +317,15 @@ const goodsSlice = createSlice({
             })
             .addCase(updateGoodForm.rejected, (state, action) => {
                 state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(deleteGood.fulfilled, (state, action) => {
+                state.items = state.items.filter((item) => item.id !== action.payload);
+                if (state.selectedItem?.id === action.payload) {
+                    state.selectedItem = null;
+                }
+            })
+            .addCase(deleteGood.rejected, (state, action) => {
                 state.error = action.payload as string;
             });
     },

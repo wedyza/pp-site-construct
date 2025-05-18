@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './sellerOrdersPage.scss'
 import { Link } from 'react-router-dom';
 import { fetchOrders } from '../../store/orderSlice';
-import { format } from 'path';
 import { formatPrice } from '../../utils/formatPrice';
 
 const SellerOrdersPage: React.FC = () => {

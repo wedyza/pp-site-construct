@@ -27,7 +27,7 @@ const DropdownSubcategory: React.FC<DropdownSubcategoryProps> = ({ title, items,
     const handleMouseLeave = () => {
         hoverTimeout.current = setTimeout(() => {
             setIsHovered(false);
-        }, 100); // задержка, чтобы избежать мгновенного закрытия при переходе на список
+        }, 100);
     };
 
     useEffect(() => {
