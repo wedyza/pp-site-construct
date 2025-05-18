@@ -3,7 +3,7 @@ import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerGoodPage.scss'
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createGood, fetchGoodById, updateGood } from '../../store/goodsSlice';
+import { createGoodForm, fetchGoodById, updateGoodForm } from '../../store/goodsSlice';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 
 const SellerGoodPage: React.FC = () => {
@@ -15,7 +15,18 @@ const SellerGoodPage: React.FC = () => {
     const [titleInput, setTitleInput] = useState('');
     const [priceInput, setPriceInput] = useState('');
     const [descInput, setDescInput] = useState('');
+    const [images, setImages] = useState<File[]>([]);
     const [isVisible, setIsVisible] = useState(false);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImages([...images, ...Array.from(e.target.files)]);
+        }
+    };
+
+    const handleRemoveImage = (index: number) => {
+        setImages(images.filter((_, i) => i !== index));
+    };
     
     useEffect(() => {
         if (id) {
@@ -33,28 +44,26 @@ const SellerGoodPage: React.FC = () => {
     }, [selectedItem, id]);
     
     const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    const price = parseFloat(priceInput);
+        const price = parseFloat(priceInput);
         if (!titleInput || !descInput || isNaN(price)) {
             alert('Пожалуйста, заполните все поля корректно');
             return;
         }
 
+        const formData = new FormData();
+        formData.append('name', titleInput);
+        formData.append('description', descInput);
+        formData.append('price', price.toString());
+        formData.append('visible', isVisible.toString());
+
+        images.forEach((img) => formData.append('media', img));
+
         if (id) {
-            dispatch(updateGood({
-                id: Number(id),
-                name: titleInput,
-                description: descInput,
-                price,
-                visible: isVisible,
-            }));
+            dispatch(updateGoodForm({ id: Number(id), formData }));
         } else {
-            dispatch(createGood({
-                name: titleInput,
-                description: descInput,
-                price,
-            }));
+            dispatch(createGoodForm(formData));
         }
     };
 
@@ -127,28 +136,42 @@ const SellerGoodPage: React.FC = () => {
                         <div className="seller-good_info-imgs seller-good_info-group">
                             <span className='seller-good_info-label text-n14'>Фотографии товара</span>
                             <ul className="seller-good_imgs-list">
-                                <li className='seller-good_img'>
+                                {/* <li className='seller-good_img'>
                                     <div className="seller-good_img-src"></div>
                                     <button className="seller-good_img-btn">
                                         <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" clipRule="evenodd" d="M0.169572 0.170272C0.389242 -0.0493982 0.745397 -0.049398 0.965067 0.170272L4.4993 3.7045L8.03353 0.170272C8.2532 -0.0493975 8.60936 -0.0493982 8.82903 0.170272C9.0487 0.389942 9.0487 0.746098 8.82903 0.965767L5.2948 4.5L8.82903 8.03423C9.0487 8.2539 9.0487 8.61006 8.82903 8.82973C8.60936 9.0494 8.2532 9.0494 8.03353 8.82973L4.4993 5.2955L0.965067 8.82973C0.745397 9.0494 0.389242 9.0494 0.169572 8.82973C-0.0500982 8.61006 -0.050098 8.2539 0.169572 8.03423L3.7038 4.5L0.169572 0.965767C-0.050098 0.746097 -0.0500982 0.389942 0.169572 0.170272Z" fill="#02040F"/>
                                         </svg>
                                     </button>
-                                </li>
-                                <li className='seller-good_img'>
-                                    <div className="seller-good_img-src"></div>
-                                    <button className="seller-good_img-btn">
-                                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M0.169572 0.170272C0.389242 -0.0493982 0.745397 -0.049398 0.965067 0.170272L4.4993 3.7045L8.03353 0.170272C8.2532 -0.0493975 8.60936 -0.0493982 8.82903 0.170272C9.0487 0.389942 9.0487 0.746098 8.82903 0.965767L5.2948 4.5L8.82903 8.03423C9.0487 8.2539 9.0487 8.61006 8.82903 8.82973C8.60936 9.0494 8.2532 9.0494 8.03353 8.82973L4.4993 5.2955L0.965067 8.82973C0.745397 9.0494 0.389242 9.0494 0.169572 8.82973C-0.0500982 8.61006 -0.050098 8.2539 0.169572 8.03423L3.7038 4.5L0.169572 0.965767C-0.050098 0.746097 -0.0500982 0.389942 0.169572 0.170272Z" fill="#02040F"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                </li> */}
+                                {images.map((file, index) => (
+                                    <li key={index} className='seller-good_img'>
+                                        <div className="seller-good_img-cont">
+                                            <img className='seller-good_img-src' src={URL.createObjectURL(file)} alt={`uploaded ${index}`} />
+                                        </div>
+                                        <button type="button" className="seller-good_img-btn" onClick={() => handleRemoveImage(index)}>
+                                            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M0.169572 0.170272C0.389242 -0.0493982 0.745397 -0.049398 0.965067 0.170272L4.4993 3.7045L8.03353 0.170272C8.2532 -0.0493975 8.60936 -0.0493982 8.82903 0.170272C9.0487 0.389942 9.0487 0.746098 8.82903 0.965767L5.2948 4.5L8.82903 8.03423C9.0487 8.2539 9.0487 8.61006 8.82903 8.82973C8.60936 9.0494 8.2532 9.0494 8.03353 8.82973L4.4993 5.2955L0.965067 8.82973C0.745397 9.0494 0.389242 9.0494 0.169572 8.82973C-0.0500982 8.61006 -0.050098 8.2539 0.169572 8.03423L3.7038 4.5L0.169572 0.965767C-0.050098 0.746097 -0.0500982 0.389942 0.169572 0.170272Z" fill="#02040F"/>
+                                            </svg>
+                                        </button>
+                                    </li>
+                                ))}
 
-                                <li className='seller-good_img seller-good_img-add'>
-                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="black"/>
-                                    </svg>
-                                </li>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleImageChange}
+                                    style={{ display: 'none' }}
+                                    id="add-image-input"
+                                />
+                                <label htmlFor="add-image-input">
+                                    <li className='seller-good_img seller-good_img-add'>
+                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="black"/>
+                                        </svg>
+                                    </li>
+                                </label>
                             </ul>
                         </div>
                         { id && (

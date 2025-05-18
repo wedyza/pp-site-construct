@@ -1,8 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
 import './sellerNav.scss'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchUserInfo } from '../../store/userSlice';
 
 const SellerNav: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { firstName } = useAppSelector((state) => state.user);
+
+    useEffect(() => {
+        dispatch(fetchUserInfo());
+    }, [dispatch]);
+
     const location = useLocation();
     const [activeFilter, setActiveFilter] = useState('all');
 
@@ -34,7 +43,7 @@ const SellerNav: React.FC = () => {
                         seller
                     </span>
                     <span className='seller-nav_head-greet text-n16'>
-                        Добрый день, Петр!
+                        Добрый день, {firstName}!
                     </span>
                 </div>
                 <div className='seller-nav_head-links'>

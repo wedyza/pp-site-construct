@@ -152,6 +152,44 @@ export const updateGood = createAsyncThunk<
     }
 });
 
+export const createGoodForm = createAsyncThunk<Good, FormData, { state: RootState }>(
+    'goods/createGoodForm',
+    async (formData, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            const response = await axiosInstance.post('/goods/', formData, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return response.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка создания товара');
+        }
+    }
+);
+
+export const updateGoodForm = createAsyncThunk<
+    Good,
+    { id: number; formData: FormData },
+    { state: RootState }
+>(
+    'goods/updateGoodForm',
+    async ({ id, formData }, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            const response = await axiosInstance.patch(`/goods/${id}/`, formData, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return response.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка обновления товара');
+        }
+    }
+);
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -228,6 +266,34 @@ const goodsSlice = createSlice({
                 }
             })
             .addCase(updateGood.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(createGoodForm.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createGoodForm.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items.push(action.payload);
+            })
+            .addCase(createGoodForm.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(updateGoodForm.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateGoodForm.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedItem = action.payload;
+                const index = state.items.findIndex(item => item.id === action.payload.id);
+                if (index !== -1) {
+                    state.items[index] = action.payload;
+                }
+            })
+            .addCase(updateGoodForm.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

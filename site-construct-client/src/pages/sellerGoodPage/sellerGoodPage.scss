@@ -72,10 +72,16 @@
     border: 1px solid var(--black15);
 }
 
-.seller-good_img-src {
+.seller-good_img-cont {
     height: 100%;
     width: 100%;
     background-color: var(--second-color);
+}
+
+.seller-good_img-src {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .seller-good_img-btn {

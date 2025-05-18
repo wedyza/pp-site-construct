@@ -16,6 +16,7 @@ export interface Order {
 interface OrderState {
     currentOrders: Order[];
     completedOrders: Order[];
+    orders: Order[];
     loading: boolean;
     error: string | null;
 }
@@ -23,6 +24,7 @@ interface OrderState {
 const initialState: OrderState = {
     currentOrders: [],
     completedOrders: [],
+    orders: [],
     loading: false,
     error: null,
 };
@@ -57,6 +59,23 @@ export const fetchCompletedOrders = createAsyncThunk<Order[], void, { state: Roo
             return response.data;
         } catch (err: any) {
             return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки завершённых заказов');
+        }
+    }
+);
+
+export const fetchOrders = createAsyncThunk<Order[], void, { state: RootState }>(
+    'orders/fetchOrders',
+    async (_, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            const response = await axiosInstance.get('/orders/', {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return response.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки заказов');
         }
     }
 );
@@ -141,6 +160,18 @@ const orderSlice = createSlice({
                 state.loading = false;
             })
             .addCase(fetchCompletedOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(fetchOrders.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchOrders.fulfilled, (state, action) => {
+                state.orders = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetchOrders.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })

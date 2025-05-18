@@ -1,9 +1,21 @@
+import { useEffect } from 'react';
 import Search from '../../components/search/Search';
 import SellerNav from '../../components/sellerNav/SellerNav';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './sellerOrdersPage.scss'
 import { Link } from 'react-router-dom';
+import { fetchOrders } from '../../store/orderSlice';
+import { format } from 'path';
+import { formatPrice } from '../../utils/formatPrice';
 
 const SellerOrdersPage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { orders, loading } = useAppSelector(state => state.orders);
+
+    useEffect(() => {
+        dispatch(fetchOrders());
+    }, [dispatch]);
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -39,66 +51,20 @@ const SellerOrdersPage: React.FC = () => {
                         <div className='seller-orders_table-cell'>Дата отправления</div>
                         <div className='seller-orders_table-cell'>Пункт выдачи</div>
                     </div>
-                    <Link to='/seller/order' className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>№4565854</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>Смирнова А.С.</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>Доставлено</div>
-                        <div className='seller-orders_table-cell'>15.01.2025</div>
-                        <div className='seller-orders_table-cell'>г. Екатеринбург ул. Малышева 15</div>
-                    </Link>
-                    <Link to='/seller/order' className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>№4565854</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>Смирнова А.С.</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>Доставлено</div>
-                        <div className='seller-orders_table-cell'>15.01.2025</div>
-                        <div className='seller-orders_table-cell'>г. Екатеринбург ул. Малышева 15</div>
-                    </Link>
-                    <Link to='/seller/order' className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>№4565854</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>Смирнова А.С.</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>Доставлено</div>
-                        <div className='seller-orders_table-cell'>15.01.2025</div>
-                        <div className='seller-orders_table-cell'>г. Екатеринбург ул. Малышева 15</div>
-                    </Link>
-                    <Link to='/seller/order' className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>№4565854</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>Смирнова А.С.</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>Доставлено</div>
-                        <div className='seller-orders_table-cell'>15.01.2025</div>
-                        <div className='seller-orders_table-cell'>г. Екатеринбург ул. Малышева 15</div>
-                    </Link>
-                    <Link to='/seller/order' className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>№4565854</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>Смирнова А.С.</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>Доставлено</div>
-                        <div className='seller-orders_table-cell'>15.01.2025</div>
-                        <div className='seller-orders_table-cell'>г. Екатеринбург ул. Малышева 15</div>
-                    </Link>
+                    {orders.map((order) => (
+                        <Link to='/seller/order' key={order.id} className='seller-orders_table-body seller-orders_table-row'>
+                            <div className='seller-orders_table-cell'>№{order.id}</div>
+                            <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
+                            <div className='seller-orders_table-cell'>Смирнова А.С.</div>
+                            <div className='seller-orders_table-cell'>
+                                Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
+                            </div>
+                            <div className='seller-orders_table-cell'>{formatPrice(order.payment_total)} ₽</div>
+                            <div className='seller-orders_table-cell'>{order.status}</div>
+                            <div className='seller-orders_table-cell'>15.01.2025</div>
+                            <div className='seller-orders_table-cell'>{order.address}</div>
+                        </Link>
+                    ))}
                 </div>
             </div>
         </div>
