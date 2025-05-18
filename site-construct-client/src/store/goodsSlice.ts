@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
 import { addBasketItem, removeBasketItem } from './basketSlice';
+import { CharacteristicGroup } from './characteristicsSlice';
 
 export interface Rating {
     rate__avg: number;
@@ -16,7 +17,7 @@ export interface Good {
     discount?: number;
     visible?: boolean;
     apply?: boolean;
-    characteristics?: string;
+    characteristics?: CharacteristicGroup[] | undefined;
     category?: number;
     market: number;
     in_wishlist: boolean;

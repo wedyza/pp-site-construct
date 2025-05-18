@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { createGoodForm, fetchGoodById, updateGoodForm } from '../../store/goodsSlice';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
+import AddCharacteristicModal from '../../components/addCharacteristicModal/AddCharacteristicModal';
+import { applyCharacteristicsToGood, CharacteristicGroup } from '../../store/characteristicsSlice';
 
 const SellerGoodPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,6 +19,7 @@ const SellerGoodPage: React.FC = () => {
     const [descInput, setDescInput] = useState('');
     const [images, setImages] = useState<File[]>([]);
     const [isVisible, setIsVisible] = useState(false);
+    const [charGroups, setCharGroups] = useState<CharacteristicGroup[]>([]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -39,11 +42,12 @@ const SellerGoodPage: React.FC = () => {
             setTitleInput(selectedItem.name);
             setPriceInput(selectedItem.price.toString());
             setDescInput(selectedItem.description);
+            setCharGroups(selectedItem.characteristics || []);
             setIsVisible(!!selectedItem.visible);
         }
     }, [selectedItem, id]);
     
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const price = parseFloat(priceInput);
@@ -60,11 +64,53 @@ const SellerGoodPage: React.FC = () => {
 
         images.forEach((img) => formData.append('media', img));
 
-        if (id) {
-            dispatch(updateGoodForm({ id: Number(id), formData }));
-        } else {
-            dispatch(createGoodForm(formData));
+        let goodId: number | null = null;
+
+        try {
+            if (id) {
+                const resultAction = await dispatch(updateGoodForm({ id: Number(id), formData }));
+                if (updateGoodForm.fulfilled.match(resultAction)) {
+                    goodId = Number(id);
+                } else {
+                    throw new Error('Ошибка обновления товара');
+                }
+            } else {
+            const resultAction = await dispatch(createGoodForm(formData));
+                if (createGoodForm.fulfilled.match(resultAction)) {
+                    goodId = resultAction.payload.id;
+                    console.log(goodId, charGroups);
+                } else {
+                    throw new Error('Ошибка создания товара');
+                }
+            }
+
+            if (goodId && charGroups.length > 0) {
+                const characteristicsPayload = charGroups.flatMap((group) =>
+                    group.characteristics.map((char) => ({
+                        characteristic: char.id,
+                        body: (char as any).value || '',
+                    }))
+                );
+
+                const applyResult = await dispatch(
+                    applyCharacteristicsToGood({ goodId, characteristics: characteristicsPayload })
+                );
+
+                if (!applyCharacteristicsToGood.fulfilled.match(applyResult)) {
+                    throw new Error('Не удалось применить характеристики');
+                }
+            }
+
+            alert('Товар успешно сохранён и характеристики применены');
+        } catch (err: any) {
+            alert(err.message || 'Что-то пошло не так');
         }
+    };
+
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleSave = (data: CharacteristicGroup) => {
+        setCharGroups((prev) => [...prev, data]);
     };
 
     return (
@@ -246,7 +292,12 @@ const SellerGoodPage: React.FC = () => {
                             <div className="seller-good_desc-item">
                                 <div className="seller-good_desc-head">
                                     <h3><span className='text-h2'>Подробные характеристики </span><span className='text-desc'>(в таблицах)</span></h3>
-                                    <button className='text-n14 seller-good_desc-add'>
+                                    <button className='text-n14 seller-good_desc-add' onClick={(event) => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            setModalOpen(true);
+                                        }}
+                                    >
                                         Добавить характеристику
                                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="#02040F"/>
@@ -254,116 +305,21 @@ const SellerGoodPage: React.FC = () => {
                                     </button>
                                 </div>
                                 <div className="seller-good_charc">
-                                    <div className='product-charc_card'>
-                                        <div className="seller-good_charc-head product-charc_list-title">
-                                            <h4>
-                                                Общие
-                                            </h4>
-                                            <div className="seller-good_charc-actions">
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.7427 5.96311C14.4587 5.24715 14.4587 4.08635 13.7427 3.37039L12.7999 2.42758C12.0839 1.71162 10.9231 1.71162 10.2072 2.42758L2.81007 9.82468C2.50566 10.1291 2.31809 10.5309 2.28021 10.9597L2.11882 12.7867C2.05492 13.51 2.66027 14.1154 3.38362 14.0515L5.21056 13.8901C5.63938 13.8522 6.0412 13.6646 6.3456 13.3602L13.7427 5.96311ZM13.0356 4.07749C13.361 4.40293 13.361 4.93057 13.0356 5.256L12.4025 5.88911L10.2812 3.76779L10.9143 3.13468C11.2397 2.80925 11.7673 2.80925 12.0928 3.13468L13.0356 4.07749ZM9.57406 4.4749L11.6954 6.59622L5.63849 12.6531C5.50013 12.7915 5.31749 12.8767 5.12257 12.8939L3.29562 13.0553C3.19229 13.0645 3.10581 12.978 3.11494 12.8747L3.27633 11.0477C3.29355 10.8528 3.37881 10.6701 3.51717 10.5318L9.57406 4.4749Z" fill="black"/>
-                                                </svg>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.4213 5.50764C13.6933 5.55546 13.875 5.8147 13.8272 6.08667L12.4972 13.6508C12.4972 13.6509 12.4972 13.6509 12.4972 13.6509C12.3431 14.5275 11.5816 15.1667 10.6916 15.1667H5.31121C4.42116 15.1667 3.6597 14.5275 3.50558 13.6509L2.17561 6.08667C2.12779 5.8147 2.3095 5.55546 2.58147 5.50764C2.85344 5.45982 3.11268 5.64153 3.1605 5.9135L4.49047 13.4777C4.56053 13.8762 4.90666 14.1667 5.31121 14.1667H10.6916C11.0961 14.1667 11.4422 13.8762 11.5123 13.4777L11.5123 13.4777L12.8423 5.9135C12.8901 5.64153 13.1493 5.45982 13.4213 5.50764Z" fill="black"/>
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M7.08333 1.83325C6.6231 1.83325 6.25 2.20635 6.25 2.66659V3.49992H9.75V2.66659C9.75 2.20634 9.37692 1.83325 8.91667 1.83325H7.08333ZM5.25 3.49992V2.66659C5.25 1.65406 6.07081 0.833252 7.08333 0.833252H8.91667C9.92921 0.833252 10.75 1.65407 10.75 2.66659V3.49992H14C14.2761 3.49992 14.5 3.72378 14.5 3.99992C14.5 4.27606 14.2761 4.49992 14 4.49992H2C1.72386 4.49992 1.5 4.27606 1.5 3.99992C1.5 3.72378 1.72386 3.49992 2 3.49992H5.25Z" fill="black"/>
-                                                </svg>
+                                    {charGroups.map((group) => (
+                                        <div key={group.id} className="product-charc_card">
+                                            <div className="product-charc_list-title">
+                                                <h4>{group.title}</h4>
                                             </div>
+                                            <ul className="product-charc_list">
+                                                {group.characteristics.map((char) => (
+                                                <li key={char.id} className="product-charc_item text-n16">
+                                                    <span className="product-charc_item__label">{char.title}</span>
+                                                    <span className="product-charc_item__value">{(char as any).value || ''}</span>
+                                                </li>
+                                                ))}
+                                            </ul>
                                         </div>
-                                        <ul className='product-charc_list'>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Тип
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    Робот для мойки окон
-                                                </span>
-                                            </li>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Партномер
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    Cleanbot Ultraspray
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div className='product-charc_card'>
-                                        <div className="seller-good_charc-head product-charc_list-title">
-                                            <h4>
-                                                Управление пылесосом
-                                            </h4>
-                                            <div className="seller-good_charc-actions">
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.7427 5.96311C14.4587 5.24715 14.4587 4.08635 13.7427 3.37039L12.7999 2.42758C12.0839 1.71162 10.9231 1.71162 10.2072 2.42758L2.81007 9.82468C2.50566 10.1291 2.31809 10.5309 2.28021 10.9597L2.11882 12.7867C2.05492 13.51 2.66027 14.1154 3.38362 14.0515L5.21056 13.8901C5.63938 13.8522 6.0412 13.6646 6.3456 13.3602L13.7427 5.96311ZM13.0356 4.07749C13.361 4.40293 13.361 4.93057 13.0356 5.256L12.4025 5.88911L10.2812 3.76779L10.9143 3.13468C11.2397 2.80925 11.7673 2.80925 12.0928 3.13468L13.0356 4.07749ZM9.57406 4.4749L11.6954 6.59622L5.63849 12.6531C5.50013 12.7915 5.31749 12.8767 5.12257 12.8939L3.29562 13.0553C3.19229 13.0645 3.10581 12.978 3.11494 12.8747L3.27633 11.0477C3.29355 10.8528 3.37881 10.6701 3.51717 10.5318L9.57406 4.4749Z" fill="black"/>
-                                                </svg>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.4213 5.50764C13.6933 5.55546 13.875 5.8147 13.8272 6.08667L12.4972 13.6508C12.4972 13.6509 12.4972 13.6509 12.4972 13.6509C12.3431 14.5275 11.5816 15.1667 10.6916 15.1667H5.31121C4.42116 15.1667 3.6597 14.5275 3.50558 13.6509L2.17561 6.08667C2.12779 5.8147 2.3095 5.55546 2.58147 5.50764C2.85344 5.45982 3.11268 5.64153 3.1605 5.9135L4.49047 13.4777C4.56053 13.8762 4.90666 14.1667 5.31121 14.1667H10.6916C11.0961 14.1667 11.4422 13.8762 11.5123 13.4777L11.5123 13.4777L12.8423 5.9135C12.8901 5.64153 13.1493 5.45982 13.4213 5.50764Z" fill="black"/>
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M7.08333 1.83325C6.6231 1.83325 6.25 2.20635 6.25 2.66659V3.49992H9.75V2.66659C9.75 2.20634 9.37692 1.83325 8.91667 1.83325H7.08333ZM5.25 3.49992V2.66659C5.25 1.65406 6.07081 0.833252 7.08333 0.833252H8.91667C9.92921 0.833252 10.75 1.65407 10.75 2.66659V3.49992H14C14.2761 3.49992 14.5 3.72378 14.5 3.99992C14.5 4.27606 14.2761 4.49992 14 4.49992H2C1.72386 4.49992 1.5 4.27606 1.5 3.99992C1.5 3.72378 1.72386 3.49992 2 3.49992H5.25Z" fill="black"/>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <ul className='product-charc_list'>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Управление пылесосом
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    Пульт ДУ
-                                                </span>
-                                            </li>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Автоматические системы
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    Автоматическая парковка
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div className='product-charc_card'>
-                                        <div className="seller-good_charc-head product-charc_list-title">
-                                            <h4>
-                                                Технические характеристики
-                                            </h4>
-                                            <div className="seller-good_charc-actions">
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.7427 5.96311C14.4587 5.24715 14.4587 4.08635 13.7427 3.37039L12.7999 2.42758C12.0839 1.71162 10.9231 1.71162 10.2072 2.42758L2.81007 9.82468C2.50566 10.1291 2.31809 10.5309 2.28021 10.9597L2.11882 12.7867C2.05492 13.51 2.66027 14.1154 3.38362 14.0515L5.21056 13.8901C5.63938 13.8522 6.0412 13.6646 6.3456 13.3602L13.7427 5.96311ZM13.0356 4.07749C13.361 4.40293 13.361 4.93057 13.0356 5.256L12.4025 5.88911L10.2812 3.76779L10.9143 3.13468C11.2397 2.80925 11.7673 2.80925 12.0928 3.13468L13.0356 4.07749ZM9.57406 4.4749L11.6954 6.59622L5.63849 12.6531C5.50013 12.7915 5.31749 12.8767 5.12257 12.8939L3.29562 13.0553C3.19229 13.0645 3.10581 12.978 3.11494 12.8747L3.27633 11.0477C3.29355 10.8528 3.37881 10.6701 3.51717 10.5318L9.57406 4.4749Z" fill="black"/>
-                                                </svg>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.4213 5.50764C13.6933 5.55546 13.875 5.8147 13.8272 6.08667L12.4972 13.6508C12.4972 13.6509 12.4972 13.6509 12.4972 13.6509C12.3431 14.5275 11.5816 15.1667 10.6916 15.1667H5.31121C4.42116 15.1667 3.6597 14.5275 3.50558 13.6509L2.17561 6.08667C2.12779 5.8147 2.3095 5.55546 2.58147 5.50764C2.85344 5.45982 3.11268 5.64153 3.1605 5.9135L4.49047 13.4777C4.56053 13.8762 4.90666 14.1667 5.31121 14.1667H10.6916C11.0961 14.1667 11.4422 13.8762 11.5123 13.4777L11.5123 13.4777L12.8423 5.9135C12.8901 5.64153 13.1493 5.45982 13.4213 5.50764Z" fill="black"/>
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M7.08333 1.83325C6.6231 1.83325 6.25 2.20635 6.25 2.66659V3.49992H9.75V2.66659C9.75 2.20634 9.37692 1.83325 8.91667 1.83325H7.08333ZM5.25 3.49992V2.66659C5.25 1.65406 6.07081 0.833252 7.08333 0.833252H8.91667C9.92921 0.833252 10.75 1.65407 10.75 2.66659V3.49992H14C14.2761 3.49992 14.5 3.72378 14.5 3.99992C14.5 4.27606 14.2761 4.49992 14 4.49992H2C1.72386 4.49992 1.5 4.27606 1.5 3.99992C1.5 3.72378 1.72386 3.49992 2 3.49992H5.25Z" fill="black"/>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <ul className='product-charc_list'>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Мощность всасывания, Вт
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    80
-                                                </span>
-                                            </li>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Макс. уровень шума, дБ
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    65
-                                                </span>
-                                            </li>
-                                            <li className='product-charc_item text-n16'>
-                                                <span className='product-charc_item__label'>
-                                                    Потребляемая мощность, Вт
-                                                </span>
-                                                <span className='product-charc_item__value'>
-                                                    80
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -374,6 +330,12 @@ const SellerGoodPage: React.FC = () => {
                     </div>
                 </form>
             </div>
+            <AddCharacteristicModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onSave={handleSave}
+                usedGroupIds={charGroups.map(group => group.id)}
+            />
         </div>
     );
 };

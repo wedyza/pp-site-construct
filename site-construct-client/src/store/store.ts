@@ -9,6 +9,7 @@ import commentsReducer from './commentsSlice';
 import usersReducer from './usersSlice';
 import categoriesReducer from './categoriesSlice';
 import ordersReducer from './orderSlice';
+import characteristicsReducer from './characteristicsSlice';
 
 const store = configureStore({
     reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
         users: usersReducer,
         categories: categoriesReducer,
         orders: ordersReducer,
+        characteristics: characteristicsReducer,
     },
 });
 
