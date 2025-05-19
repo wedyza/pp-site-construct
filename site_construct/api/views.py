@@ -447,7 +447,7 @@ class OrderViewSet(
     filterset_fields = ("status",)
 
     def get_serializer_class(self):
-        if self.action == 'change_status':
+        if self.action == 'patch_change_status':
             return OrderStatusChangeSerializer
         if self.request.method == "GET":
             if self.request.user.user_type == "Продавец":
@@ -547,12 +547,21 @@ class OrderViewSet(
         orders_serializer.is_valid()
         return Response(orders_serializer.data)
     
-    @action(detail=True, url_path="change_status", methods=["PATCH"])
-    def patch_change_status(self, request):
+    @action(detail=True, url_path="change_status", methods=["PATCH"], permission_classes=())
+    def patch_change_status(self, request, pk):
         status = self.get_serializer(data=request.data)
         if not status.is_valid():
             return Response(status.errors)
-        status.save()
+        instance = Order.objects.get(id=pk)
+        instance.status = status.data['status']
+        instance.save()
+        
+        data = {
+            "user_id": instance.user.id,
+            "body": f"Статус вашего заказа №{instance.id} изменился на {instance.status}",
+            "type": "Изменился статус заказа" 
+        }
+        httpx.post(BASE_NOTIFICATION_URL, json=data)
         return Response(status.data)
 
 
@@ -583,6 +592,9 @@ class GetMyWishlistView(views.APIView):
 
 class SellerAnalyticsView(views.APIView):
     permission_classes = (IsSeller, )
+
+    def get(self, request):
+        pass
 
 class CommentViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):

@@ -1,9 +1,17 @@
-#type: ignore
+# type: ignore
 
-from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, Response, HTTPException, status
+from fastapi import (
+    FastAPI,
+    Depends,
+    WebSocket,
+    WebSocketDisconnect,
+    Response,
+    HTTPException,
+    status,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .database import get_db, Notification
+from .database import get_db, Notification, NotificationType
 from sqlalchemy import and_
 from .utils import ConnectionManager
 from fastapi.openapi.utils import get_openapi
@@ -12,6 +20,7 @@ import json
 from typing import List
 from .models import CreateNotification, ResponseNotification, SuccessSchema
 from .oauth2 import require_user
+
 
 def custom_openapi():
     if app.openapi_schema:
@@ -30,16 +39,27 @@ def custom_openapi():
                 "101": {
                     "description": "Switching Protocols - The client is switching protocols as requested by the server.",
                 }
-            }
+            },
         }
     }
     app.openapi_schema = openapi_schema
     # app.openapi_schema["servers"] = [{"url": "/api/v1/messages/"}]
     return app.openapi_schema
-app = FastAPI(docs_url="/api/v1/notifications/docs", openapi_url="/api/v1/notifications/openapi.json")
+
+
+app = FastAPI(
+    docs_url="/api/v1/notifications/docs",
+    openapi_url="/api/v1/notifications/openapi.json",
+)
+
+ENUM_TABLE = {
+    "Возврат": NotificationType.REFUND,
+    'Новый заказ': NotificationType.NEW_ORDER,
+    "Изменился статус заказа": NotificationType.ORDER_STATUS_CHANGED
+}
 
 origins = [
-    'http://localhost:3000',
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
@@ -52,8 +72,11 @@ app.add_middleware(
 
 manager = ConnectionManager()
 
+
 @app.websocket("/api/v1/notifications/connect/")
-async def websocket_endpoint(websocket: WebSocket, user_id: int = Depends(require_user)):
+async def websocket_endpoint(
+    websocket: WebSocket, user_id: int = Depends(require_user)
+):
     await manager.connect(websocket, user_id)
     try:
         while True:
@@ -62,13 +85,16 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int = Depends(requir
     except WebSocketDisconnect:
         manager.disconnect(user_id)
 
-@app.post("/api/v1/notifications/", description='Для создания на бэке уведомлений')
-async def create_notification(payload: CreateNotification, db: Session = Depends(get_db)):
+
+@app.post("/api/v1/notifications/", description="Для создания на бэке уведомлений")
+async def create_notification(
+    payload: CreateNotification, db: Session = Depends(get_db)
+):
     notification = Notification()
     notification.user_id = payload.user_id
     notification.body = payload.body
     notification.created_at = datetime.datetime.now()
-    notification.type = payload.type
+    notification.type = ENUM_TABLE[payload.type]
 
     db.add(notification)
     db.commit()
@@ -76,34 +102,53 @@ async def create_notification(payload: CreateNotification, db: Session = Depends
 
     await manager.send_message(notification, payload.user_id)
 
-    return Response(json.dumps({'success': True}), status_code=status.HTTP_200_OK)    
+    return Response(json.dumps({"success": True}), status_code=status.HTTP_200_OK)
 
 
 @app.get("/api/v1/notifications/{id}/read/")
-async def read_notification(id:int, db: Session = Depends(get_db), user_id: int = Depends(require_user))->SuccessSchema:
+async def read_notification(
+    id: int, db: Session = Depends(get_db), user_id: int = Depends(require_user)
+) -> SuccessSchema:
     notification = db.query(Notification).filter(Notification.id == id).first()
 
     if notification is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='notification not found')
-    
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="notification not found"
+        )
+
     if notification.user_id != user_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='You are not owner of this notification')
-    
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You are not owner of this notification",
+        )
+
     notification.readed = True
 
     db.commit()
     db.refresh(notification)
-    
-    return Response(json.dumps({'success': True}), status_code=status.HTTP_200_OK)            
+
+    return Response(json.dumps({"success": True}), status_code=status.HTTP_200_OK)
 
 
 @app.get("/api/v1/notifications/")
-async def list_notifications(db: Session = Depends(get_db), user_id: int = Depends(require_user)) -> List[ResponseNotification]:
+async def list_notifications(
+    db: Session = Depends(get_db), user_id: int = Depends(require_user)
+) -> List[ResponseNotification]:
     return db.query(Notification).filter(Notification.user_id == user_id).all()
 
 
 @app.get("/api/v1/notifications/unreaded")
-async def list_unreaded_notifications(db: Session = Depends(get_db), user_id: int = Depends(require_user)) -> int:
-    return db.query(Notification).filter(and_(Notification.user_id == user_id, Notification.readed == False)).count()
+async def list_unreaded_notifications(
+    db: Session = Depends(get_db), user_id: int = Depends(require_user)
+) -> int:
+    return (
+        db.query(Notification)
+        .filter(and_(Notification.user_id == user_id, Notification.readed == False))
+        .count()
+    )
+
+@app.get("/api/v1/notifications/test")
+async def test():
+    return "all is ok"
 
 app.openapi = custom_openapi

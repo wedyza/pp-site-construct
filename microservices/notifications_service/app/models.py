@@ -2,9 +2,10 @@ from pydantic import BaseModel
 from datetime import datetime
 from .database import NotificationType
 
+
 class CreateNotification(BaseModel):
     body: str
-    type: NotificationType
+    type: str
     user_id: int
 
 
@@ -15,6 +16,7 @@ class ResponseNotification(BaseModel):
     user_id: int
     created_at: datetime
     readed: bool
+
 
 class SuccessSchema(BaseModel):
     success: bool

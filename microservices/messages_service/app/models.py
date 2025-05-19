@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+
 class CreateMessage(BaseModel):
     body: str
+
 
 class MessageResponse(BaseModel):
     sender_id: int
@@ -10,6 +12,7 @@ class MessageResponse(BaseModel):
     body: str
     created_at: datetime
     readed: bool
+
 
 class User(BaseModel):
     name: str
