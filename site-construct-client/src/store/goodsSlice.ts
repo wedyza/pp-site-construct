@@ -35,6 +35,7 @@ export interface Good {
 interface GoodsState {
     items: Good[];
     selectedItem: Good | null;
+    boughtItems: Good[];
     loading: boolean;
     error: string | null;
 }
@@ -42,6 +43,7 @@ interface GoodsState {
 const initialState: GoodsState = {
     items: [],
     selectedItem: null,
+    boughtItems: [],
     loading: false,
     error: null,
 };
@@ -218,6 +220,24 @@ export const deleteGood = createAsyncThunk<
     }
 );
 
+export const fetchBoughtGoods = createAsyncThunk<
+    Good[],
+    void,
+    { state: RootState }
+>('goods/fetchBoughtGoods', async (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    try {
+        const response = await axiosInstance.get('/goods/bought/', {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки купленных товаров');
+    }
+});
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -332,6 +352,18 @@ const goodsSlice = createSlice({
                 }
             })
             .addCase(deleteGood.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(fetchBoughtGoods.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchBoughtGoods.fulfilled, (state, action) => {
+                state.loading = false;
+                state.boughtItems = action.payload;
+            })
+            .addCase(fetchBoughtGoods.rejected, (state, action) => {
+                state.loading = false;
                 state.error = action.payload as string;
             });
     },

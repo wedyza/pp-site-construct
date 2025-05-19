@@ -78,7 +78,10 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             <div className='order-card_imgs'>
                 {order && order.items?.map((good, index) => (
                     <Link to={`/product/${good.good_item.id}`} className='order_good-img' key={index}>
-                        <img src={good.good_item.media && good.good_item.media.length > 0 ? good.good_item.media[0].source : undefined} alt="" />
+                        {good.good_item.media &&  good.good_item.media.length > 0 && (
+                            <img src={good.good_item.media[0].source} alt="" />
+                        )}
+                        
                         <svg className='order-card_rate-arrow' width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M0.770001 1C0.770001 0.585786 1.10579 0.25 1.52 0.25L14 0.25C14.4142 0.25 14.75 0.585786 14.75 1V13.48C14.75 13.8942 14.4142 14.23 14 14.23C13.5858 14.23 13.25 13.8942 13.25 13.48V2.81066L1.53033 14.5303C1.23744 14.8232 0.762563 14.8232 0.46967 14.5303C0.176777 14.2374 0.176777 13.7626 0.46967 13.4697L12.1893 1.75L1.52 1.75C1.10579 1.75 0.770001 1.41421 0.770001 1Z" fill="black"/>
                         </svg>
