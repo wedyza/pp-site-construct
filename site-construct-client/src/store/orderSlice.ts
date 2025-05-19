@@ -3,6 +3,11 @@ import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
 import { Good } from './goodsSlice';
 
+interface OrderItems {
+    count: number;
+    good_item: Good;
+}
+
 export interface Order {
     id?: number;
     placement_date: string;
@@ -10,7 +15,7 @@ export interface Order {
     payment_total: number;
     address: string;
     status: string;
-    items?: Good[];
+    items?: OrderItems[];
 }
 
 interface OrderState {

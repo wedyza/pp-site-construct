@@ -114,7 +114,11 @@ const MakeOrderPage: React.FC = () => {
                         <div className="order_items-list">
                             {selectedGoods.map((good) => (
                                 <div className="order_items-card">
-                                    <div className="order_item-img"></div>
+                                    <div className="order_item-img">
+                                        {good.good?.media && good.good.media?.length > 0 && (
+                                            <img src={good.good.media[0].source} alt="" />
+                                        )}
+                                    </div>
                                     <div className="order_items-card-text">
                                         <p className="order_item-price text-price1">{good.good?.price && formatPrice(good.good?.price)} ₽</p>
                                         <p className="order_item-name text-n14 goods-card_name">{good.good?.name}</p>

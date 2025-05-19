@@ -44,7 +44,11 @@ const BasketCard: React.FC<Props> = ({ good, id, count: initialCount, isChecked,
                     checkboxClass='basket-card_checkbox'
                 />
             </div>
-            <div className='basket-card_img'></div>
+            <div className='basket-card_img'>
+                {good.media && good.media?.length > 0 && (
+                    <img src={good.media[0].source} alt="" />
+                )}
+            </div>
             <div className='basket-card_info'>
                 <p className="basket-card_price text-price2">
                     {formatPrice(good.price)} ₽
