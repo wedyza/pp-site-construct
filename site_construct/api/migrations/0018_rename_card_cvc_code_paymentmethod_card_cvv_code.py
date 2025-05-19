@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0017_alter_paymentmethod_card_cvc_code'),
+        ("api", "0017_alter_paymentmethod_card_cvc_code"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='paymentmethod',
-            old_name='card_cvc_code',
-            new_name='card_cvv_code',
+            model_name="paymentmethod",
+            old_name="card_cvc_code",
+            new_name="card_cvv_code",
         ),
     ]

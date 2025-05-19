@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0019_auto_20250429_1213'),
+        ("users", "0019_auto_20250429_1213"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customabstractuser',
-            name='otp_expires',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Время жизни otp'),
+            model_name="customabstractuser",
+            name="otp_expires",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="Время жизни otp"
+            ),
         ),
     ]

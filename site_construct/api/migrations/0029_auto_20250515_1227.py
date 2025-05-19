@@ -9,23 +9,52 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0028_auto_20250515_0855'),
+        ("api", "0028_auto_20250515_0855"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Refund',
+            name="Refund",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('body', models.TextField(max_length=250, verbose_name='Тело')),
-                ('applied', models.BooleanField(default=False, verbose_name='Одобрен')),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.gooditem', verbose_name='Товар')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.order', verbose_name='Заказ')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("body", models.TextField(max_length=250, verbose_name="Тело")),
+                ("applied", models.BooleanField(default=False, verbose_name="Одобрен")),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.gooditem",
+                        verbose_name="Товар",
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.order",
+                        verbose_name="Заказ",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Пользователь",
+                    ),
+                ),
             ],
         ),
         migrations.DeleteModel(
-            name='Market',
+            name="Market",
         ),
     ]

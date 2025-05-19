@@ -6,22 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0025_customabstractuser_avatar'),
+        ("users", "0025_customabstractuser_avatar"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='name',
+            model_name="customabstractuser",
+            name="name",
         ),
         migrations.AddField(
-            model_name='customabstractuser',
-            name='first_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='first name'),
+            model_name="customabstractuser",
+            name="first_name",
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="first name"
+            ),
         ),
         migrations.AddField(
-            model_name='customabstractuser',
-            name='last_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='last name'),
+            model_name="customabstractuser",
+            name="last_name",
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="last name"
+            ),
         ),
     ]

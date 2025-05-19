@@ -9,23 +9,43 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0019_auto_20250429_1346'),
+        ("api", "0019_auto_20250429_1346"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Market',
+            name="Market",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='Название')),
-                ('description', models.TextField(verbose_name='Описание')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="Название")),
+                ("description", models.TextField(verbose_name="Описание")),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Пользователь",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='gooditem',
-            name='market',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api.market', verbose_name='Магазин'),
+            model_name="gooditem",
+            name="market",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="api.market",
+                verbose_name="Магазин",
+            ),
             preserve_default=False,
         ),
     ]

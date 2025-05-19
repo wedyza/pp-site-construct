@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0017_alter_customabstractuser_user_type'),
+        ("users", "0017_alter_customabstractuser_user_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customabstractuser',
-            name='sex',
-            field=models.TextField(choices=[('MALE', 'Мужчина'), ('FEMALE', 'Женщина')], null=True, verbose_name='Пол пользователя'),
+            model_name="customabstractuser",
+            name="sex",
+            field=models.TextField(
+                choices=[("MALE", "Мужчина"), ("FEMALE", "Женщина")],
+                null=True,
+                verbose_name="Пол пользователя",
+            ),
         ),
     ]

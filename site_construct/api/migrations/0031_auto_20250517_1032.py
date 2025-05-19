@@ -6,35 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0030_alter_refund_created_at'),
+        ("api", "0030_alter_refund_created_at"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='notification',
-            name='user',
+            model_name="notification",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='recipent',
-            name='user',
+            model_name="recipent",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='order',
-            name='recipent',
+            model_name="order",
+            name="recipent",
         ),
         migrations.AddField(
-            model_name='order',
-            name='address',
-            field=models.CharField(default='улица пушкина', max_length=100, verbose_name='Адрес'),
+            model_name="order",
+            name="address",
+            field=models.CharField(
+                default="улица пушкина", max_length=100, verbose_name="Адрес"
+            ),
             preserve_default=False,
         ),
         migrations.DeleteModel(
-            name='Message',
+            name="Message",
         ),
         migrations.DeleteModel(
-            name='Notification',
+            name="Notification",
         ),
         migrations.DeleteModel(
-            name='Recipent',
+            name="Recipent",
         ),
     ]

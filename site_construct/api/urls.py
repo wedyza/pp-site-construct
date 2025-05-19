@@ -22,18 +22,18 @@ from .views import (
     CommentViewSet,
     CommentReplyViewSet,
     RefundViewSet,
-    CharacteristicCategoryViewSet
+    CharacteristicCategoryViewSet,
 )
 
 router = routers.DefaultRouter()
 
 router.register("users", UsersViewSet)
 router.register("good-categories", GoodCategoryViewSet)
-router.register("goods", GoodItemViewSet, basename='goods')
-router.register("payment-methods", PaymentMethodViewSet, basename='payment-methods')
+router.register("goods", GoodItemViewSet, basename="goods")
+router.register("payment-methods", PaymentMethodViewSet, basename="payment-methods")
 router.register("delivery-methods", DeliveryMethodViewSet)
 router.register("me/basket-items", BasketItemViewSet, basename="basket-items")
-router.register("orders", OrderViewSet, basename='orders')
+router.register("orders", OrderViewSet, basename="orders")
 router.register("characteristics", CharacteristicViewSet)
 router.register("comments", CommentViewSet, basename="comments")
 router.register("comments-replies", CommentReplyViewSet, basename="comments-replies")
@@ -46,7 +46,7 @@ urlpatterns = [
     # path('auth/', include('djoser.urls.jwt')),
     # path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
     path("auth/", include("users.urls")),
-    path("me/wishlist/", GetMyWishlistView.as_view(), name='get-my-wishlist')
+    path("me/wishlist/", GetMyWishlistView.as_view(), name="get-my-wishlist"),
 ]
 
 schema_view = get_schema_view(

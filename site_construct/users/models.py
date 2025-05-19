@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator, MaxValueValidator, MinValueVa
 from django.utils import timezone
 from enum import Enum
 
+
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
@@ -75,14 +76,15 @@ class CustomAbstractUser(AbstractUser):
     sex = models.TextField(
         "Пол пользователя",
         choices=[(sex.name, sex.value) for sex in SexType],
-        null=True
+        null=True,
     )
-    avatar = models.ImageField('Аватар', upload_to='avatars', null=True)
+    avatar = models.ImageField("Аватар", upload_to="avatars", null=True)
     REQUIRED_FIELDS = []
     # name = models.CharField('Имя', null=True, max_length=50)
-    otp_expires = models.DateTimeField('Время жизни otp', null=True, blank=True)
+    otp_expires = models.DateTimeField("Время жизни otp", null=True, blank=True)
     is_superuser = None
     is_staff = None
     date_joined = None
+
     def __str__(self):
         return self.email

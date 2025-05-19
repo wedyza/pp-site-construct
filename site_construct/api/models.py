@@ -30,11 +30,11 @@ class GoodCategory(models.Model):
 class CharacteristicsCategory(models.Model):
     category = models.ForeignKey(
         GoodCategory,
-        verbose_name='Категория',
+        verbose_name="Категория",
         on_delete=models.CASCADE,
-        related_name='characteristics_categories'
+        related_name="characteristics_categories",
     )
-    title = models.CharField('Название категории', max_length=50)
+    title = models.CharField("Название категории", max_length=50)
 
     def __str__(self):
         return self.title
@@ -43,11 +43,11 @@ class CharacteristicsCategory(models.Model):
 class Characteristics(models.Model):
     category = models.ForeignKey(
         CharacteristicsCategory,
-        verbose_name='Категория характеристик',
+        verbose_name="Категория характеристик",
         on_delete=models.CASCADE,
-        related_name='characteristics'
+        related_name="characteristics",
     )
-    title = models.CharField('Название свойства', max_length=50)
+    title = models.CharField("Название свойства", max_length=50)
 
     def __str__(self):
         return self.title
@@ -63,15 +63,11 @@ class GoodItem(models.Model):
     apply = models.BooleanField("Одобрено", default=False)
     characteristics = models.ManyToManyField(
         Characteristics,
-        verbose_name='Характеристики',
-        through='ItemCharacteristic',
-        related_name='characteristics'
+        verbose_name="Характеристики",
+        through="ItemCharacteristic",
+        related_name="characteristics",
     )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Продавец'
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Продавец")
 
     def __str__(self) -> str:
         return self.name
@@ -84,29 +80,28 @@ class GoodItem(models.Model):
 class ItemCharacteristic(models.Model):
     item = models.ForeignKey(GoodItem, on_delete=models.CASCADE)
     characteristic = models.ForeignKey(Characteristics, on_delete=models.CASCADE)
-    body = models.TextField('Содержимое свойства', max_length=500)
+    body = models.TextField("Содержимое свойства", max_length=500)
 
     class Meta:
-        unique_together = ('item', 'characteristic')
+        unique_together = ("item", "characteristic")
+
 
 class PaymentMethod(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=False,
-        verbose_name='Пользователь',
-        related_name='cards'
+        verbose_name="Пользователь",
+        related_name="cards",
     )
-    card_body = models.CharField('Номер карты', max_length=16, null=False)
-    card_expire_date = models.DateField('Дата окончания действия карты', null=False)
-    card_cvv_code = models.IntegerField('CVC код', null=False)
+    card_body = models.CharField("Номер карты", max_length=16, null=False)
+    card_expire_date = models.DateField("Дата окончания действия карты", null=False)
+    card_cvv_code = models.IntegerField("CVC код", null=False)
     # bank_name = models.CharField("Название банка", max_length=50, null=True)
-
 
     def __str__(self) -> str:
         return self.card_body
-    
-    
+
     class Meta:
         verbose_name = "Способ оплаты"
         verbose_name_plural = "Способы оплаты"
@@ -118,7 +113,7 @@ class DeliveryMethod(models.Model):
 
     def __str__(self) -> str:
         return self.title
-    
+
     class Meta:
         verbose_name = "Способ доставки"
         verbose_name_plural = "Способы доставки"
@@ -210,9 +205,12 @@ class Transaction(models.Model):
         Order,
         verbose_name=("Ответ от платежной системы"),
         on_delete=models.CASCADE,
-        related_name='transaction'
+        related_name="transaction",
     )
-    # provider_data = models.SomeField
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='transactions', verbose_name='Транзакция'
+    )
 
     class Meta:
         verbose_name = "Транзакция"
@@ -233,6 +231,7 @@ class Comment(models.Model):
     rate = models.IntegerField(
         "Рейтинг", default=0, validators=[MinValueValidator(0), MaxValueValidator(10)]
     )
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
 
 
 class CommentReply(models.Model):
@@ -243,13 +242,18 @@ class CommentReply(models.Model):
         Comment, null=False, on_delete=models.CASCADE, verbose_name="Комментарий"
     )
     body = models.TextField("тело", max_length=500)
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
 
 
 class ItemMedia(models.Model):
     item = models.ForeignKey(
-        GoodItem, null=False, on_delete=models.CASCADE, verbose_name="Товар", related_name='media'
+        GoodItem,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name="Товар",
+        related_name="media",
     )
-    source = models.ImageField('Картинка', upload_to='media')
+    source = models.ImageField("Картинка", upload_to="media")
 
 
 # class Message(models.Model):
@@ -294,6 +298,7 @@ class ItemMedia(models.Model):
 #     )
 #     readed = models.BooleanField("Прочитано", default=False)
 
+
 class Like(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
@@ -317,3 +322,8 @@ class Refund(models.Model):
     created_at = models.DateTimeField("создан", auto_now_add=True)
     body = models.TextField("Тело", max_length=250)
     applied = models.BooleanField("Одобрен", default=False)
+
+
+class CommentMedia(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, verbose_name="отзыв", related_name='media')
+    source = models.ImageField("Картинка", upload_to="comments")

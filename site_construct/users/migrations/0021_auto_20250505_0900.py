@@ -6,24 +6,24 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0020_customabstractuser_otp_expires'),
+        ("users", "0020_customabstractuser_otp_expires"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='date_joined',
+            model_name="customabstractuser",
+            name="date_joined",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='is_active',
+            model_name="customabstractuser",
+            name="is_active",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='is_staff',
+            model_name="customabstractuser",
+            name="is_staff",
         ),
         migrations.RemoveField(
-            model_name='customabstractuser',
-            name='is_superuser',
+            model_name="customabstractuser",
+            name="is_superuser",
         ),
     ]

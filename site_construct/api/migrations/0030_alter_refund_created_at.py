@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0029_auto_20250515_1227'),
+        ("api", "0029_auto_20250515_1227"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='refund',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='создан'),
+            model_name="refund",
+            name="created_at",
+            field=models.DateTimeField(auto_now_add=True, verbose_name="создан"),
         ),
     ]

@@ -7,21 +7,45 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0022_remove_comment_order'),
+        ("api", "0022_remove_comment_order"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CharacteristicsCategory',
+            name="CharacteristicsCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50, verbose_name='Название категории')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='characteristics_categories', to='api.goodcategory', verbose_name='Категория')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=50, verbose_name="Название категории"),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="characteristics_categories",
+                        to="api.goodcategory",
+                        verbose_name="Категория",
+                    ),
+                ),
             ],
         ),
         migrations.AlterField(
-            model_name='characteristics',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='characteristics', to='api.characteristicscategory', verbose_name='Категория характеристик'),
+            model_name="characteristics",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="characteristics",
+                to="api.characteristicscategory",
+                verbose_name="Категория характеристик",
+            ),
         ),
     ]

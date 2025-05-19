@@ -7,22 +7,50 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0011_auto_20250422_1436'),
+        ("api", "0011_auto_20250422_1436"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ItemCharacteristic',
+            name="ItemCharacteristic",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('body', models.TextField(max_length=500, verbose_name='Содержимое свойства')),
-                ('characteristic', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.characteristics')),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.gooditem')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "body",
+                    models.TextField(
+                        max_length=500, verbose_name="Содержимое свойства"
+                    ),
+                ),
+                (
+                    "characteristic",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.characteristics",
+                    ),
+                ),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.gooditem"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='gooditem',
-            name='characteristics',
-            field=models.ManyToManyField(through='api.ItemCharacteristic', to='api.Characteristics', verbose_name='Характеристики'),
+            model_name="gooditem",
+            name="characteristics",
+            field=models.ManyToManyField(
+                through="api.ItemCharacteristic",
+                to="api.Characteristics",
+                verbose_name="Характеристики",
+            ),
         ),
     ]

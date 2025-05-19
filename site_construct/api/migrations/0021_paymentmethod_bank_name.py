@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0020_auto_20250430_0811'),
+        ("api", "0020_auto_20250430_0811"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='paymentmethod',
-            name='bank_name',
-            field=models.CharField(max_length=50, null=True, verbose_name='Название банка'),
+            model_name="paymentmethod",
+            name="bank_name",
+            field=models.CharField(
+                max_length=50, null=True, verbose_name="Название банка"
+            ),
         ),
     ]

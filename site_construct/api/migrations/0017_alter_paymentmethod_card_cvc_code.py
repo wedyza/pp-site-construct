@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0016_auto_20250425_1429'),
+        ("api", "0016_auto_20250425_1429"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='paymentmethod',
-            name='card_cvc_code',
-            field=models.IntegerField(verbose_name='CVC код'),
+            model_name="paymentmethod",
+            name="card_cvc_code",
+            field=models.IntegerField(verbose_name="CVC код"),
         ),
     ]

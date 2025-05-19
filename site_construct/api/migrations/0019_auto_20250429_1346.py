@@ -7,18 +7,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0018_rename_card_cvc_code_paymentmethod_card_cvv_code'),
+        ("api", "0018_rename_card_cvc_code_paymentmethod_card_cvv_code"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='recipent',
-            name='phone',
+            model_name="recipent",
+            name="phone",
         ),
         migrations.AddField(
-            model_name='recipent',
-            name='phone_number',
-            field=models.CharField(default=79089190401, max_length=12, unique=True, validators=[django.core.validators.RegexValidator(message='Номер телефона должен быть введен в формате +7XXXXXXXXXX.', regex='^\\+7\\d{10}$')], verbose_name='Номер телефона'),
+            model_name="recipent",
+            name="phone_number",
+            field=models.CharField(
+                default=79089190401,
+                max_length=12,
+                unique=True,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        message="Номер телефона должен быть введен в формате +7XXXXXXXXXX.",
+                        regex="^\\+7\\d{10}$",
+                    )
+                ],
+                verbose_name="Номер телефона",
+            ),
             preserve_default=False,
         ),
     ]

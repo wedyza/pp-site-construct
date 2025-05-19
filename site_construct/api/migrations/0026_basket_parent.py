@@ -7,13 +7,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0025_auto_20250512_1238'),
+        ("api", "0025_auto_20250512_1238"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='basket',
-            name='parent',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='api.basket'),
+            model_name="basket",
+            name="parent",
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to="api.basket"
+            ),
         ),
     ]

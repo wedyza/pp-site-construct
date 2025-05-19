@@ -10,34 +10,48 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0027_auto_20250514_1016'),
+        ("api", "0027_auto_20250514_1016"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='gooditem',
-            name='market',
+            model_name="gooditem",
+            name="market",
         ),
         migrations.AddField(
-            model_name='gooditem',
-            name='user',
-            field=models.ForeignKey(default=4, on_delete=django.db.models.deletion.CASCADE, to='users.customabstractuser', verbose_name='Продавец'),
+            model_name="gooditem",
+            name="user",
+            field=models.ForeignKey(
+                default=4,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.customabstractuser",
+                verbose_name="Продавец",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='order',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата создания'),
+            model_name="order",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                verbose_name="Дата создания",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='itemmedia',
-            name='item',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='media', to='api.gooditem', verbose_name='Товар'),
+            model_name="itemmedia",
+            name="item",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="media",
+                to="api.gooditem",
+                verbose_name="Товар",
+            ),
         ),
         migrations.AlterField(
-            model_name='itemmedia',
-            name='source',
-            field=models.ImageField(upload_to='media', verbose_name='Картинка'),
+            model_name="itemmedia",
+            name="source",
+            field=models.ImageField(upload_to="media", verbose_name="Картинка"),
         ),
     ]

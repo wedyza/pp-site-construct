@@ -9,53 +9,86 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0010_alter_transaction_order'),
+        ("api", "0010_alter_transaction_order"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='paymentmethod',
-            name='description',
+            model_name="paymentmethod",
+            name="description",
         ),
         migrations.RemoveField(
-            model_name='paymentmethod',
-            name='title',
+            model_name="paymentmethod",
+            name="title",
         ),
         migrations.AddField(
-            model_name='paymentmethod',
-            name='card_body',
-            field=models.CharField(default='', max_length=16, verbose_name='Номер карты'),
+            model_name="paymentmethod",
+            name="card_body",
+            field=models.CharField(
+                default="", max_length=16, verbose_name="Номер карты"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='paymentmethod',
-            name='card_cvc_code',
-            field=models.CharField(default='', max_length=3, verbose_name='CVC код'),
+            model_name="paymentmethod",
+            name="card_cvc_code",
+            field=models.CharField(default="", max_length=3, verbose_name="CVC код"),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='paymentmethod',
-            name='card_expire_date',
-            field=models.DateField(default='2024-04-04', verbose_name='Дата окончания действия карты'),
+            model_name="paymentmethod",
+            name="card_expire_date",
+            field=models.DateField(
+                default="2024-04-04", verbose_name="Дата окончания действия карты"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='paymentmethod',
-            name='user',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, related_name='cards', to='users.customabstractuser', verbose_name='Пользователь'),
+            model_name="paymentmethod",
+            name="user",
+            field=models.ForeignKey(
+                default=0,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="cards",
+                to="users.customabstractuser",
+                verbose_name="Пользователь",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='transaction',
-            name='order',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='transaction', to='api.order', verbose_name='Ответ от платежной системы'),
+            model_name="transaction",
+            name="order",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="transaction",
+                to="api.order",
+                verbose_name="Ответ от платежной системы",
+            ),
         ),
         migrations.CreateModel(
-            name='Characteristics',
+            name="Characteristics",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50, verbose_name='Название свойства')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.goodcategory', verbose_name='Категория')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=50, verbose_name="Название свойства"),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.goodcategory",
+                        verbose_name="Категория",
+                    ),
+                ),
             ],
         ),
     ]

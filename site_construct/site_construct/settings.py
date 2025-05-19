@@ -31,7 +31,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 
-
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "94.190.123.143"]
 
 
@@ -97,12 +96,11 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB", "myapp"),
         "USER": os.getenv("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", 'password123'),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password123"),
         "HOST": os.getenv("DB_HOST", "127.0.0.1"),
         "PORT": os.getenv("DB_PORT", 6500),
     }
 }
-
 
 
 # Password validation
@@ -188,4 +186,4 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 # AWS_S3_REGION_NAME = 'eu-west-1'
 # if DEBUG:
-AWS_S3_ENDPOINT_URL = "http://94.190.123.143:8000/media"
+AWS_S3_ENDPOINT_URL = "http://94.190.123.143/media"

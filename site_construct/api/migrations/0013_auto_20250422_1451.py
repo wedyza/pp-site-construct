@@ -7,18 +7,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0012_auto_20250422_1446'),
+        ("api", "0012_auto_20250422_1446"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='characteristics',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='characteristics', to='api.goodcategory', verbose_name='Категория'),
+            model_name="characteristics",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="characteristics",
+                to="api.goodcategory",
+                verbose_name="Категория",
+            ),
         ),
         migrations.AlterField(
-            model_name='gooditem',
-            name='characteristics',
-            field=models.ManyToManyField(related_name='characteristics', through='api.ItemCharacteristic', to='api.Characteristics', verbose_name='Характеристики'),
+            model_name="gooditem",
+            name="characteristics",
+            field=models.ManyToManyField(
+                related_name="characteristics",
+                through="api.ItemCharacteristic",
+                to="api.Characteristics",
+                verbose_name="Характеристики",
+            ),
         ),
     ]

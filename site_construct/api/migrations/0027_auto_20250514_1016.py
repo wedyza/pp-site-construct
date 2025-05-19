@@ -6,17 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0026_basket_parent'),
+        ("api", "0026_basket_parent"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='basket',
-            name='parent',
+            model_name="basket",
+            name="parent",
         ),
         migrations.AddField(
-            model_name='basket',
-            name='currently_for_order',
-            field=models.BooleanField(default=False, verbose_name='Используется для заказов'),
+            model_name="basket",
+            name="currently_for_order",
+            field=models.BooleanField(
+                default=False, verbose_name="Используется для заказов"
+            ),
         ),
     ]
