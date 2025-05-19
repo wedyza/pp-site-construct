@@ -25,6 +25,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    position: relative;
 }
 
 .seller-good_input {
@@ -40,8 +41,14 @@
     gap: 24px;
 
     .seller-good_info-group {
-        width: 202px;
+        width: 258px;
     }
+}
+
+.seller-good_cat span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .seller-good_cat {
@@ -52,6 +59,8 @@
     justify-content: space-between;
     height: 44px;
     padding: 0 16px;
+    position: relative;
+    cursor: pointer;
 }
 
 .seller-good_info-imgs {
@@ -208,4 +217,8 @@
     display: flex;
     gap: 4px;
     margin-top: 24px;
+}
+
+.seller-good_cat-list {
+    top: 74px;
 }

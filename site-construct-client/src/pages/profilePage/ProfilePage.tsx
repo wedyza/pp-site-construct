@@ -10,11 +10,12 @@ import ProfileReviews from '../../components/profileReviews/ProfileReviews';
 import Modal from '../../components/modal/Modal';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchUserInfo } from '../../store/userSlice';
+import { logout } from '../../store/authSlice';
 
 const ProfilePage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { firstName } = useAppSelector((state) => state.user);
-    const [selectedSection, setSelectedSection] = useState<'orders' | 'payment' | 'messages' | 'reviews' | 'profile'>('orders');
+    const [selectedSection, setSelectedSection] = useState<'orders' | 'payment' | /*'messages' |*/ 'reviews' | 'profile'>('orders');
     
     useEffect(() => {
         dispatch(fetchUserInfo());
@@ -24,8 +25,8 @@ const ProfilePage: React.FC = () => {
         switch (selectedSection) {
             case 'payment':
                 return <ProfilePaymentMethods />;
-            case 'messages':
-                return <ProfileMessages />;
+            /*case 'messages':
+                return <ProfileMessages />;*/
             case 'reviews':
                 return <ProfileReviews />;
             case 'profile':
@@ -36,9 +37,14 @@ const ProfilePage: React.FC = () => {
     };
 
     const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
-  
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
+
     return (
-        <div className={`${selectedSection === 'messages' ? 'page-content__no-pad' : 'page-content'}`}>
+        // <div className={`${selectedSection === 'messages' ? 'page-content__no-pad' : 'page-content'}`}>
+        <div className='page-content'>
             <Header />
             <HeaderCategories />
             <div className='profile-page'>
@@ -76,7 +82,7 @@ const ProfilePage: React.FC = () => {
                             </svg>
                             <span>Способы оплаты</span>
                         </li>
-                        <li className={`profile-nav_item hover2 ${selectedSection === 'messages' ? 'profile-nav_item__active' : ''}`} onClick={() => setSelectedSection('messages')}>
+                        {/* <li className={`profile-nav_item hover2 ${selectedSection === 'messages' ? 'profile-nav_item__active' : ''}`} onClick={() => setSelectedSection('messages')}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M17 12.5C17.2761 12.5 17.5 12.2761 17.5 12C17.5 11.7239 17.2761 11.5 17 11.5C16.7239 11.5 16.5 11.7239 16.5 12C16.5 12.2761 16.7239 12.5 17 12.5Z" fill="black"/>
                                 <path fillRule="evenodd" clipRule="evenodd" d="M17 12.25C17.1381 12.25 17.25 12.1381 17.25 12C17.25 11.8619 17.1381 11.75 17 11.75C16.8619 11.75 16.75 11.8619 16.75 12C16.75 12.1381 16.8619 12.25 17 12.25ZM15.75 12C15.75 11.3096 16.3096 10.75 17 10.75C17.6904 10.75 18.25 11.3096 18.25 12C18.25 12.6904 17.6904 13.25 17 13.25C16.3096 13.25 15.75 12.6904 15.75 12Z" fill="black"/>
@@ -87,12 +93,19 @@ const ProfilePage: React.FC = () => {
                                 <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 13.6861 3.20043 15.2647 3.98703 16.6245C4.07666 16.7794 4.10792 16.9613 4.07515 17.1373L3.43742 20.5626L6.86272 19.9248C7.0387 19.8921 7.2206 19.9233 7.37554 20.013C8.73533 20.7996 10.3139 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C10.1437 22.75 8.39536 22.2789 6.87016 21.4492L2.63728 22.2373C2.39423 22.2826 2.14449 22.2051 1.96967 22.0303C1.79485 21.8555 1.71742 21.6058 1.76267 21.3627L2.55076 17.1298C1.72113 15.6046 1.25 13.8563 1.25 12Z" fill="black"/>
                             </svg>
                             <span>Сообщения</span>
-                        </li>
+                        </li> */}
                         <li className={`profile-nav_item hover2 ${selectedSection === 'reviews' ? 'profile-nav_item__active' : ''}`} onClick={() => setSelectedSection('reviews')}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M5 3.75C4.30964 3.75 3.75 4.30964 3.75 5V19.8619L5.81386 17.2821C6.33573 16.6297 7.12584 16.25 7.96125 16.25H19C19.6904 16.25 20.25 15.6904 20.25 15V5C20.25 4.30964 19.6904 3.75 19 3.75H5ZM2.25 5C2.25 3.48122 3.48122 2.25 5 2.25H19C20.5188 2.25 21.75 3.48122 21.75 5V15C21.75 16.5188 20.5188 17.75 19 17.75H7.96125C7.58152 17.75 7.22238 17.9226 6.98516 18.2191L4.65417 21.1329C3.85698 22.1294 2.25 21.5657 2.25 20.2895V5Z" fill="black"/>
                             </svg>
                             <span>Отзывы</span>
+                        </li>
+                        <li className={`profile-nav_item hover2 ${selectedSection === 'reviews' ? 'profile-nav_item__active' : ''}`} onClick={handleLogout}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M13.5 3.75C13.5 4.16421 13.1642 4.5 12.75 4.5H6.75C6.05964 4.5 5.5 5.05964 5.5 5.75V17.75C5.5 18.4404 6.05964 19 6.75 19H12.75C13.1642 19 13.5 19.3358 13.5 19.75C13.5 20.1642 13.1642 20.5 12.75 20.5H6.75C5.23122 20.5 4 19.2688 4 17.75V5.75C4 4.23122 5.23122 3 6.75 3H12.75C13.1642 3 13.5 3.33579 13.5 3.75Z" fill="#02040F"/>
+                                <path fillRule="evenodd" clipRule="evenodd" d="M20.2803 12.0303C20.5732 11.7374 20.5732 11.2626 20.2803 10.9697L16.7803 7.46967C16.4874 7.17678 16.0126 7.17678 15.7197 7.46967C15.4268 7.76256 15.4268 8.23744 15.7197 8.53033L17.9393 10.75H8.69876C8.28455 10.75 7.75 11.0858 7.75 11.5C7.75 11.9142 8.28455 12.25 8.69876 12.25H17.9393L15.7197 14.4697C15.4268 14.7626 15.4268 15.2374 15.7197 15.5303C16.0126 15.8232 16.4874 15.8232 16.7803 15.5303L20.2803 12.0303Z" fill="#02040F" />
+                            </svg>
+                            <span>Выход</span>
                         </li>
                     </ul>
                 </div>

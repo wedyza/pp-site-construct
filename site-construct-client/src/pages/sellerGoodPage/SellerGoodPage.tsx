@@ -7,6 +7,7 @@ import { createGoodForm, fetchGoodById, updateGoodForm } from '../../store/goods
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 import AddCharacteristicModal from '../../components/addCharacteristicModal/AddCharacteristicModal';
 import { applyCharacteristicsToGood, CharacteristicGroup } from '../../store/characteristicsSlice';
+import { fetchCategories } from '../../store/categoriesSlice';
 
 const SellerGoodPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -52,7 +53,7 @@ const SellerGoodPage: React.FC = () => {
         e.preventDefault();
 
         const price = parseFloat(priceInput);
-        if (!titleInput || !descInput || isNaN(price)) {
+        if (!titleInput || !descInput || isNaN(price) || !selectedGroup) {
             alert('Пожалуйста, заполните все поля корректно');
             return;
         }
@@ -61,6 +62,7 @@ const SellerGoodPage: React.FC = () => {
         formData.append('name', titleInput);
         formData.append('description', descInput);
         formData.append('price', price.toString());
+        formData.append('category', selectedGroup.id.toString());
         formData.append('visible', isVisible.toString());
 
         images.forEach((img) => formData.append('media', img));
@@ -114,6 +116,55 @@ const SellerGoodPage: React.FC = () => {
         setCharGroups((prev) => [...prev, data]);
     };
 
+    const { structured: categories } = useAppSelector((state) => state.categories);
+
+    const [selectedTop, setSelectedTop] = useState<string | null>(null);
+    const [selectedSub, setSelectedSub] = useState<string | null>(null);
+    const [selectedGroup, setSelectedGroup] = useState<{ id: number; title: string } | null>(null);
+
+    const [dropdownOpen, setDropdownOpen] = useState<'top' | 'sub' | 'group' | null>(null);
+    
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, [dispatch]);
+
+    const isCategorySelectionDisabled = charGroups.length > 0;
+
+    useEffect(() => {
+        if (!selectedItem || !categories || Object.keys(categories).length === 0) return;
+
+        const categoryId = selectedItem.category;
+
+        if (categoryId && charGroups.length === 0) {
+            let found = false;
+
+            for (const [topTitle, topData] of Object.entries(categories)) {
+                for (const [subTitle, subData] of Object.entries(topData.subcategories)) {
+                    const group = subData.subcategories.find((g) => g.id === categoryId);
+                    if (group) {
+                        setSelectedTop(topTitle);
+                        setSelectedSub(subTitle);
+                        setSelectedGroup({ id: group.id, title: group.title });
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+
+            if (!found) {
+                setSelectedTop(null);
+                setSelectedSub(null);
+                setSelectedGroup(null);
+            }
+
+        } else if (!categoryId) {
+            setSelectedTop(null);
+            setSelectedSub(null);
+            setSelectedGroup(null);
+        }
+    }, [selectedItem, categories, charGroups]);
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -156,29 +207,113 @@ const SellerGoodPage: React.FC = () => {
                         </div>
                         <div className="seller-good_info-cat">
                             <div className="seller-good_info-group">
-                                <span className='seller-good_info-label text-n14'>
-                                    Категория
-                                </span>
-                                <div className='seller-good_cat text-n16'>
-                                    Электроприборы
+                                <span className='seller-good_info-label text-n14'>Категория</span>
+                                <div
+                                    className='seller-good_cat text-n16'
+                                    onClick={() => {
+                                        if (!isCategorySelectionDisabled) {
+                                            setDropdownOpen(dropdownOpen === 'top' ? null : 'top');
+                                        }
+                                    }}
+                                >
+                                    <span>{selectedTop || 'Выберите категорию'}</span>
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M6 9L12 15L18 9" stroke="#02040F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                         <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 8.46967C5.76256 8.17678 6.23744 8.17678 6.53033 8.46967L12 13.9393L17.4697 8.46967C17.7626 8.17678 18.2374 8.17678 18.5303 8.46967C18.8232 8.76256 18.8232 9.23744 18.5303 9.53033L12.5303 15.5303C12.2374 15.8232 11.7626 15.8232 11.4697 15.5303L5.46967 9.53033C5.17678 9.23744 5.17678 8.76256 5.46967 8.46967Z" fill="#02040F"/>
                                     </svg>
                                 </div>
+                                {dropdownOpen === 'top' && (
+                                    <div className='dropdown-list seller-good_cat-list text-n14'>
+                                        {Object.entries(categories).map(([title]) => (
+                                            <div
+                                                key={title}
+                                                className='dropdown-item'
+                                                onClick={() => {
+                                                setSelectedTop(title);
+                                                setSelectedSub(null);
+                                                setSelectedGroup(null);
+                                                setDropdownOpen(null);
+                                                }}
+                                            >
+                                                {title}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                            <div className="seller-good_info-group">
-                                <span className='seller-good_info-label text-n14'>
-                                    Подкатегория
-                                </span>
-                                <div className='seller-good_cat text-n16'>
-                                    Электроприборы
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6 9L12 15L18 9" stroke="#02040F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                        <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 8.46967C5.76256 8.17678 6.23744 8.17678 6.53033 8.46967L12 13.9393L17.4697 8.46967C17.7626 8.17678 18.2374 8.17678 18.5303 8.46967C18.8232 8.76256 18.8232 9.23744 18.5303 9.53033L12.5303 15.5303C12.2374 15.8232 11.7626 15.8232 11.4697 15.5303L5.46967 9.53033C5.17678 9.23744 5.17678 8.76256 5.46967 8.46967Z" fill="#02040F"/>
-                                    </svg>
+
+                            {selectedTop && (
+                                <div className="seller-good_info-group">
+                                    <span className='seller-good_info-label text-n14'>Подкатегория</span>
+                                    <div
+                                        className='seller-good_cat text-n16'
+                                        onClick={() => {
+                                            if (!isCategorySelectionDisabled) {
+                                                setDropdownOpen(dropdownOpen === 'sub' ? null : 'sub');
+                                            }
+                                        }}
+                                    >
+                                        <span>{selectedSub || 'Выберите подкатегорию'}</span>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 9L12 15L18 9" stroke="#02040F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 8.46967C5.76256 8.17678 6.23744 8.17678 6.53033 8.46967L12 13.9393L17.4697 8.46967C17.7626 8.17678 18.2374 8.17678 18.5303 8.46967C18.8232 8.76256 18.8232 9.23744 18.5303 9.53033L12.5303 15.5303C12.2374 15.8232 11.7626 15.8232 11.4697 15.5303L5.46967 9.53033C5.17678 9.23744 5.17678 8.76256 5.46967 8.46967Z" fill="#02040F"/>
+                                        </svg>
+                                    </div>
+                                    {dropdownOpen === 'sub' && (
+                                        <div className='dropdown-list seller-good_cat-list text-n14'>
+                                            {Object.entries(categories[selectedTop].subcategories).map(([title]) => (
+                                                <div
+                                                key={title}
+                                                className='dropdown-item'
+                                                onClick={() => {
+                                                    setSelectedSub(title);
+                                                    setSelectedGroup(null);
+                                                    setDropdownOpen(null);
+                                                }}
+                                                >
+                                                    {title}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
+                            )}
+
+                            {selectedTop && selectedSub && (
+                                <div className="seller-good_info-group">
+                                    <span className='seller-good_info-label text-n14'>Группа товаров</span>
+                                    <div
+                                        className='seller-good_cat text-n16'
+                                        onClick={() => {
+                                            if (!isCategorySelectionDisabled) {
+                                                setDropdownOpen(dropdownOpen === 'group' ? null : 'group');
+                                            }
+                                        }}
+                                    >
+                                        <span>{selectedGroup?.title || 'Выберите группу'}</span>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 9L12 15L18 9" stroke="#02040F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 8.46967C5.76256 8.17678 6.23744 8.17678 6.53033 8.46967L12 13.9393L17.4697 8.46967C17.7626 8.17678 18.2374 8.17678 18.5303 8.46967C18.8232 8.76256 18.8232 9.23744 18.5303 9.53033L12.5303 15.5303C12.2374 15.8232 11.7626 15.8232 11.4697 15.5303L5.46967 9.53033C5.17678 9.23744 5.17678 8.76256 5.46967 8.46967Z" fill="#02040F"/>
+                                        </svg>
+                                    </div>
+                                    {dropdownOpen === 'group' && (
+                                        <div className='dropdown-list seller-good_cat-list text-n14'>
+                                            {categories[selectedTop].subcategories[selectedSub].subcategories.map((cat) => (
+                                                <div
+                                                key={cat.id}
+                                                className='dropdown-item'
+                                                onClick={() => {
+                                                    setSelectedGroup({ id: cat.id, title: cat.title });
+                                                    setDropdownOpen(null);
+                                                }}
+                                                >
+                                                    {cat.title}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <div className="seller-good_info-imgs seller-good_info-group">
                             <span className='seller-good_info-label text-n14'>Фотографии товара</span>
@@ -336,6 +471,7 @@ const SellerGoodPage: React.FC = () => {
                 onClose={() => setModalOpen(false)}
                 onSave={handleSave}
                 usedGroupIds={charGroups.map(group => group.id)}
+                catGroup={selectedGroup?.id}
             />
         </div>
     );
