@@ -6,3 +6,33 @@
     color: var(--accent);
     border-bottom: 1px solid var(--accent);
 }
+
+.seller-review_modal {
+    width: 33%;
+    position: relative;
+}
+
+.seller-review_modal-btns {
+    position: absolute;
+    top: 24px;
+    right: 16px;
+    display: flex;
+    gap: 12px;
+}
+
+.seller-review_modal-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-review_modal-label {
+    margin-top: 24px;
+}
+
+.seller-review_modal-input {
+    margin-top: 8px;
+    background-color: var(--white-gray);
+    height: 180px;
+    border-radius: var(--radius);
+    padding: 11px 24px;
+}

@@ -1,8 +1,12 @@
+import { useState } from 'react';
+import Modal from '../../components/modal/Modal';
 import Search from '../../components/search/Search';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerReviewsPage.scss'
 
 const SellerReviewsPage: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -47,13 +51,34 @@ const SellerReviewsPage: React.FC = () => {
                             <div className='seller-order_table-img'></div>
                         </div>
                         <div className='seller-orders_table-cell'>
-                            <button className='seller-reviews_add'>
+                            <button className='seller-reviews_add' onClick={() => setIsModalOpen(true)}>
                                 Ответить
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} className="seller-review_modal">
+                <form className='seller-review_modal-form'>
+                    <h2 className='text-h2'>Ответьте на отзыв</h2>
+                    <span className='text-n14 seller-review_modal-label'>Ваш ответ</span>
+                    <textarea className='seller-review_modal-input text-n16' />
+                    <div className="seller-review_modal-btns">
+                        <button className="seller-review_modal-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M6.46783 11.9697C6.76072 11.6768 7.2356 11.6768 7.52849 11.9697L9.99816 14.4393L16.4678 7.96967C16.7607 7.67678 17.2356 7.67678 17.5285 7.96967C17.8214 8.26256 17.8214 8.73744 17.5285 9.03033L10.5285 16.0303C10.2356 16.3232 9.76072 16.3232 9.46783 16.0303L6.46783 13.0303C6.17494 12.7374 6.17494 12.2626 6.46783 11.9697Z" fill="black"/>
+                                <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="black"/>
+                            </svg>
+                        </button>
+                        <button className="seller-review_modal-btn" onClick={() => setIsModalOpen(false)}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M8.64001 8.64124C8.9329 8.34835 9.40777 8.34835 9.70067 8.64124L11.9988 10.9393L14.2969 8.64124C14.5898 8.34835 15.0646 8.34835 15.3575 8.64124C15.6504 8.93414 15.6504 9.40901 15.3575 9.7019L13.0594 12L15.3575 14.2981C15.6504 14.591 15.6504 15.0659 15.3575 15.3588C15.0646 15.6517 14.5898 15.6517 14.2969 15.3588L11.9988 13.0607L9.70067 15.3588C9.40777 15.6517 8.9329 15.6517 8.64001 15.3588C8.34711 15.0659 8.34711 14.591 8.64001 14.2981L10.9381 12L8.64001 9.7019C8.34711 9.40901 8.34711 8.93414 8.64001 8.64124Z" fill="black"/>
+                                <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="black"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </Modal>
         </div>
     );
 };
