@@ -1,0 +1,8 @@
+.seller-reviews_table {
+    grid-template-columns: 12% 16% 13.5% 9% 1fr 13% 12.5%;
+}
+
+.seller-reviews_add {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+}

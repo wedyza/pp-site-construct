@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from './store/hooks';
 import { fetchUserInfo } from './store/userSlice';
 import MainRouter from './components/MainRouter';
 import SellerProfilePage from './pages/sellerProfilePage/SellerProfilePage';
+import SellerReviewsPage from './pages/sellerReviewsPage/SellerReviewsPage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ function App() {
       <Route path="/reviews/:id" element={<ReviewsPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
       <Route path="/seller/profile" element={<SellerProfilePage />} />
+      <Route path="/seller/reviews" element={<SellerReviewsPage />} />
 
       <Route element={<ProtectedRoute allowedRoles={['Продавец']} />}>
           <Route path="/seller/goods" element={<SellerGoodsPage />} />
