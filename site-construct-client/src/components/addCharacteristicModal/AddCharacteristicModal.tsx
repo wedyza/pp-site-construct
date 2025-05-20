@@ -150,26 +150,27 @@ const AddCharacteristicModal: React.FC<Props> = ({ isOpen, onClose, onSave, used
                         </div>
 
                         {selectedChars.length > 0 && (
-                            <div className="modal-charc_list">
+                            <div className="modal-charc_cont">
                                 <div className="modal-charc_list-labels">
                                     <p className='text-n14'>Параметр</p>
                                     <p className='text-n14'>Значение параметра</p>
                                 </div>
-                                
-                                {selectedChars.map((item) => (
-                                    <div key={item.characteristic.id} className="modal-charc_item text-n16">
-                                        <label className='modal-charc_item-label'>{item.characteristic.title}</label>
-                                        <input
-                                            type="text"
-                                            className='modal-charc_item-input'
-                                            placeholder='Впишите'
-                                            value={item.value}
-                                            onChange={(e) =>
-                                                handleChangeValue(item.characteristic.id, e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                ))}
+                                <div className="modal-charc_list">
+                                    {selectedChars.map((item) => (
+                                        <div key={item.characteristic.id} className="modal-charc_item text-n16">
+                                            <label className='modal-charc_item-label'>{item.characteristic.title}</label>
+                                            <input
+                                                type="text"
+                                                className='modal-charc_item-input'
+                                                placeholder='Впишите'
+                                                value={item.value}
+                                                onChange={(e) =>
+                                                    handleChangeValue(item.characteristic.id, e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>

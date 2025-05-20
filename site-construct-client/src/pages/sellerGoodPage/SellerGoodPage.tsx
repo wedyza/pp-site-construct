@@ -23,6 +23,8 @@ const SellerGoodPage: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [charGroups, setCharGroups] = useState<CharacteristicGroup[]>([]);
 
+    console.log(charGroups);
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setImages([...images, ...Array.from(e.target.files)]);
@@ -44,8 +46,17 @@ const SellerGoodPage: React.FC = () => {
             setTitleInput(selectedItem.name);
             setPriceInput(selectedItem.price.toString());
             setDescInput(selectedItem.description);
-            setCharGroups(selectedItem.characteristics || []);
             setIsVisible(!!selectedItem.visible);
+
+            const updatedGroups = selectedItem.characteristics?.map(group => ({
+                ...group,
+                characteristics: group.characteristics.map(char => ({
+                    ...char,
+                    id: group.id,
+                })),
+            }));
+
+        setCharGroups(updatedGroups || []);
         }
     }, [selectedItem, id]);
     

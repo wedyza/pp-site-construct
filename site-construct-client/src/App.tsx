@@ -39,8 +39,6 @@ function App() {
       <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/reviews/:id" element={<ReviewsPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
-      <Route path="/seller/profile" element={<SellerProfilePage />} />
-      <Route path="/seller/reviews" element={<SellerReviewsPage />} />
 
       <Route element={<ProtectedRoute allowedRoles={['Продавец']} />}>
           <Route path="/seller/goods" element={<SellerGoodsPage />} />
@@ -49,6 +47,8 @@ function App() {
           <Route path="/seller/orders" element={<SellerOrdersPage />} />
           <Route path="/seller/order" element={<SellerOrderPage />} />
           <Route path="/seller/finance" element={<SellerFinancePage />} />
+        <Route path="/seller/profile" element={<SellerProfilePage />} />
+        <Route path="/seller/reviews" element={<SellerReviewsPage />} />
       </Route>
 
       <Route element={<ProtectedRoute onlyGuest />}>
