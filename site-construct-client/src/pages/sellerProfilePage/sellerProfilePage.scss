@@ -1,0 +1,115 @@
+.seller-profile {
+    margin-top: 24px;
+    display: flex;
+    gap: 24px;
+
+    .profile-info {
+        width: 40%;
+
+        .profile-info_form {
+            width: 100%;
+        }
+    }
+}
+
+.seller-profile_column {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.seller-payment {
+    width: 100%;
+}
+
+.seller-payment_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.seller-payment_add {
+    background-color: var(--background);
+    border: 1px solid var(--black15);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.seller-payment_list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.seller-payment_item {
+    background-color: #48AF5B;
+    color: var(--background);
+    display: flex;
+    position: relative;
+    padding: 16px 40px 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: var(--big-radius);
+}
+
+.seller-payment_delete {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    height: 16px;
+    width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seller-profile_docs {
+    width: 100%;
+}
+
+.seller-profile_docs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.seller-profile_docs-item {
+    border: 1px solid var(--black15);
+    padding: 8px;
+    border-radius: var(--big-radius);
+    display: flex;
+    position: relative;
+    gap: 8px;
+}
+
+.seller-profile_doc-img {
+    height: 50px;
+    width: 50px;
+    background-color: var(--temp-color);
+    border-radius: var(--radius);
+}
+
+.seller-profile_doc-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seller-profile_doc-text {
+    width: calc(100% - 106px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

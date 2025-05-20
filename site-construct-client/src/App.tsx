@@ -19,6 +19,7 @@ import MakeOrderPage from './pages/makeOrderPage/MakeOrderPage';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import { fetchUserInfo } from './store/userSlice';
 import MainRouter from './components/MainRouter';
+import SellerProfilePage from './pages/sellerProfilePage/SellerProfilePage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -37,6 +38,7 @@ function App() {
       <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/reviews/:id" element={<ReviewsPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
+      <Route path="/seller/profile" element={<SellerProfilePage />} />
 
       <Route element={<ProtectedRoute allowedRoles={['Продавец']} />}>
           <Route path="/seller/goods" element={<SellerGoodsPage />} />

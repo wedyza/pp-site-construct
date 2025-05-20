@@ -46,18 +46,18 @@ const ProfileInfo: React.FC = () => {
 
     const [settings, setSettings] = useState([true, false, true, false]);
 
-    const toggleSetting = (index: number) => {
-        const updated = [...settings];
-        updated[index] = !updated[index];
-        setSettings(updated);
-    };
+    // const toggleSetting = (index: number) => {
+    //     const updated = [...settings];
+    //     updated[index] = !updated[index];
+    //     setSettings(updated);
+    // };
 
-    const settingLabels = [
-        'Получать уведомления о заказах',
-        'Новинки и акции',
-        'Новости и обновления',
-        'Оповещения от службы поддержки',
-    ];
+    // const settingLabels = [
+    //     'Получать уведомления о заказах',
+    //     'Новинки и акции',
+    //     'Новости и обновления',
+    //     'Оповещения от службы поддержки',
+    // ];
 
     return (
         <div className='profile-info'>
@@ -117,7 +117,7 @@ const ProfileInfo: React.FC = () => {
                     {loading ? 'Сохранение...' : 'Сохранить'}
                 </button>
             </form>
-            <div className='profile-info_stg'>
+            {/* <div className='profile-info_stg'>
                 <h2 className='text-h1'>Настройки</h2>
                 <h3 className='text-n16 profile-info_stg-title'>Уведомления</h3>
                 <ul className='profile-info_stg-list'>
@@ -137,7 +137,7 @@ const ProfileInfo: React.FC = () => {
                         </li>
                     ))}
                 </ul>
-            </div>
+            </div> */}
         </div>
     );
 };
