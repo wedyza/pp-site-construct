@@ -2,8 +2,60 @@ import React, { useEffect, useState } from 'react';
 import './sellerProfilePage.scss'
 import SellerNav from '../../components/sellerNav/SellerNav';
 import ProfileInfo from '../../components/profileInfo/ProfileInfo';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addPaymentMethod, fetchPaymentMethods } from '../../store/paymentMethodsSlice';
+import Modal from '../../components/modal/Modal';
 
 const SellerProfilePage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { items: methods/*, loading*/ } = useAppSelector((state) => state.paymentMethods);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [cardBody, setCardBody] = useState('');
+    const [cardDate, setCardDate] = useState('');
+    const [cardCvv, setCardCvv] = useState('');
+
+    useEffect(() => {
+        dispatch(fetchPaymentMethods());
+    }, [dispatch]);
+
+    function convertDate(ddmm: string): string {
+        const [day, month] = ddmm.split('/');
+        const year = new Date().getFullYear();
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        dispatch(
+            addPaymentMethod({
+                card_body: cardBody.replace(/\s/g, ''),
+                card_expire_date: convertDate(cardDate),
+                card_cvv_code: cardCvv,
+            })
+        ).then(() => {
+            setIsModalOpen(false);
+            setCardBody('');
+            setCardDate('');
+            setCardCvv('');
+        });
+    };
+
+    const handleCardBodyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.slice(0, 16);
+        const formatted = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setCardBody(formatted);
+    };
+
+    const handleCardDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.slice(0, 4);
+        if (value.length > 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2);
+        }
+        setCardDate(value);
+    };
 
     return (
         <div className='page-content__seller'>
@@ -22,7 +74,7 @@ const SellerProfilePage: React.FC = () => {
                         <div className='seller-payment profile-info_stg'>
                             <div className='seller-payment_header'>
                                 <h2 className='text-h1'>Счет</h2>
-                                <button className='seller-payment_add text-btn'>
+                                <button className='seller-payment_add text-btn' onClick={() => setIsModalOpen(true)}>
                                     Привязать счет
                                 </button>
                             </div>
@@ -70,6 +122,36 @@ const SellerProfilePage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} className="payment-modal">
+                <h2 className='text-h2'>Привязать карту</h2>
+                <form className='payment-modal_form' onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        className='payment-modal_input payment-modal_number text-n14'
+                        placeholder='Номер карты'
+                        value={cardBody}
+                        onChange={handleCardBodyChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        className='payment-modal_input payment-modal_date text-n14'
+                        placeholder='ММ/ГГ'
+                        value={cardDate}
+                        onChange={handleCardDateChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        className='payment-modal_input payment-modal_cvv text-n14'
+                        placeholder='CVV'
+                        value={cardCvv}
+                        onChange={(e) => setCardCvv(e.target.value)}
+                        required
+                    />
+                    <button className='payment-modal_form-btn text-btn btn-black'>Привязать</button>
+                </form>
+            </Modal>
         </div>
     );
 };
