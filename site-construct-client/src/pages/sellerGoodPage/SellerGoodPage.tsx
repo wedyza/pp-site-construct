@@ -23,8 +23,6 @@ const SellerGoodPage: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [charGroups, setCharGroups] = useState<CharacteristicGroup[]>([]);
 
-    console.log(charGroups);
-
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setImages([...images, ...Array.from(e.target.files)]);
@@ -55,8 +53,7 @@ const SellerGoodPage: React.FC = () => {
                     id: group.id,
                 })),
             }));
-
-        setCharGroups(updatedGroups || []);
+            setCharGroups(updatedGroups || []);
         }
     }, [selectedItem, id]);
     

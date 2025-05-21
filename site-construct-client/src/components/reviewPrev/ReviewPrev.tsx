@@ -22,7 +22,7 @@ const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => 
 
                     </div>
                     <span className='review-prev_author-name text-h2'>
-                        {user?.first_name + ' ' + user?.last_name[0] + '.' || 'Пользователь'}
+                        {user ? user.first_name + ' ' + (user.last_name ? user.last_name[0]+ '.' : '')  : 'Пользователь'}
                     </span>
                 </div>
                 <div className="review-prev_info">

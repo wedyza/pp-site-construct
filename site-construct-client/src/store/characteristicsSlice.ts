@@ -5,6 +5,7 @@ import axiosInstance from '../api/axiosInstance';
 export interface Characteristic {
     id: number;
     title: string;
+    value?: string;
 }
 
 export interface CharacteristicGroup {

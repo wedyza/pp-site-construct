@@ -180,87 +180,23 @@ const ProductPage: React.FC = () => {
                 <div className="product_charc">
                     <h2 className='product-charc_title product_subtitle text-h2'>Характеристики</h2>
                     <div className="product-charc_content">
-                        <div className='product-charc_card'>
-                            <h3 className='product-charc_list-title'>
-                                Общие
-                            </h3>
-                            <ul className='product-charc_list'>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Тип
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        Робот для мойки окон
-                                    </span>
-                                </li>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Партномер
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        Cleanbot Ultraspray
-                                    </span>
-                                </li>
+                        {selectedItem.characteristics && selectedItem.characteristics.map((group) => (
+                            <div className="product-charc_card" key={group.id}>
+                            <h3 className="product-charc_list-title">{group.title}</h3>
+                            <ul className="product-charc_list">
+                                {group.characteristics.map((item, index) => (
+                                    <li className="product-charc_item text-n16" key={index}>
+                                        <span className="product-charc_item__label">{item.title}</span>
+                                        <span className="product-charc_item__value">{item.value}</span>
+                                    </li>
+                                ))}
                             </ul>
-                        </div>
-                        <div className='product-charc_card'>
-                            <h3 className='product-charc_list-title'>
-                                Управление пылесосом
-                            </h3>
-                            <ul className='product-charc_list'>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Управление пылесосом
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        Пульт ДУ
-                                    </span>
-                                </li>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Автоматические системы
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        Автоматическая парковка
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className='product-charc_card'>
-                            <h3 className='product-charc_list-title'>
-                                Технические характеристики
-                            </h3>
-                            <ul className='product-charc_list'>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Мощность всасывания, Вт
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        80
-                                    </span>
-                                </li>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Макс. уровень шума, дБ
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        65
-                                    </span>
-                                </li>
-                                <li className='product-charc_item text-n16'>
-                                    <span className='product-charc_item__label'>
-                                        Потребляемая мощность, Вт
-                                    </span>
-                                    <span className='product-charc_item__value'>
-                                        80
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
                 <div className="product-package">
-                    <h2 className='product-package_title product_subtitle text-h2'>Комплектация</h2>
+                    <h2 className='product-package_title product_subtitle text-h2'>Описание</h2>
                     <p className='product-package_text text-n16'>
                         {selectedItem.description}
                     </p>
