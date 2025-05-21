@@ -10,7 +10,7 @@ const Recommendations: React.FC = () => {
     const goods = useAppSelector((state) => state.goods.items);
 
     useEffect(() => {
-        dispatch(fetchGoods());
+        dispatch(fetchGoods(undefined));
     }, [dispatch]);
 
     return (

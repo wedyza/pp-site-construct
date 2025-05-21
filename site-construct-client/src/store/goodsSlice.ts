@@ -50,24 +50,18 @@ const initialState: GoodsState = {
 
 export const fetchGoods = createAsyncThunk<
     Good[],
-    void,
+    { search?: string } | undefined,
     { state: RootState }
->('goods/fetchGoods', async (_, { getState, rejectWithValue }) => {
+>('goods/fetchGoods', async ({ search } = {}, { getState, rejectWithValue }) => {
     const token = getState().auth.token;
     try {
-        if (token) {
-            const response = await axiosInstance.get('/goods/', {
-                headers: {
-                    Authorization: `Token ${token}`,
-                },
-            });
-        
-            return response.data.results;
-        } else {
-            const response = await axiosInstance.get('/goods/',);
-        
-            return response.data.results;
-        }
+        const config = {
+            headers: token ? { Authorization: `Token ${token}` } : {},
+            params: search ? { search } : {},
+        };
+
+        const response = await axiosInstance.get('/goods/', config);
+        return response.data.results;
     } catch (err: any) {
         return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товаров');
     }

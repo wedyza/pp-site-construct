@@ -28,7 +28,11 @@ const SellerReviewsPage: React.FC = () => {
                 </div>
                 <div className="seller-orders_search-container">
                     <div className="seller-orders_search">
-                        <Search />
+                        <Search
+                            value={''}
+                            onChange={() => {}}
+                            onSubmit={() => {}}
+                        />
                     </div>
                 </div>
                 <div className='seller-reviews_table seller-table text-n11'>

@@ -39,7 +39,11 @@ const SellerGoodsPage: React.FC = () => {
                 </div>
                 <div className="seller-orders_search-container">
                     <div className="seller-orders_search">
-                        <Search />
+                        <Search
+                            value={''}
+                            onChange={() => {}}
+                            onSubmit={() => {}}
+                        />
                     </div>
                     <div className="seller-orders_search-sort text-n14">
                         По дате
