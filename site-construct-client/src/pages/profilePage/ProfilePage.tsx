@@ -3,15 +3,14 @@ import './profilePage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
 import ProfileInfo from '../../components/profileInfo/ProfileInfo';
-import ProfileMessages from '../../components/profileMessages/ProfileMessages';
 import ProfileOrders from '../../components/profileOrders/ProfileOrders';
 import ProfilePaymentMethods from '../../components/profilePaymentMethods/ProfilePaymentMethods';
 import ProfileReviews from '../../components/profileReviews/ProfileReviews';
-import Modal from '../../components/modal/Modal';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchUserInfo } from '../../store/userSlice';
 import { logout } from '../../store/authSlice';
 import NotifyModal from '../../components/notifyModal/NotifyModal';
+import AvatarUploader from '../../components/avatarUploader/AvatarUploader';
 
 const ProfilePage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -51,9 +50,7 @@ const ProfilePage: React.FC = () => {
             <div className='profile-page'>
                 <div className='profile-nav'>
                     <div className='profile-nav_header hover1' onClick={() => setSelectedSection('profile')}>
-                        <div className='profile-nav_avatar'>
-
-                        </div>
+                        <AvatarUploader />
                         <div className='profile-nav_name text-h2'>
                             <span>{firstName}</span>
                             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">

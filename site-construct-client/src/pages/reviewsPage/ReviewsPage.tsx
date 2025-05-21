@@ -69,7 +69,11 @@ const ReviewsPage: React.FC = () => {
                             <span> / Отзывы</span>
                         </div>
                         <div className="reviews-product">
-                            <div className="reviews-product_img"></div>
+                            <div className="reviews-product_img">
+                                {selectedItem.media && selectedItem.media?.length > 0 && (
+                                    <img src={selectedItem.media[0].source} alt="" />
+                                )}
+                            </div>
                             <div className="reviews-product_name text-h1">
                                 {selectedItem?.name}
                             </div>

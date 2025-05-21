@@ -58,9 +58,14 @@ const SellerOrdersPage: React.FC = () => {
                         <Link to='/seller/order' key={order.id} className='seller-orders_table-body seller-orders_table-row'>
                             <div className='seller-orders_table-cell'>№{order.id}</div>
                             <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                            <div className='seller-orders_table-cell'>Смирнова А.С.</div>
                             <div className='seller-orders_table-cell'>
-                                Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
+                                {`${order.user?.last_name} ${order.user?.first_name[0]}.`}
+                            </div>
+                            <div className='seller-orders_table-cell seller-orders_table-items'>
+                                {order.items?.map((item) => (
+                                    <div className='seller-orders_table-item'>{item.good_item.name} <span className='seller-orders_count'>({item.count} шт)</span></div>
+                                ))}
+                                
                             </div>
                             <div className='seller-orders_table-cell'>{formatPrice(order.payment_total)} ₽</div>
                             <div className='seller-orders_table-cell'>{order.status}</div>

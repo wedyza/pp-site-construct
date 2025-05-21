@@ -7,8 +7,10 @@ import { fetchBasketWithGoods, setSelectedItems } from '../../store/basketSlice'
 import { fetchPaymentMethods } from '../../store/paymentMethodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { createOrder } from '../../store/orderSlice';
+import { useNavigate } from 'react-router-dom';
 
 const MakeOrderPage: React.FC = () => {
+    const navigate = useNavigate();
     const [selectedMethodId, setSelectedMethodId] = useState<number | undefined>(1);
     const [pickupPoint, setPickupPoint] = useState('г. Екатеринбург ул. Малышева 15');
     const dispatch = useAppDispatch();
@@ -46,7 +48,7 @@ const MakeOrderPage: React.FC = () => {
                 })
             ).unwrap();
 
-            alert('Заказ успешно оформлен!');
+            navigate('/orders');
         } catch (error: any) {
             alert(`Ошибка: ${error}`);
         }

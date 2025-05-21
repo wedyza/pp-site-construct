@@ -7,6 +7,7 @@ interface UserState {
     email: string;
     gender: 'MALE' | 'FEMALE' | undefined;
     user_type: 'Администратор' | 'Продавец' | 'Покупатель' | undefined;
+    avatar?: string;
     loading: boolean;
     error: string | null;
     loaded: boolean;
@@ -65,6 +66,26 @@ export const updateUserInfo = createAsyncThunk(
     }
 );
 
+export const updateUserAvatar = createAsyncThunk(
+    'user/updateUserAvatar',
+    async (avatarFile: File, { rejectWithValue, getState }: any) => {
+        const token = getState().auth.token;
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+
+        try {
+            const res = await axiosInstance.patch('/users/me/', formData, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return res.data.avatar;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка при обновлении аватара');
+        }
+    }
+);
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -80,12 +101,13 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchUserInfo.fulfilled, (state, action) => {
-                const { first_name, last_name, email, sex, user_type } = action.payload;
+                const { first_name, last_name, email, sex, user_type, avatar } = action.payload;
                 state.firstName = first_name;
                 state.lastName = last_name;
                 state.email = email;
                 state.user_type = user_type;
                 state.gender = sex;
+                state.avatar = avatar;
                 state.loading = false;
                 state.loaded = true;
             })
@@ -109,6 +131,10 @@ const userSlice = createSlice({
             .addCase(updateUserInfo.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(updateUserAvatar.fulfilled, (state, action) => {
+                state.avatar = action.payload;
+                state.loading = false;
             });
     },
 });

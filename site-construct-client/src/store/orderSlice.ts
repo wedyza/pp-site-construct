@@ -8,6 +8,11 @@ interface OrderItems {
     good_item: Good;
 }
 
+interface User {
+    first_name: string;
+    last_name: string;
+}
+
 export interface Order {
     id?: number;
     placement_date: string;
@@ -16,6 +21,7 @@ export interface Order {
     address: string;
     status: string;
     items?: OrderItems[];
+    user?: User
 }
 
 interface OrderState {

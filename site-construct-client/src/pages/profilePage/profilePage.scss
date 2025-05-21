@@ -111,6 +111,7 @@
         'img text'
         'img date'
     ;
+    grid-template-columns: auto 1fr;
     row-gap: 12px;
     column-gap: 16px;
 }

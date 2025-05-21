@@ -26,7 +26,9 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => 
             <div className="review-card_header">
                 <div className="review-prev_author">
                     <div className="review-prev_author-avatar">
-
+                        {user && user.avatar && (
+                            <img src={user.avatar} alt="" />
+                        )}
                     </div>
                     <span className='review-prev_author-name text-h2'>
                         {user ? user.first_name + ' ' + (user.last_name ? user.last_name[0]+ '.' : '')  : 'Пользователь'}
