@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchUserInfo } from '../../store/userSlice';
 import { logout } from '../../store/authSlice';
-import Modal from '../modal/Modal';
+import NotifyModal from '../notifyModal/NotifyModal';
+import { fetchGoods } from '../../store/goodsSlice';
+import { fetchOrders } from '../../store/orderSlice';
 
 const SellerNav: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -22,18 +24,18 @@ const SellerNav: React.FC = () => {
     };
 
     const filters = [
-        { key: 'all', label: 'Все (1567)' },
-        { key: 'pending', label: 'В ожидании (32)' },
-        { key: 'shipped', label: 'Отправлено (45)' },
-        { key: 'delivered', label: 'Доставлено (258)' },
-        { key: 'returned', label: 'Возврат (31)' },
+        { key: 'all', label: 'Все' },
+        { key: 'pending', label: 'В ожидании' },
+        { key: 'shipped', label: 'Отправлено' },
+        { key: 'delivered', label: 'Доставлено' },
+        { key: 'returned', label: 'Возврат' },
     ];
     const goodsFilters = [
-        { key: 'all', label: 'Все (67)' },
-        { key: 'pending', label: 'На модерации (32)' },
-        { key: 'shipped', label: 'Активный (45)' },
-        { key: 'delivered', label: 'Приостановленный (258)' },
-        { key: 'returned', label: 'Снятый с продажи (31)' },
+        { key: 'all', label: 'Все' },
+        { key: 'pending', label: 'На модерации' },
+        { key: 'shipped', label: 'Активный' },
+        { key: 'delivered', label: 'Приостановленный' },
+        { key: 'returned', label: 'Снятый с продажи' },
     ];
     
     const isGoodsRoute =
@@ -46,7 +48,19 @@ const SellerNav: React.FC = () => {
     }, [dispatch]);
 
     const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
-    
+
+    const goods = useAppSelector((state) => state.goods.items);
+
+    useEffect(() => {
+        dispatch(fetchGoods());
+    }, [dispatch]);
+
+    const { orders, loading } = useAppSelector(state => state.orders);
+
+    useEffect(() => {
+        dispatch(fetchOrders());
+    }, [dispatch]);
+
     return (
         <div className='seller-nav'>
             <div className='seller-nav_head'>
@@ -59,10 +73,13 @@ const SellerNav: React.FC = () => {
                     </span>
                 </div>
                 <div className='seller-nav_head-links'>
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="#02040F" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M16.3513 8.66291L15.4366 6.45408L16.666 5.00008L14.9993 3.33341L13.5533 4.56921L11.2975 3.64153L10.7788 1.66675H9.15017L8.62358 3.66769L6.41969 4.59672L4.99935 3.33341L3.33268 5.00008L4.54382 6.49079L3.6431 8.70536L1.66602 9.16675V10.8334L3.66694 11.3797L4.59581 13.5832L3.33268 15.0001L4.99935 16.6667L6.49198 15.4503L8.66353 16.3437L9.16602 18.3334H10.8327L11.3365 16.3444L13.5453 15.4297C13.9134 15.6928 14.9993 16.6667 14.9993 16.6667L16.666 15.0001L15.4293 13.5413L16.3442 11.3318L18.3326 10.8144L18.3327 9.16675L16.3513 8.66291Z" stroke="#02040F" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <Link to='/seller/profile' className='seller-nav_not'>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="#02040F" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M16.3513 8.66291L15.4366 6.45408L16.666 5.00008L14.9993 3.33341L13.5533 4.56921L11.2975 3.64153L10.7788 1.66675H9.15017L8.62358 3.66769L6.41969 4.59672L4.99935 3.33341L3.33268 5.00008L4.54382 6.49079L3.6431 8.70536L1.66602 9.16675V10.8334L3.66694 11.3797L4.59581 13.5832L3.33268 15.0001L4.99935 16.6667L6.49198 15.4503L8.66353 16.3437L9.16602 18.3334H10.8327L11.3365 16.3444L13.5453 15.4297C13.9134 15.6928 14.9993 16.6667 14.9993 16.6667L16.666 15.0001L15.4293 13.5413L16.3442 11.3318L18.3326 10.8144L18.3327 9.16675L16.3513 8.66291Z" stroke="#02040F" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </Link>
+                    
                     <button
                         className='seller-nav_not'
                         onClick={(e) => {
@@ -99,7 +116,7 @@ const SellerNav: React.FC = () => {
                                     onClick={() => setActiveFilter(key)}
                                     className={`seller-nav_item-second ${activeFilter === key ? 'seller-nav_item-second__active' : ''}`}
                                 >
-                                    {label}
+                                    {`${label} ${label === 'Все' ? `(${orders.length})` : ''}`}
                                 </button>
                             ))}
                         </div>
@@ -125,7 +142,7 @@ const SellerNav: React.FC = () => {
                                     onClick={() => setActiveFilter(key)}
                                     className={`seller-nav_item-second ${activeFilter === key ? 'seller-nav_item-second__active' : ''}`}
                                 >
-                                    {label}
+                                    {`${label} ${label === 'Все' ? `(${goods.length})` : ''}`}
                                 </button>
                             ))}
                         </div>
@@ -156,7 +173,7 @@ const SellerNav: React.FC = () => {
                         <span className='seller-nav_item-text text-n16'>Отзывы</span>
                     </Link>
                 </div>
-                <div className="seller-nav_item">
+                {/* <div className="seller-nav_item">
                     <div className="seller-nav_item-img">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.1667 10.4166C14.3968 10.4166 14.5833 10.23 14.5833 9.99992C14.5833 9.7698 14.3968 9.58325 14.1667 9.58325C13.9365 9.58325 13.75 9.7698 13.75 9.99992C13.75 10.23 13.9365 10.4166 14.1667 10.4166Z" fill="#02040F"/>
@@ -190,7 +207,7 @@ const SellerNav: React.FC = () => {
                         </svg>
                     </div>
                     <span className='seller-nav_item-text text-n16'>Аналитика</span>
-                </div>
+                </div> */}
                 <button className="seller-nav_item seller-nav_item__logout" onClick={handleLogout}>
                     <div className="seller-nav_item-img">
                         <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -201,74 +218,10 @@ const SellerNav: React.FC = () => {
                     <span className='seller-nav_item-text text-n16'>Выйти</span>
                 </button>
             </div>
-            <Modal
+            <NotifyModal
                 isOpen={isNotifyModalOpen}
                 onClose={() => setIsNotifyModalOpen(false)}
-                className="profile_notify-modal"
-            >
-                <h2 className='text-h2'>Уведомления</h2>
-                <button className='notify-modal_exit modal_exit-btn' onClick={() => setIsNotifyModalOpen(false)}>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fillRule="evenodd" clipRule="evenodd" d="M0.227072 0.22703C0.519965 -0.0658633 0.994839 -0.0658636 1.28773 0.22703L6.00004 4.93934L10.7124 0.22703C11.0052 -0.0658633 11.4801 -0.0658637 11.773 0.22703C12.0659 0.519923 12.0659 0.994797 11.773 1.28769L7.0607 6L11.773 10.7123C12.0659 11.0052 12.0659 11.4801 11.773 11.773C11.4801 12.0659 11.0052 12.0659 10.7124 11.773L6.00004 7.06066L1.28773 11.773C0.994839 12.0659 0.519965 12.0659 0.227072 11.773C-0.0658213 11.4801 -0.0658213 11.0052 0.227072 10.7123L4.93938 6L0.227072 1.28769C-0.0658213 0.994797 -0.0658213 0.519923 0.227072 0.22703Z" fill="#02040F"/>
-                    </svg>
-                </button>
-                <ul className='notify-modal_list'>
-                    <li className='notify-modal_list-item'>
-                        <div className="notify-item_img"></div>
-                        <p className="notify-item_text text-n16">
-                            Скидки на категорию <span className="notify-item_text__accent">Электроника для авто</span>. Успевайте купить!
-                        </p>
-                        <p className="notify-item_date text-n14">
-                            2 часа назад
-                        </p>
-                    </li>
-                    <li className='notify-modal_list-item'>
-                        <div className="notify-item_img"></div>
-                        <p className="notify-item_text text-n16">
-                            Скидки на категорию <span className="notify-item_text__accent">Электроника для авто</span>. Успевайте купить!
-                        </p>
-                        <p className="notify-item_date text-n14">
-                            2 часа назад
-                        </p>
-                    </li>
-                    <li className='notify-modal_list-item'>
-                        <div className="notify-item_img"></div>
-                        <p className="notify-item_text text-n16">
-                            Скидки на категорию <span className="notify-item_text__accent">Электроника для авто</span>. Успевайте купить!
-                        </p>
-                        <p className="notify-item_date text-n14">
-                            2 часа назад
-                        </p>
-                    </li>
-                    <li className='notify-modal_list-item'>
-                        <div className="notify-item_img"></div>
-                        <p className="notify-item_text text-n16">
-                            Скидки на категорию <span className="notify-item_text__accent">Электроника для авто</span>. Успевайте купить!
-                        </p>
-                        <p className="notify-item_date text-n14">
-                            2 часа назад
-                        </p>
-                    </li>
-                    <li className='notify-modal_list-item'>
-                        <div className="notify-item_img"></div>
-                        <p className="notify-item_text text-n16">
-                            Скидки на категорию <span className="notify-item_text__accent">Электроника для авто</span>. Успевайте купить!
-                        </p>
-                        <p className="notify-item_date text-n14">
-                            2 часа назад
-                        </p>
-                    </li>
-                    <li className='notify-modal_list-item'>
-                        <div className="notify-item_img"></div>
-                        <p className="notify-item_text text-n16">
-                            Скидки на категорию <span className="notify-item_text__accent">Электроника для авто</span>. Успевайте купить!
-                        </p>
-                        <p className="notify-item_date text-n14">
-                            2 часа назад
-                        </p>
-                    </li>
-                </ul>
-            </Modal>
+            />
         </div>
     );
 };

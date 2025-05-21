@@ -367,16 +367,14 @@ const SellerGoodPage: React.FC = () => {
                                 </label>
                             </ul>
                         </div>
-                        { id && (
-                            <div className='seller-good_vis'>
-                                <CustomCheckbox
-                                    checked={isVisible}
-                                    onChange={() => setIsVisible(!isVisible)}
-                                    checkboxClass="checkbox-visible"
-                                />
-                                <span className='text-n14'>Сделать товар видимым</span>
-                            </div>
-                        )}
+                        <div className='seller-good_vis'>
+                            <CustomCheckbox
+                                checked={isVisible}
+                                onChange={() => setIsVisible(!isVisible)}
+                                checkboxClass="checkbox-visible"
+                            />
+                            <span className='text-n14'>Сделать товар видимым</span>
+                        </div>
                     </div>
                     <div className="seller-good_desc seller-good_item">
                         <h2 className='text-desc seller-order_title'>Описание товара</h2>

@@ -124,6 +124,13 @@
     width: 100%;
     background-color: var(--temp-color);
     border-radius: var(--big-radius);
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }
 
 .order_items-card-text {

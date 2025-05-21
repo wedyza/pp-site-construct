@@ -79,19 +79,21 @@ const SellerProfilePage: React.FC = () => {
                                 </button>
                             </div>
                             <ul className='seller-payment_list'>
-                                <li className='seller-payment_item'>
-                                    <button className='seller-payment_delete'>
-                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M0.151382 0.151353C0.346643 -0.0439091 0.663226 -0.0439093 0.858488 0.151353L4.00003 3.29289L7.14157 0.151353C7.33683 -0.0439091 7.65341 -0.0439095 7.84868 0.151353C8.04394 0.346615 8.04394 0.663198 7.84868 0.85846L4.70714 4L7.84868 7.14154C8.04394 7.3368 8.04394 7.65339 7.84868 7.84865C7.65341 8.04391 7.33683 8.04391 7.14157 7.84865L4.00003 4.70711L0.858488 7.84865C0.663226 8.04391 0.346643 8.04391 0.151382 7.84865C-0.0438808 7.65338 -0.0438806 7.3368 0.151382 7.14154L3.29292 4L0.151382 0.85846C-0.0438806 0.663197 -0.0438808 0.346615 0.151382 0.151353Z" fill="#FEFEFE"/>
-                                        </svg>
-                                    </button>
-                                    <p className='seller-payment_bank text-h1'>
-                                        SberPay
-                                    </p>
-                                    <p className='seller-payment_num text-h1'>
-                                        {`...${'1111111111115678'.slice(-4)}`}
-                                    </p>
-                                </li>
+                                {methods.map((method) => (
+                                    <li className='seller-payment_item'>
+                                        <button className='seller-payment_delete'>
+                                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M0.151382 0.151353C0.346643 -0.0439091 0.663226 -0.0439093 0.858488 0.151353L4.00003 3.29289L7.14157 0.151353C7.33683 -0.0439091 7.65341 -0.0439095 7.84868 0.151353C8.04394 0.346615 8.04394 0.663198 7.84868 0.85846L4.70714 4L7.84868 7.14154C8.04394 7.3368 8.04394 7.65339 7.84868 7.84865C7.65341 8.04391 7.33683 8.04391 7.14157 7.84865L4.00003 4.70711L0.858488 7.84865C0.663226 8.04391 0.346643 8.04391 0.151382 7.84865C-0.0438808 7.65338 -0.0438806 7.3368 0.151382 7.14154L3.29292 4L0.151382 0.85846C-0.0438806 0.663197 -0.0438808 0.346615 0.151382 0.151353Z" fill="#FEFEFE"/>
+                                            </svg>
+                                        </button>
+                                        <p className='seller-payment_bank text-h1'>
+                                            SberPay
+                                        </p>
+                                        <p className='seller-payment_num text-h1'>
+                                            {`...${method.card_body.slice(-4)}`}
+                                        </p>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                         <div className='profile-info_stg seller-profile_docs'>
