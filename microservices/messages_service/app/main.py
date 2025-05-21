@@ -12,7 +12,7 @@ from fastapi import (
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .oauth2 import require_user
-from .database import get_db, Message
+from .database import get_db, Message, Base_var, engine
 from sqlalchemy.sql import text
 from .models import User, CreateMessage, SuccessSchema, MessageResponse
 from sqlalchemy import and_
@@ -22,7 +22,6 @@ from .database_functions import checkout_user
 import datetime
 import json
 from typing import List
-
 
 def custom_openapi():
     if app.openapi_schema:
@@ -68,8 +67,9 @@ BASE_API_URL = "/api/v1/"
 
 manager = ConnectionManager()
 
-print("start")
 
+Base_var.metadata.create_all(bind=engine)
+print('created')
 
 @app.websocket("/api/v1/messages/connect/")
 async def websocket_endpoint(

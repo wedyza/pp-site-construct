@@ -34,7 +34,6 @@ class Notification(Base_var):
     type = Column(SqlEnum(NotificationType), nullable=False)
 
 
-Base_var.metadata.create_all(bind=engine)
 
 
 def get_db():

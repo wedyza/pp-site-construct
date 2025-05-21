@@ -69,7 +69,7 @@ from django.db.models import Sum, Q, F
 import httpx
 
 User = get_user_model()
-BASE_NOTIFICATION_URL = "http://94.190.123.143/api/v1/notifications/"
+BASE_NOTIFICATION_URL = "http://188.68.80.72/api/v1/notifications/"
 
 class GoodCategoryViewSet(viewsets.ModelViewSet):
     queryset = GoodCategory.objects.all()

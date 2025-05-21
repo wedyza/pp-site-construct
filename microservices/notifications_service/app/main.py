@@ -11,7 +11,7 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .database import get_db, Notification, NotificationType
+from .database import get_db, Notification, NotificationType, Base_var, engine
 from sqlalchemy import and_
 from .utils import ConnectionManager
 from fastapi.openapi.utils import get_openapi
@@ -71,6 +71,10 @@ app.add_middleware(
 )
 
 manager = ConnectionManager()
+
+
+Base_var.metadata.create_all(bind=engine)
+print('created')
 
 
 @app.websocket("/api/v1/notifications/connect/")

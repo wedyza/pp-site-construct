@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status, Header
 import httpx
 
-MONOLITH_URL = "http://localhost:8000/api/v1/"
+MONOLITH_URL = "http://188.68.80.72/api/v1/"
 
 
 def require_user(Authorization: str = Header()):  # authorization es che
