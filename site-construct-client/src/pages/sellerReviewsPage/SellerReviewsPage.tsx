@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import Search from '../../components/search/Search';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerReviewsPage.scss'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchComments } from '../../store/reviewsSlice';
 
 const SellerReviewsPage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { comments, loading, error } = useAppSelector((state) => state.reviews);
+
+    useEffect(() => {
+        dispatch(fetchComments());
+    }, [dispatch]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
@@ -33,29 +41,35 @@ const SellerReviewsPage: React.FC = () => {
                         <div className='seller-orders_table-cell'>Фото</div>
                         <div className='seller-orders_table-cell'>Ответ</div>
                     </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
+                    
+                    {comments.map((comment) => (
+                        <div className='seller-orders_table-body seller-orders_table-row'>
+                            <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
+                            <div className='seller-orders_table-cell'>
+                                {comment.good?.name}
+                            </div>
+                            <div className='seller-orders_table-cell'>
+                                {comment.good?.category}
+                            </div>
+                            <div className='seller-orders_table-cell'>
+                                {comment.rate}
+                            </div>
+                            <div className='seller-orders_table-cell'>
+                                {comment.body}
+                            </div>
+                            <div className='seller-orders_table-cell seller-order_table-imgs'>
+                                <div className='seller-order_table-img'></div>
+                                <div className='seller-order_table-img'></div>
+                                <div className='seller-order_table-img'></div>
+                                <div className='seller-order_table-img'></div>
+                            </div>
+                            <div className='seller-orders_table-cell'>
+                                <button className='seller-reviews_add' onClick={() => setIsModalOpen(true)}>
+                                    Ответить
+                                </button>
+                            </div>
                         </div>
-                        <div className='seller-orders_table-cell'>Электроприборы</div>
-                        <div className='seller-orders_table-cell'>4</div>
-                        <div className='seller-orders_table-cell'>
-                            Мойщик окон работает хорошо. 
-                            Справляется с пылью и обычными загрязнениями, 
-                            но для сильных пятен иногда приходится прилагать усилия.</div>
-                        <div className='seller-orders_table-cell seller-order_table-imgs'>
-                            <div className='seller-order_table-img'></div>
-                            <div className='seller-order_table-img'></div>
-                            <div className='seller-order_table-img'></div>
-                            <div className='seller-order_table-img'></div>
-                        </div>
-                        <div className='seller-orders_table-cell'>
-                            <button className='seller-reviews_add' onClick={() => setIsModalOpen(true)}>
-                                Ответить
-                            </button>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} className="seller-review_modal">
