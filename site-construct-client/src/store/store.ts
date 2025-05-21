@@ -11,6 +11,7 @@ import categoriesReducer from './categoriesSlice';
 import ordersReducer from './orderSlice';
 import characteristicsReducer from './characteristicsSlice';
 import notificationsReducer from './notificationsSlice';
+import reviewsReducer from './reviewsSlice';
 
 const store = configureStore({
     reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
         orders: ordersReducer,
         characteristics: characteristicsReducer,
         notifications: notificationsReducer,
+        reviews: reviewsReducer,
     },
 });
 

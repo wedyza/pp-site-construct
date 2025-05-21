@@ -101,7 +101,7 @@ const ProfilePage: React.FC = () => {
                             </svg>
                             <span>Отзывы</span>
                         </li>
-                        <li className={`profile-nav_item hover2 ${selectedSection === 'reviews' ? 'profile-nav_item__active' : ''}`} onClick={handleLogout}>
+                        <li className={`profile-nav_item hover2`} onClick={handleLogout}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M13.5 3.75C13.5 4.16421 13.1642 4.5 12.75 4.5H6.75C6.05964 4.5 5.5 5.05964 5.5 5.75V17.75C5.5 18.4404 6.05964 19 6.75 19H12.75C13.1642 19 13.5 19.3358 13.5 19.75C13.5 20.1642 13.1642 20.5 12.75 20.5H6.75C5.23122 20.5 4 19.2688 4 17.75V5.75C4 4.23122 5.23122 3 6.75 3H12.75C13.1642 3 13.5 3.33579 13.5 3.75Z" fill="#02040F"/>
                                 <path fillRule="evenodd" clipRule="evenodd" d="M20.2803 12.0303C20.5732 11.7374 20.5732 11.2626 20.2803 10.9697L16.7803 7.46967C16.4874 7.17678 16.0126 7.17678 15.7197 7.46967C15.4268 7.76256 15.4268 8.23744 15.7197 8.53033L17.9393 10.75H8.69876C8.28455 10.75 7.75 11.0858 7.75 11.5C7.75 11.9142 8.28455 12.25 8.69876 12.25H17.9393L15.7197 14.4697C15.4268 14.7626 15.4268 15.2374 15.7197 15.5303C16.0126 15.8232 16.4874 15.8232 16.7803 15.5303L20.2803 12.0303Z" fill="#02040F" />
