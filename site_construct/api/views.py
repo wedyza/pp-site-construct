@@ -20,6 +20,7 @@ from .models import (
     Like,
     Comment,
     Refund,
+    Transaction,
 )
 from .serializers import (
     BasketItemCreateSerializer,
@@ -67,6 +68,8 @@ from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum, Q, F
 import httpx
+import uuid
+from django.conf import settings
 
 User = get_user_model()
 BASE_NOTIFICATION_URL = "http://188.68.80.72/api/v1/notifications/"
@@ -504,10 +507,33 @@ class OrderViewSet(
                 {"error": "Невозможно создать заказ с пустой корзиной!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        
+        instance = order.save(basket=basket, payment_total=sum_total, user=self.request.user)
+        transaction = Transaction.objects.create(amount=sum_total, order=instance, user=self.request.user)
+
+        # тут оплата будет
+        authorization = f"Basic {settings.YOMONEY_TESTKEY}"
+        header = {"Idempotence-Key": uuid.uuid1()}
+
+        data = {
+            "amount":{
+                "value": sum_total,
+                "currency": "RUB"
+            },
+            "capture": True,
+            "confirmation": {
+                "type": "redirect",
+                "return_url": "..."
+            },
+            "description": f"Оплата заказа №{instance.id}",
+            "metadata": {
+                "order_id": instance.id,
+                "transaction_id": transaction.id
+            }
+        }
 
         basket.currently_for_order = False
         basket.save()
-        instance = order.save(basket=basket, payment_total=sum_total, user=self.request.user)
         
         sellers = BasketItem.objects.filter(basket=basket).select_related("good_item").values_list('good_item__user_id', flat=True)
         for id in sellers:
@@ -563,6 +589,22 @@ class OrderViewSet(
         }
         httpx.post(BASE_NOTIFICATION_URL, json=data)
         return Response(status.data)
+    
+    @action(detail=False, url_path="payment_accept", methods=["POST"], permission_classes=(permissions.AllowAny,))
+    def payment_accept(self, request):
+        response = request.data
+        print(response)
+        
+        metadata = response['object']['metdata']
+        
+        order_id = metadata['order_id']
+        transaction_id = metadata['transaction_id']
+
+        order = Order.objects.get(id=order_id)
+        transaction = Transaction.objects.get(id=transaction_id)
+
+
+        return Response({"success": True}, status=status.HTTP_200_OK)
 
 
 class CharacteristicViewSet(
