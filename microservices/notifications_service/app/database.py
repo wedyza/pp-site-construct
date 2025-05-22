@@ -7,7 +7,7 @@ from sqlalchemy import TIMESTAMP, Column, Boolean
 from enum import Enum
 from sqlalchemy import Enum as SqlEnum
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./notifications.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./app/db/notifications.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -33,6 +33,8 @@ class Notification(Base_var):
     user_id = Column(Integer, nullable=False)
     type = Column(SqlEnum(NotificationType), nullable=False)
 
+
+# if not engine.dialect.has_table(engine, "Notifications"):
 
 
 

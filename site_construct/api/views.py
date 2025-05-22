@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from rest_framework import viewsets, mixins, permissions, status, views
+from rest_framework import viewsets, mixins, permissions, status, views, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from enum import Enum
-from .functions import unwrap_categories
+from .functions import unwrap_categories, unwrap_categories_items
 from .models import (
     Basket,
     BasketItem,
@@ -78,8 +78,8 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
     queryset = GoodCategory.objects.all()
     serializer_class = GoodCategorySerializer  # необходимо перегрузить лист категорий пагинацией ( вроде есть в фильтрах насколько я помню )
     permission_classes = (AdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ("title",)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ("title",)
 
     @action(
         methods=["GET"],
@@ -89,7 +89,7 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
         serializer_class=GoodItemSerializer,
     )
     def get_items(self, request, pk):
-        items = GoodItem.objects.filter(category_id=pk).filter(visible=True).all()
+        items = unwrap_categories_items(GoodCategory.objects.get(id=pk))
 
         page = self.paginate_queryset(items)
 
@@ -111,9 +111,10 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
 
 class GoodItemViewSet(viewsets.ModelViewSet):
     queryset = GoodItem.objects.all()
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     permission_classes = (permissions.AllowAny,)
-    filterset_fields = ("name",)
+    filterset_fields = ('visible',)
+    search_fields = ("name", "description")
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -282,7 +283,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             .distinct()
         )
         commented_items = Comment.objects.filter(user=request.user).values_list(
-            "good_item_id", flat=True
+            "item_id", flat=True
         )
         items = (
             GoodItem.objects.filter(id__in=baskets)
@@ -623,7 +624,7 @@ class GetMyWishlistView(views.APIView):
 
     def get(self, request):
         user = request.user
-        wishlist = Like.objects.filter(user=user).select_related("item").all()
+        wishlist = Like.objects.filter(user=user).select_related("item").filter(item__visible=True).all()
 
         items = [like.item for like in wishlist]
 
@@ -658,7 +659,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.request.user.user_type == "Покупатель":
             return Comment.objects.filter(user=self.request.user).all()
         items = GoodItem.objects.filter(user=self.request.user).all()
-        return Comment.objects.filter(good_item__in=items).all()
+        return Comment.objects.filter(item__in=items).all()
 
     def create(self, request, *args, **kwargs):
         comment = CommentCreateSerializer(data=request.data)

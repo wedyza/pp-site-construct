@@ -17,6 +17,7 @@ class GoodCategory(models.Model):
         default=None,
         verbose_name="Родительская категория",
         on_delete=models.SET_NULL,
+        related_name='daughter'
     )
 
     def __str__(self) -> str:

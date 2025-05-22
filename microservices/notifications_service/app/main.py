@@ -72,9 +72,8 @@ app.add_middleware(
 
 manager = ConnectionManager()
 
-
-Base_var.metadata.create_all(bind=engine)
-print('created')
+# Base_var.metadata.create_all(bind=engine)
+# print('created')
 
 
 @app.websocket("/api/v1/notifications/connect/")
@@ -152,7 +151,17 @@ async def list_unreaded_notifications(
     )
 
 @app.get("/api/v1/notifications/test")
-async def test():
+async def test(db: Session = Depends(get_db)):
+
+    notification = Notification()
+    notification.user_id = 1
+    notification.body = "test"
+    notification.created_at = datetime.datetime.now()
+    notification.type = ENUM_TABLE["Возврат"]
+
+    db.add(notification)
+    db.commit()
+    db.refresh(notification)
     return "all is ok"
 
 app.openapi = custom_openapi

@@ -42,7 +42,8 @@ services:
     container_name: notifications_service
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     volumes:
-      - notification_volume:/notifications.db
+      - notification_volume:/code/app/db
+    # network_mode: host
     
   monolith_app:
     build: ./site_construct
@@ -55,6 +56,7 @@ services:
   nginx:
     build: ./nginx
     ports:
+      - 443:443
       - 80:80
     depends_on:
       - monolith_app
@@ -62,6 +64,8 @@ services:
       - message_microservice
     volumes:
       - static:/static/
+      # - ./mycert.crt:/etc/ssl/mycert.crt
+      # - ./mykey.key:/etc/ssl/mykey.key
 volumes:
   minio-storage:
   pg_data:
