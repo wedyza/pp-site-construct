@@ -44,10 +44,10 @@ const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => 
                 <div className="review-prev_text text-n14">
                     {body}
                 </div>
-                <div className="review-prev_imgs">
+                {/* <div className="review-prev_imgs">
                     <div className="review-prev_img"></div>
                     <div className="review-prev_img"></div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

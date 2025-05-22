@@ -51,9 +51,15 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => 
                 <p className='review-card_text text-n14'>
                     {body}
                 </p>
-                <div className='review-card_imgs'>
+                {/* <div className='review-card_imgs'>
                     <div className='review-card_img'></div>
                     <div className='review-card_img'></div>
+                </div> */}
+                <div className='review-card_reply'>
+                    <p className='text-n14'>Ответ продавца:</p>
+                    <p className='text-n14 review-card_reply-body'>
+                        1
+                    </p>
                 </div>
             </div>
         </div>

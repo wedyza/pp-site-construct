@@ -4,7 +4,7 @@ import Search from '../../components/search/Search';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerReviewsPage.scss'
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchComments } from '../../store/reviewsSlice';
+import { addReply, fetchComments } from '../../store/reviewsSlice';
 
 const SellerReviewsPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -13,7 +13,24 @@ const SellerReviewsPage: React.FC = () => {
     useEffect(() => {
         dispatch(fetchComments());
     }, [dispatch]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
+    const [replyText, setReplyText] = useState('');
+
+    const handleReplyClick = (commentId: number) => {
+        setSelectedCommentId(commentId);
+        setReplyText('');
+        setIsModalOpen(true);
+    };
+
+    const handleReplySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (selectedCommentId && replyText.trim()) {
+            await dispatch(addReply({ comment: selectedCommentId, body: replyText }));
+            setIsModalOpen(false);
+        }
+    };
 
     return (
         <div className='page-content__seller'>
@@ -68,7 +85,7 @@ const SellerReviewsPage: React.FC = () => {
                                 <div className='seller-order_table-img'></div>
                             </div>
                             <div className='seller-orders_table-cell'>
-                                <button className='seller-reviews_add' onClick={() => setIsModalOpen(true)}>
+                                <button className='seller-reviews_add' onClick={() => handleReplyClick(comment.id)}>
                                     Ответить
                                 </button>
                             </div>
@@ -77,12 +94,17 @@ const SellerReviewsPage: React.FC = () => {
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} className="seller-review_modal">
-                <form className='seller-review_modal-form'>
+                <form className='seller-review_modal-form' onSubmit={handleReplySubmit}>
                     <h2 className='text-h2'>Ответьте на отзыв</h2>
                     <span className='text-n14 seller-review_modal-label'>Ваш ответ</span>
-                    <textarea className='seller-review_modal-input text-n16' />
+                    <textarea
+                        className='seller-review_modal-input text-n16'
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        required
+                    />
                     <div className="seller-review_modal-btns">
-                        <button className="seller-review_modal-btn">
+                        <button type="submit" className="seller-review_modal-btn">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.46783 11.9697C6.76072 11.6768 7.2356 11.6768 7.52849 11.9697L9.99816 14.4393L16.4678 7.96967C16.7607 7.67678 17.2356 7.67678 17.5285 7.96967C17.8214 8.26256 17.8214 8.73744 17.5285 9.03033L10.5285 16.0303C10.2356 16.3232 9.76072 16.3232 9.46783 16.0303L6.46783 13.0303C6.17494 12.7374 6.17494 12.2626 6.46783 11.9697Z" fill="black"/>
                                 <path fillRule="evenodd" clipRule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12Z" fill="black"/>

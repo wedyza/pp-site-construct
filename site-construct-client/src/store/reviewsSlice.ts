@@ -98,6 +98,30 @@ export const fetchComments = createAsyncThunk<
     }
 });
 
+export const addReply = createAsyncThunk<
+    void,
+    { comment: number; body: string },
+    { state: RootState }
+>(
+    'reviews/addReply',
+    async ({ comment, body }, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            await axiosInstance.post(
+                '/comments-replies/',
+                { comment, body },
+                {
+                    headers: {
+                        Authorization: `Token ${token}`,
+                    },
+                }
+            );
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка отправки ответа');
+        }
+    }
+);
+
 const reviewsSlice = createSlice({
     name: 'reviews',
     initialState,

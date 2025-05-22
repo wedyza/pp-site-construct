@@ -27,3 +27,16 @@
     background-color: var(--temp-color);
     border-radius: var(--radius);
 }
+
+/* reply */
+
+.review-card_reply {
+    background-color: var(--background);
+    padding: 16px 24px;
+    border-radius: var(--big-radius);
+    margin-top: 24px;
+}
+
+.review-card_reply-body {
+    margin-top: 12px;
+}
