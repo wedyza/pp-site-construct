@@ -68,8 +68,8 @@ BASE_API_URL = "/api/v1/"
 manager = ConnectionManager()
 
 
-Base_var.metadata.create_all(bind=engine)
-print('created')
+# Base_var.metadata.create_all(bind=engine)
+# print('created')
 
 @app.websocket("/api/v1/messages/connect/")
 async def websocket_endpoint(

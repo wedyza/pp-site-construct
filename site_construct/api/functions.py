@@ -1,4 +1,4 @@
-from .models import GoodCategory, CharacteristicsCategory
+from .models import GoodCategory, CharacteristicsCategory, GoodItem
 from typing import List
 import datetime
 
@@ -12,6 +12,15 @@ def unwrap_categories(category: GoodCategory) -> List[GoodCategory]:
             new_characteristics
         )
     return characteristics_categories
+
+
+def unwrap_categories_items(category: GoodCategory)->List[GoodItem]:
+    category_items = GoodItem.objects.filter(category=category).filter(visible=True).all()
+    daughter_list = GoodCategory.objects.filter(parent=category).all()
+    for daughter in daughter_list:
+        new_items = unwrap_categories_items(daughter)
+        category_items = category_items.union(new_items)
+    return category_items
 
 
 def define_this_month_period():

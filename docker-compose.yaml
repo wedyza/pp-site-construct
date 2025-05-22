@@ -48,7 +48,7 @@ services:
     # ports:
     #   - 8080:8000
     volumes:
-      - notification_volume:/notifications.db
+      - notification_volume:/code/app/db
     # network_mode: host
     
   monolith_app:
@@ -65,6 +65,7 @@ services:
   nginx:
     build: ./nginx
     ports:
+      - 443:443
       - 80:80
     depends_on:
       - monolith_app
@@ -72,6 +73,8 @@ services:
       - message_microservice
     volumes:
       - static:/static/
+      # - ./mycert.crt:/etc/ssl/mycert.crt
+      # - ./mykey.key:/etc/ssl/mykey.key
 volumes:
   minio-storage:
   # minio-config:
