@@ -13,7 +13,7 @@ import { addBasketItem, removeBasketItem, updateBasketItem } from '../../store/b
 
 const ReviewsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const dispatch = useAppDispatch();    
+    const dispatch = useAppDispatch();
     const { selectedItem/*, loading, error*/ } = useAppSelector((state) => state.goods);
     const [count, setCount] = useState(selectedItem?.basket_count);
 
@@ -102,6 +102,7 @@ const ReviewsPage: React.FC = () => {
                                     body={comment.body}
                                     rate={comment.rate}
                                     date={'14 апреля 2025'}
+                                    reply={comment.reply}
                                 />
                             ))}
                         </div>

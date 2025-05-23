@@ -4,7 +4,7 @@ import { ReviewCardProps } from '../reviewCard/ReviewCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchUserById } from '../../store/usersSlice';
 
-const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => {
+const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date, reply }) => {
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.users.users[userId]);
 

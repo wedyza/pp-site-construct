@@ -2,16 +2,18 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './reviewCard.scss'
 import { fetchUserById } from '../../store/usersSlice';
+import { Reply } from '../../store/commentsSlice';
 
 export interface ReviewCardProps {
-  commentId: number;
-  userId: number;
-  body: string;
-  rate: number;
-  date: string;
+    commentId: number;
+    userId: number;
+    body: string;
+    rate: number;
+    date: string;
+    reply: Reply;
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => {
+const ReviewCard: React.FC<ReviewCardProps> = ({ userId, body, rate, date, reply }) => {
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.users.users[userId]);
 
@@ -55,12 +57,14 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ userId, body, rate, date }) => 
                     <div className='review-card_img'></div>
                     <div className='review-card_img'></div>
                 </div> */}
-                <div className='review-card_reply'>
-                    <p className='text-n14'>Ответ продавца:</p>
-                    <p className='text-n14 review-card_reply-body'>
-                        1
-                    </p>
-                </div>
+                {reply.body && (
+                    <div className='review-card_reply'>
+                        <p className='text-n14'>Ответ продавца:</p>
+                        <p className='text-n14 review-card_reply-body'>
+                            {reply.body}
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );

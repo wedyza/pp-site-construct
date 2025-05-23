@@ -85,9 +85,19 @@ const SellerReviewsPage: React.FC = () => {
                                 <div className='seller-order_table-img'></div>
                             </div>
                             <div className='seller-orders_table-cell'>
-                                <button className='seller-reviews_add' onClick={() => handleReplyClick(comment.id)}>
-                                    Ответить
-                                </button>
+                                {comment.reply.body ? (
+                                    <div className='seller_comment-reply'>
+                                        <p className='seller_comment-reply-text'>{comment.reply.body}</p>
+                                        <button className='seller-reviews_edit'>
+                                            Редактировать
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button className='seller-reviews_add' onClick={() => handleReplyClick(comment.id)}>
+                                        Ответить
+                                    </button>
+                                )}
+                                
                             </div>
                         </div>
                     ))}

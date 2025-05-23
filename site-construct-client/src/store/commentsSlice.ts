@@ -2,12 +2,20 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
 
+export interface Reply {
+    id: number;
+    body: string;
+    comment: number;
+    user: number;
+}
+
 interface Comment {
     id: number;
     body: string;
     rate: number;
     user: number;
     item: number;
+    reply: Reply;
 }
 
 interface CommentsState {

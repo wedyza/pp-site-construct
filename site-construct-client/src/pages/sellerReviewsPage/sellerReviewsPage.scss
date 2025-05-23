@@ -7,6 +7,11 @@
     border-bottom: 1px solid var(--accent);
 }
 
+.seller-reviews_edit {
+    color: var(--black60);
+    border-bottom: 1px solid var(--black60);
+}
+
 .seller-review_modal {
     width: 33%;
     position: relative;
@@ -35,4 +40,14 @@
     height: 180px;
     border-radius: var(--radius);
     padding: 11px 24px;
+}
+
+.seller_comment-reply-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.4em;
+    line-height: 1.2em;
 }
