@@ -212,6 +212,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='transactions', verbose_name='Транзакция'
     )
+    checkout_id = models.CharField("Айди чекаута YoMoney", max_length=40)
 
     class Meta:
         verbose_name = "Транзакция"

@@ -512,29 +512,47 @@ class OrderViewSet(
         instance = order.save(basket=basket, payment_total=sum_total, user=self.request.user)
         transaction = Transaction.objects.create(amount=sum_total, order=instance, user=self.request.user)
 
-        # тут оплата будет
-        authorization = f"Basic {settings.YOMONEY_TESTKEY}"
-        header = {"Idempotence-Key": uuid.uuid1()}
-
-        data = {
-            "amount":{
-                "value": sum_total,
-                "currency": "RUB"
-            },
-            "capture": True,
-            "confirmation": {
-                "type": "redirect",
-                "return_url": "..."
-            },
-            "description": f"Оплата заказа №{instance.id}",
-            "metadata": {
-                "order_id": instance.id,
-                "transaction_id": transaction.id
+        try:
+            # тут оплата будет
+            authorization = f"Basic {settings.YOMONEY_TESTKEY}"
+            headers = {
+                "Idempotence-Key": str(uuid.uuid4()),
+                "Authorization": authorization
             }
-        }
+            data = {
+                "amount":{
+                    "value": sum_total,
+                    "currency": "RUB"
+                },
+                "capture": True,
+                "confirmation": {
+                    "type": "redirect",
+                    "return_url": "http://localhost:3000/orders"
+                },
+                "description": f"Оплата заказа №{instance.id}",
+                "metadata": {
+                    "order_id": instance.id,
+                    "transaction_id": transaction.id
+                }
+            }
 
+            response = httpx.post(url="https://api.yookassa.ru/v3/payments", headers=headers, json=data)
+            response = response.json()
 
-        return 'hi'
+            transaction.checkout_id = response["id"]
+            transaction.save()
+
+            user_response = {
+                "payment_url": response["confirmation"]["confirmation_url"],
+                "description": response["description"],
+                "amount": response["amount"]
+            }
+            return Response(user_response, status=status.HTTP_200_OK)
+        except Exception as e:
+            instance.delete()
+            transaction.delete()
+            print(e)
+            return Response({"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, url_path="ended", methods=["GET"])
     def get_ended(self, request):
