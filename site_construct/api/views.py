@@ -533,19 +533,8 @@ class OrderViewSet(
             }
         }
 
-        basket.currently_for_order = False
-        basket.save()
-        
-        sellers = BasketItem.objects.filter(basket=basket).select_related("good_item").values_list('good_item__user_id', flat=True)
-        for id in sellers:
-            data = {
-                'user_id': id,
-                'type': 'Новый заказ',
-                'body': f'Появился новый заказ! Его номер {instance.id}. Скорее посмотрите, что в нем!'
-            }
-            response = httpx.post(BASE_NOTIFICATION_URL, json=data)
 
-        return Response(order.data)
+        return 'hi'
 
     @action(detail=False, url_path="ended", methods=["GET"])
     def get_ended(self, request):
@@ -596,14 +585,36 @@ class OrderViewSet(
         response = request.data
         print(response)
         
-        metadata = response['object']['metdata']
+        metadata = response['object']['metadata']
         
         order_id = metadata['order_id']
         transaction_id = metadata['transaction_id']
+        success = response['event'] == "payment.success"
 
         order = Order.objects.get(id=order_id)
         transaction = Transaction.objects.get(id=transaction_id)
 
+        transaction.status = Transaction.StatusChoices.SUCCESS if success else Transaction.StatusChoices.ERROR
+        transaction.save()
+
+        if not success:
+            order.delete()
+            return Response({"success": False}, status=status.HTTP_200_OK)
+        
+        # Тут получается, что деньги у нас, и надо будет создать переводы всем продавцам с вычетом коммисии
+        basket = order.basket
+
+        basket.currently_for_order = False
+        basket.save()
+        
+        sellers = BasketItem.objects.filter(basket=basket).select_related("good_item").values_list('good_item__user_id', flat=True)
+        for id in sellers:
+            data = {
+                'user_id': id,
+                'type': 'Новый заказ',
+                'body': f'Появился новый заказ! Его номер {order.id}. Скорее посмотрите, что в нем!'
+            }
+            response = httpx.post(BASE_NOTIFICATION_URL, json=data)
 
         return Response({"success": True}, status=status.HTTP_200_OK)
 

@@ -97,11 +97,10 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB", "myapp"),
         "USER": os.getenv("POSTGRES_USER", "postgres"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password123"),
-        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
-        "PORT": os.getenv("DB_PORT", 6500),
+        "HOST": "188.68.80.72",
+        "PORT": os.getenv("DB_PORT", 5432),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

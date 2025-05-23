@@ -586,12 +586,17 @@ class CommentMediaSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     media = CommentMediaSerializer(many=True)
+    reply = serializers.SerializerMethodField('get_reply')
 
     class Meta:
         model = Comment
-        fields = ("user", "item", "body", "rate", "media", "id")
-        read_only_fields = ("user",)
+        fields = ("user", "item", "body", "rate", "media", "id", "reply")
+        read_only_fields = ("user", "reply", "media")
 
+    def get_reply(self, obj):
+        reply = CommentReply.objects.filter(comment=obj).first()
+        serializer = CommentReplySerializer(instance=reply)
+        return serializer.data
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     media = CommentMediaSerializer(many=True, required=False)
@@ -636,8 +641,7 @@ class CommentToSellerSerialzier(serializers.ModelSerializer):
 
     def get_reply(self, obj):
         reply = CommentReply.objects.filter(comment=obj).first()
-        serializer = CommentReplySerializer(data=reply)
-        serializer.is_valid()
+        serializer = CommentReplySerializer(instance=reply)
         return serializer.data
 
 
