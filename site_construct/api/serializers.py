@@ -469,12 +469,11 @@ class OrderToBuyerSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField("get_items")
     payment_method = PaymentMethodSerializer()
     delivery_method = DeliveryMethodSerializer()
-    transaction = TransactionSerializer()
+    # transaction = TransactionSerializer()
 
     class Meta:
         model = Order
         fields = (
-            "transaction",
             "items",
             "payment_method",
             "delivery_method",
@@ -503,13 +502,12 @@ class OrderToSellerSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField("get_items")
     payment_method = PaymentMethodSerializer()
     delivery_method = DeliveryMethodSerializer()
-    transaction = TransactionSerializer()
+    # transaction = TransactionSerializer()
     user = UserNameSerializer()
 
     class Meta:
         model = Order
         fields = (
-            "transaction",
             "items",
             "payment_method",
             "delivery_method",
