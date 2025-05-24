@@ -638,7 +638,7 @@ class OrderViewSet(
         for basket_item in sellers:
             seller = basket_item.good_item.user
             amount = basket_item.good_item.price * basket_item.count
-            payout = MoneyPayout.objects.create(user_from=order.user, user_to=seller, amount=amount)
+            payout = MoneyPayout.objects.create(user_from=order.user, user_to=seller, amount=amount, good_item=basket_item.good_item, order=order)
 
             data = {
                 'user_id': id,
