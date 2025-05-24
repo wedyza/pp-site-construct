@@ -113,7 +113,7 @@ const SellerGoodPage: React.FC = () => {
                 }
             }
 
-            if (goodId && charGroups.length > 0) {
+            if (goodId) {
                 const groupChars = charGroups.flatMap(group =>
                     group.characteristics.map(char => ({
                         characteristic: char.id,
@@ -121,12 +121,12 @@ const SellerGoodPage: React.FC = () => {
                     }))
                 );
 
-                // const aboutChars = aboutList.map(char => ({
-                //     characteristic: char.id,
-                //     body: (char as any).value || '',
-                // }));
+                const aboutChars = aboutList?.characteristics.map(char => ({
+                    characteristic: char.id,
+                    body: (char as any).value || '',
+                })) || [];
 
-                const characteristicsPayload = [...groupChars/*, ...aboutChars*/];
+                const characteristicsPayload = [...groupChars, ...aboutChars];
 
                 const applyResult = await dispatch(
                     applyCharacteristicsToGood({ goodId, characteristics: characteristicsPayload })
