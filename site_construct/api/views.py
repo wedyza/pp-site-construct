@@ -615,7 +615,7 @@ class OrderViewSet(
         
         order_id = metadata['order_id']
         transaction_id = metadata['transaction_id']
-        success = response['event'] == "payment.success"
+        success = response['event'] == "payment.succeeded"
 
         order = Order.objects.get(id=order_id)
         transaction = Transaction.objects.get(id=transaction_id)
