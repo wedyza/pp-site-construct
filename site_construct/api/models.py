@@ -329,3 +329,22 @@ class Refund(models.Model):
 class CommentMedia(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, verbose_name="отзыв", related_name='media')
     source = models.ImageField("Картинка", upload_to="comments")
+
+
+class MoneyPayout(models.Model):
+    class States(Enum):
+        REFUND = "Возврат"
+        PAYOUT = "Выплата"
+        FREEZED = "Заморожен"
+
+    user_to = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Кому", related_name="receiver")
+    user_from = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="От кого", related_name="sender")
+    amount = models.FloatField("Сумма", null=False)
+    state = models.TextField(
+        "Статус",
+        choices=[(status.name, status.value) for status in States],
+        default="Заморожен"
+    )
+    good_item = models.ForeignKey(GoodItem, on_delete=models.CASCADE, verbose_name="Товар")
+    order = models.ForeignKey(Order, on_delete=models.Case, verbose_name="Заказ")
+    created_at = models.DateTimeField("Создано", auto_now_add=True)

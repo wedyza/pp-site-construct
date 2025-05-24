@@ -665,3 +665,19 @@ class RefundResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Refund
         fields = "__all__"
+
+
+# class CountSerializer(serializers.Serializer):
+#     total=serializers.IntegerField()
+#     newest=serializers.IntegerField()
+
+# class RateSerializer(serializers.Serializer):
+#         rate=serializers.FloatField()
+#         count=serializers.IntegerField()
+
+# class AnalyticsSerializer(serializers.Serializer):
+#     total_payed = serializers.IntegerField()
+#     total_freezed = serializers.IntegerField()
+#     orders_per_this_month = CountSerializer()
+#     refunds_per_this_month = CountSerializer()
+#     average_rating = RateSerializer()

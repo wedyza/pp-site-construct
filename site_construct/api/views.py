@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from enum import Enum
-from .functions import unwrap_categories, unwrap_categories_items
+import datetime
+from .functions import define_this_week_period, fill_this_week_with_days, unwrap_categories, unwrap_categories_items, define_this_month_period
 from .models import (
     Basket,
     BasketItem,
@@ -14,6 +15,7 @@ from .models import (
     GoodCategory,
     GoodItem,
     ItemMedia,
+    MoneyPayout,
     PaymentMethod,
     Order,
     Characteristics,
@@ -23,6 +25,7 @@ from .models import (
     Transaction,
 )
 from .serializers import (
+    # AnalyticsSerializer,
     BasketItemCreateSerializer,
     BasketItemSerializer,
     CharacteristicsCategoryResponseSerializer,
@@ -66,7 +69,7 @@ from .permissions import (
 )
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Sum, Q, F
+from django.db.models import Sum, Q, F, Avg, Count
 import httpx
 import uuid
 from django.conf import settings
@@ -589,14 +592,19 @@ class OrderViewSet(
         instance = Order.objects.get(id=pk)
         instance.status = status.data['status']
         instance.save()
-        
-        data = {
-            "user_id": instance.user.id,
-            "body": f"Статус вашего заказа №{instance.id} изменился на {instance.status}",
-            "type": "Изменился статус заказа" 
-        }
-        httpx.post(BASE_NOTIFICATION_URL, json=data)
-        return Response(status.data)
+
+        if instance.status == Order.OrderStatusChoices.RECEIVED:
+            MoneyPayout.objects.filter(user_from=instance.user, order=instance).update(status=MoneyPayout.States.PAYOUT)
+            return Response({"status": "Выплаты произведены"})
+        else:        
+            data = {
+                "user_id": instance.user.id,
+                "body": f"Статус вашего заказа №{instance.id} изменился на {instance.status}",
+                "type": "Изменился статус заказа" 
+            }
+
+            httpx.post(BASE_NOTIFICATION_URL, json=data)
+            return Response(status.data)
     
     @action(detail=False, url_path="payment_accept", methods=["POST"], permission_classes=(permissions.AllowAny,))
     def payment_accept(self, request):
@@ -625,8 +633,13 @@ class OrderViewSet(
         basket.currently_for_order = False
         basket.save()
         
-        sellers = BasketItem.objects.filter(basket=basket).select_related("good_item").values_list('good_item__user_id', flat=True)
-        for id in sellers:
+        sellers = BasketItem.objects.filter(basket=basket).select_related("good_item").all()
+
+        for basket_item in sellers:
+            seller = basket_item.good_item.user
+            amount = basket_item.good_item.price * basket_item.count
+            payout = MoneyPayout.objects.create(user_from=order.user, user_to=seller, amount=amount)
+
             data = {
                 'user_id': id,
                 'type': 'Новый заказ',
@@ -768,11 +781,76 @@ class RefundViewSet(viewsets.ModelViewSet):
         
         item = GoodItem.objects.get(payload.data['item'])
 
-        httpx.post(url=BASE_NOTIFICATION_URL, json={
+
+        payout =  MoneyPayout.objects.filter(user_from=self.request.user, order=order, good_item=item).first()
+        if payout is not None:
+            payout.state = payout.States.REFUND # Возврат
+        httpx.post(url=BASE_NOTIFICATION_URL, json={ # вообще по-хорошему добавить очередь, так как если проихсодит ошибка, то все падает. Но в рамках теста все гарантируется (надо бы исправить)
             'user_id': item.id,
             'body': f"На ваш товар \"{item.name}\" оформлен возрат. ",
             'type': 'Возврат'
         })
 
-        # payload.save(user=request.user, applied=True)
         return Response(payload.data)
+    
+
+class AnalyticsViewSet(views.APIView):
+    permission_classes = (permissions.IsAuthenticated, IsSeller)
+    # serializer = AnalyticsSerializer
+    
+    def get(self, request): #in this month
+        total_payed = MoneyPayout.objects.filter(user_to=request.user, state=MoneyPayout.States.PAYOUT).aggregate(Sum('amount'))
+        total_freezed = MoneyPayout.objects.filter(user_to=request.user, state=MoneyPayout.States.FREEZED).aggregate(Sum('amount'))
+        good_items = GoodItem.objects.filter(user=request.user).all()
+        bought_baskets = (
+            Basket.objects.filter(visible=False)
+            .filter(currently_for_order=False)
+            .filter()
+            .all()
+        )
+        baskets = (
+            BasketItem.objects.filter(basket__in=bought_baskets)
+            .select_related("good_item")
+            .filter(good_item__user=self.request.user)
+            .values_list("basket_id", flat=True)
+            .all()
+        )
+        start, end = define_this_month_period()
+        orders = Order.objects.filter(basket_id__in=baskets).filter(created_at__gte=start, created_at__lte=end).all()
+        today_orders = Order.objects.filter(basket_id__in=baskets).filter(created_at__date=datetime.date.today()).count()
+        refunds = Refund.objects.filter(item__in=good_items).filter(created_at__gte=start, created_at__lte=end).all()
+        today_refudns = Refund.objects.filter(item__in=good_items).filter(created_at__date=datetime.date.today()).count()
+        average_rating = Comment.objects.filter(item__in=good_items).aggregate(Avg("rate"), Count("rate"))
+
+        return Response({
+            'total_payed': total_payed,
+            'total_freezed': total_freezed,
+            'orders_per_this_month': {
+                'total': len(orders),
+                'newest': today_orders
+            },
+            'refunds_per_this_month': {
+                'total': len(refunds),
+                'newset': today_refudns
+            },
+            'average_rating': average_rating
+        })
+
+
+class SellDynamicsViewSet(views.APIView):
+    permission_classes = (permissions.IsAuthenticated, IsSeller)
+    
+    def get(self, request):
+        start, end = define_this_week_period()
+        orders = Order.objects.values('created_at__date').annotate(count=Count('id')).values('created_at__date', 'count').filter(created_at__gte=start, created_at__lte=end).order_by('created_at__date')
+        total_profits = MoneyPayout.objects.filter(Q(state=MoneyPayout.States.FREEZED) | Q(state=MoneyPayout.States.PAYOUT)).filter(user_to=request.user).filter(created_at__gte=start, created_at__lte=end).values('created_at__date').annotate(count=Sum('amount')).values('created_at__date', 'count').order_by('created_at__date')
+        
+        orders = fill_this_week_with_days(orders, start)
+        total_profits = fill_this_week_with_days(total_profits, start)
+
+        data = {
+            'order_counts': orders,
+            'order_profits': total_profits
+        }
+
+        return Response(data)
