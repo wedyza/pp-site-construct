@@ -3,7 +3,7 @@ import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerGoodPage.scss'
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createGoodForm, fetchGoodById, updateGoodForm } from '../../store/goodsSlice';
+import { createGoodForm, fetchGoodById, MediaItem, removeGoodMedia, updateGoodForm } from '../../store/goodsSlice';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 import AddCharacteristicModal from '../../components/addCharacteristicModal/AddCharacteristicModal';
 import { applyCharacteristicsToGood, CharacteristicGroup, fetchCharacteristics } from '../../store/characteristicsSlice';
@@ -20,19 +20,35 @@ const SellerGoodPage: React.FC = () => {
     const [titleInput, setTitleInput] = useState('');
     const [priceInput, setPriceInput] = useState('');
     const [descInput, setDescInput] = useState('');
-    const [images, setImages] = useState<File[]>([]);
     const [isVisible, setIsVisible] = useState(false);
     const [charGroups, setCharGroups] = useState<CharacteristicGroup[]>([]);
     const [aboutList, setAboutList] = useState<CharacteristicGroup>();
 
+    const [newImages, setNewImages] = useState<File[]>([]);
+    const [serverImages, setServerImages] = useState<MediaItem[]>([]);
+    const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
+
+    useEffect(() => {
+        if (selectedItem?.media) {
+            setServerImages(selectedItem.media);
+        } else {
+            setServerImages([]);
+        }
+    }, [selectedItem]);
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setImages([...images, ...Array.from(e.target.files)]);
+            setNewImages([...newImages, ...Array.from(e.target.files)]);
         }
     };
 
-    const handleRemoveImage = (index: number) => {
-        setImages(images.filter((_, i) => i !== index));
+    const handleRemoveNewImage = (index: number) => {
+        setNewImages(newImages.filter((_, i) => i !== index));
+    };
+
+    const handleRemoveServerImage = (mediaId: number) => {
+        setDeletedImageIds(prev => [...prev, mediaId]);
+        setServerImages(prev => prev.filter(img => img.id !== mediaId));
     };
     
     useEffect(() => {
@@ -55,6 +71,9 @@ const SellerGoodPage: React.FC = () => {
 
     useEffect(() => {
         if (selectedItem && id) {
+            setNewImages([]);
+            setCharGroups([]);
+            setAboutList(undefined);
             setTitleInput(selectedItem.name);
             setPriceInput(selectedItem.price.toString());
             setDescInput(selectedItem.description);
@@ -68,10 +87,10 @@ const SellerGoodPage: React.FC = () => {
                 })),
             }));
 
-            const aboutProduct = updatedGroups ? updatedGroups.find(item => item.title === "О товаре") : null;
-            const otherCharacteristics = updatedGroups ? updatedGroups.filter(item => item.title !== "О товаре") : [];
-            setCharGroups(otherCharacteristics || []);
-            setAboutList(aboutProduct ?? undefined);
+            const aboutProduct = updatedGroups?.find(item => item.title === "О товаре") || undefined;
+            const otherCharacteristics = updatedGroups?.filter(item => item.title !== "О товаре") || [];
+            setCharGroups(otherCharacteristics);
+            setAboutList(aboutProduct);
         }
     }, [selectedItem, id]);
     
@@ -91,7 +110,7 @@ const SellerGoodPage: React.FC = () => {
         formData.append('category', selectedGroup.id.toString());
         formData.append('visible', isVisible.toString());
 
-        images.forEach((img) => formData.append('media', img));
+        newImages.forEach((img) => formData.append('media', img));
 
         let goodId: number | null = null;
 
@@ -135,6 +154,10 @@ const SellerGoodPage: React.FC = () => {
                 if (!applyCharacteristicsToGood.fulfilled.match(applyResult)) {
                     throw new Error('Не удалось применить характеристики');
                 }
+
+                if (deletedImageIds.length > 0) {
+                    await dispatch(removeGoodMedia({ goodId, mediaIds: deletedImageIds }));
+                }
             }
 
             navigate('/seller/goods');
@@ -169,35 +192,28 @@ const SellerGoodPage: React.FC = () => {
 
         const categoryId = selectedItem.category;
 
-        if (categoryId && charGroups.length === 0) {
-            let found = false;
+        let found = false;
 
-            for (const [topTitle, topData] of Object.entries(categories)) {
-                for (const [subTitle, subData] of Object.entries(topData.subcategories)) {
-                    const group = subData.subcategories.find((g) => g.id === categoryId);
-                    if (group) {
-                        setSelectedTop(topTitle);
-                        setSelectedSub(subTitle);
-                        setSelectedGroup({ id: group.id, title: group.title });
-                        found = true;
-                        break;
-                    }
+        for (const [topTitle, topData] of Object.entries(categories)) {
+            for (const [subTitle, subData] of Object.entries(topData.subcategories)) {
+                const group = subData.subcategories.find((g) => g.id === categoryId);
+                if (group) {
+                    setSelectedTop(topTitle);
+                    setSelectedSub(subTitle);
+                    setSelectedGroup({ id: group.id, title: group.title });
+                    found = true;
+                    break;
                 }
-                if (found) break;
             }
+            if (found) break;
+        }
 
-            if (!found) {
-                setSelectedTop(null);
-                setSelectedSub(null);
-                setSelectedGroup(null);
-            }
-
-        } else if (!categoryId) {
+        if (!found) {
             setSelectedTop(null);
             setSelectedSub(null);
             setSelectedGroup(null);
         }
-    }, [selectedItem, categories, charGroups]);
+    }, [categories, selectedItem]);
 
     return (
         <div className='page-content__seller'>
@@ -352,12 +368,25 @@ const SellerGoodPage: React.FC = () => {
                         <div className="seller-good_info-imgs seller-good_info-group">
                             <span className='seller-good_info-label text-n14'>Фотографии товара</span>
                             <ul className="seller-good_imgs-list">
-                                {images.map((file, index) => (
+                                {serverImages.map((media) => (
+                                    <li key={media.id} className='seller-good_img'>
+                                        <div className="seller-good_img-cont">
+                                            <img className='seller-good_img-src' src={media.source} alt="uploaded" />
+                                        </div>
+                                        <button type="button" className="seller-good_img-btn" onClick={() => handleRemoveServerImage(media.id)}>
+                                            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M0.169572 0.170272C0.389242 -0.0493982 0.745397 -0.049398 0.965067 0.170272L4.4993 3.7045L8.03353 0.170272C8.2532 -0.0493975 8.60936 -0.0493982 8.82903 0.170272C9.0487 0.389942 9.0487 0.746098 8.82903 0.965767L5.2948 4.5L8.82903 8.03423C9.0487 8.2539 9.0487 8.61006 8.82903 8.82973C8.60936 9.0494 8.2532 9.0494 8.03353 8.82973L4.4993 5.2955L0.965067 8.82973C0.745397 9.0494 0.389242 9.0494 0.169572 8.82973C-0.0500982 8.61006 -0.050098 8.2539 0.169572 8.03423L3.7038 4.5L0.169572 0.965767C-0.050098 0.746097 -0.0500982 0.389942 0.169572 0.170272Z" fill="#02040F"/>
+                                            </svg>
+                                        </button>
+                                    </li>
+                                ))}
+
+                                {newImages.map((file, index) => (
                                     <li key={index} className='seller-good_img'>
                                         <div className="seller-good_img-cont">
                                             <img className='seller-good_img-src' src={URL.createObjectURL(file)} alt={`uploaded ${index}`} />
                                         </div>
-                                        <button type="button" className="seller-good_img-btn" onClick={() => handleRemoveImage(index)}>
+                                        <button type="button" className="seller-good_img-btn" onClick={() => handleRemoveNewImage(index)}>
                                             <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path fillRule="evenodd" clipRule="evenodd" d="M0.169572 0.170272C0.389242 -0.0493982 0.745397 -0.049398 0.965067 0.170272L4.4993 3.7045L8.03353 0.170272C8.2532 -0.0493975 8.60936 -0.0493982 8.82903 0.170272C9.0487 0.389942 9.0487 0.746098 8.82903 0.965767L5.2948 4.5L8.82903 8.03423C9.0487 8.2539 9.0487 8.61006 8.82903 8.82973C8.60936 9.0494 8.2532 9.0494 8.03353 8.82973L4.4993 5.2955L0.965067 8.82973C0.745397 9.0494 0.389242 9.0494 0.169572 8.82973C-0.0500982 8.61006 -0.050098 8.2539 0.169572 8.03423L3.7038 4.5L0.169572 0.965767C-0.050098 0.746097 -0.0500982 0.389942 0.169572 0.170272Z" fill="#02040F"/>
                                             </svg>

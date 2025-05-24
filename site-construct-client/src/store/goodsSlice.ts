@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
-import { addBasketItem, removeBasketItem } from './basketSlice';
-import { Characteristic, CharacteristicGroup } from './characteristicsSlice';
+import { removeBasketItem } from './basketSlice';
+import { CharacteristicGroup } from './characteristicsSlice';
 
 export interface Rating {
     rate__avg: number;
@@ -232,6 +232,27 @@ export const fetchBoughtGoods = createAsyncThunk<
     }
 });
 
+export const removeGoodMedia = createAsyncThunk<
+    number[],
+    { goodId: number; mediaIds: number[] },
+    { state: RootState }
+>(
+    'goods/removeGoodMedia',
+    async ({ goodId, mediaIds }, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            await axiosInstance.patch(`/goods/${goodId}/remove_media/`, mediaIds, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return mediaIds;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка удаления изображений');
+        }
+    }
+);
+
 const goodsSlice = createSlice({
     name: 'goods',
     initialState,
@@ -359,6 +380,13 @@ const goodsSlice = createSlice({
             .addCase(fetchBoughtGoods.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(removeGoodMedia.fulfilled, (state, action) => {
+                if (state.selectedItem?.media) {
+                    state.selectedItem.media = state.selectedItem.media.filter(
+                        (m) => !action.payload.includes(m.id)
+                    );
+                }
             });
     },
 });
