@@ -641,7 +641,7 @@ class OrderViewSet(
             payout = MoneyPayout.objects.create(user_from=order.user, user_to=seller, amount=amount, good_item=basket_item.good_item, order=order)
 
             data = {
-                'user_id': id,
+                'user_id': seller.id,
                 'type': 'Новый заказ',
                 'body': f'Появился новый заказ! Его номер {order.id}. Скорее посмотрите, что в нем!'
             }
