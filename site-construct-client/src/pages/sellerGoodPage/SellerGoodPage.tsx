@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { createGoodForm, fetchGoodById, updateGoodForm } from '../../store/goodsSlice';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 import AddCharacteristicModal from '../../components/addCharacteristicModal/AddCharacteristicModal';
-import { applyCharacteristicsToGood, CharacteristicGroup } from '../../store/characteristicsSlice';
+import { applyCharacteristicsToGood, Characteristic, CharacteristicGroup } from '../../store/characteristicsSlice';
 import { fetchCategories } from '../../store/categoriesSlice';
 
 const SellerGoodPage: React.FC = () => {
@@ -22,6 +22,7 @@ const SellerGoodPage: React.FC = () => {
     const [images, setImages] = useState<File[]>([]);
     const [isVisible, setIsVisible] = useState(false);
     const [charGroups, setCharGroups] = useState<CharacteristicGroup[]>([]);
+    const [aboutList, setAboutList] = useState<Characteristic[]>([]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -45,6 +46,7 @@ const SellerGoodPage: React.FC = () => {
             setPriceInput(selectedItem.price.toString());
             setDescInput(selectedItem.description);
             setIsVisible(!!selectedItem.visible);
+            setAboutList(selectedItem.about || []);
 
             const updatedGroups = selectedItem.characteristics?.map(group => ({
                 ...group,
@@ -96,12 +98,19 @@ const SellerGoodPage: React.FC = () => {
             }
 
             if (goodId && charGroups.length > 0) {
-                const characteristicsPayload = charGroups.flatMap((group) =>
-                    group.characteristics.map((char) => ({
+                const groupChars = charGroups.flatMap(group =>
+                    group.characteristics.map(char => ({
                         characteristic: char.id,
                         body: (char as any).value || '',
                     }))
                 );
+
+                const aboutChars = aboutList.map(char => ({
+                    characteristic: char.id,
+                    body: (char as any).value || '',
+                }));
+
+                const characteristicsPayload = [...groupChars, ...aboutChars];
 
                 const applyResult = await dispatch(
                     applyCharacteristicsToGood({ goodId, characteristics: characteristicsPayload })
@@ -326,14 +335,6 @@ const SellerGoodPage: React.FC = () => {
                         <div className="seller-good_info-imgs seller-good_info-group">
                             <span className='seller-good_info-label text-n14'>Фотографии товара</span>
                             <ul className="seller-good_imgs-list">
-                                {/* <li className='seller-good_img'>
-                                    <div className="seller-good_img-src"></div>
-                                    <button className="seller-good_img-btn">
-                                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M0.169572 0.170272C0.389242 -0.0493982 0.745397 -0.049398 0.965067 0.170272L4.4993 3.7045L8.03353 0.170272C8.2532 -0.0493975 8.60936 -0.0493982 8.82903 0.170272C9.0487 0.389942 9.0487 0.746098 8.82903 0.965767L5.2948 4.5L8.82903 8.03423C9.0487 8.2539 9.0487 8.61006 8.82903 8.82973C8.60936 9.0494 8.2532 9.0494 8.03353 8.82973L4.4993 5.2955L0.965067 8.82973C0.745397 9.0494 0.389242 9.0494 0.169572 8.82973C-0.0500982 8.61006 -0.050098 8.2539 0.169572 8.03423L3.7038 4.5L0.169572 0.965767C-0.050098 0.746097 -0.0500982 0.389942 0.169572 0.170272Z" fill="#02040F"/>
-                                        </svg>
-                                    </button>
-                                </li> */}
                                 {images.map((file, index) => (
                                     <li key={index} className='seller-good_img'>
                                         <div className="seller-good_img-cont">

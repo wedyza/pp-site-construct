@@ -72,6 +72,11 @@ const ProductPage: React.FC = () => {
         dispatch(toggleWishlist(selectedItem.id));
     };
 
+    const aboutProduct = selectedItem.characteristics ? selectedItem.characteristics.find(item => item.title === "О товаре") : null;
+    const otherCharacteristics = selectedItem.characteristics ? selectedItem.characteristics.filter(item => item.title !== "О товаре") : [];
+
+    
+
     return (
         <div className='page-content'>
             <Header />
@@ -87,22 +92,17 @@ const ProductPage: React.FC = () => {
                             О товаре
                         </h2>
                         <ul className='product-info_list'>
-                            <li className='product-info_item text-n14'>
-                                <div className='product-info_label'>
-                                    Тип уборки
-                                </div>
-                                <div className='product-info_value'>
-                                    Сухая и влажная
-                                </div>
-                            </li>
-                            <li className='product-info_item text-n14'>
-                                <div className='product-info_label'>
-                                    Управление пылесосом
-                                </div>
-                                <div className='product-info_value'>
-                                    Пульт ДУ
-                                </div>
-                            </li>
+                            
+                            {aboutProduct && aboutProduct.characteristics.map((c) => (
+                                <li className='product-info_item text-n14'>
+                                    <div className='product-info_label'>
+                                        {c.title}
+                                    </div>
+                                    <div className='product-info_value'>
+                                        {c.value}
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                     <div className='product-actions'>
@@ -180,7 +180,7 @@ const ProductPage: React.FC = () => {
                 <div className="product_charc">
                     <h2 className='product-charc_title product_subtitle text-h2'>Характеристики</h2>
                     <div className="product-charc_content">
-                        {selectedItem.characteristics && selectedItem.characteristics.map((group) => (
+                        {otherCharacteristics && otherCharacteristics.map((group) => (
                             <div className="product-charc_card" key={group.id}>
                             <h3 className="product-charc_list-title">{group.title}</h3>
                             <ul className="product-charc_list">

@@ -16,12 +16,14 @@ export interface CharacteristicGroup {
 
 interface CharacteristicsState {
     data: CharacteristicGroup[];
+    about: Characteristic | null;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: CharacteristicsState = {
     data: [],
+    about: null,
     loading: false,
     error: null,
 };
@@ -76,7 +78,24 @@ const characteristicsSlice = createSlice({
             })
             .addCase(fetchCharacteristics.fulfilled, (state, action) => {
                 state.loading = false;
-                state.data = action.payload;
+                state.error = null;
+
+                let about: Characteristic | null = null;
+
+                const cleanedGroups = action.payload.map((group) => {
+                    const characteristics = group.characteristics.filter((char) => {
+                        if (char.title === 'О товаре') {
+                            about = char;
+                            return false;
+                        }
+                        return true;
+                    });
+
+                    return { ...group, characteristics };
+                });
+
+                state.about = about;
+                state.data = cleanedGroups;
             })
             .addCase(fetchCharacteristics.rejected, (state, action) => {
                 state.loading = false;
