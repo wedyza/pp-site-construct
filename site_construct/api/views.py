@@ -609,8 +609,7 @@ class OrderViewSet(
     @action(detail=False, url_path="payment_accept", methods=["POST"], permission_classes=(permissions.AllowAny,))
     def payment_accept(self, request):
         response = request.data
-        print(response)
-        
+
         metadata = response['object']['metadata']
         
         order_id = metadata['order_id']
@@ -799,8 +798,8 @@ class AnalyticsViewSet(views.APIView):
     # serializer = AnalyticsSerializer
     
     def get(self, request): #in this month
-        total_payed = MoneyPayout.objects.filter(user_to=request.user, state=MoneyPayout.States.PAYOUT).aggregate(Sum('amount'))
-        total_freezed = MoneyPayout.objects.filter(user_to=request.user, state=MoneyPayout.States.FREEZED).aggregate(Sum('amount'))
+        total_payed = MoneyPayout.objects.filter(user_to=request.user, state="Выплата").aggregate(Sum('amount'))
+        total_freezed = MoneyPayout.objects.filter(user_to=request.user, state="Заморожен").aggregate(Sum('amount'))
         good_items = GoodItem.objects.filter(user=request.user).all()
         bought_baskets = (
             Basket.objects.filter(visible=False)
@@ -843,7 +842,7 @@ class SellDynamicsViewSet(views.APIView):
     def get(self, request):
         start, end = define_this_week_period()
         orders = Order.objects.values('created_at__date').annotate(count=Count('id')).values('created_at__date', 'count').filter(created_at__gte=start, created_at__lte=end).order_by('created_at__date')
-        total_profits = MoneyPayout.objects.filter(Q(state=MoneyPayout.States.FREEZED) | Q(state=MoneyPayout.States.PAYOUT)).filter(user_to=request.user).filter(created_at__gte=start, created_at__lte=end).values('created_at__date').annotate(count=Sum('amount')).values('created_at__date', 'count').order_by('created_at__date')
+        total_profits = MoneyPayout.objects.filter(Q(state="Заморожен") | Q(state="Выплата")).filter(user_to=request.user).filter(created_at__gte=start, created_at__lte=end).values('created_at__date').annotate(count=Sum('amount')).values('created_at__date', 'count').order_by('created_at__date')
         
         orders = fill_this_week_with_days(orders, start)
         total_profits = fill_this_week_with_days(total_profits, start)
