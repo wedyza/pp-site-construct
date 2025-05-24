@@ -23,7 +23,6 @@ export interface Good {
     visible?: boolean;
     apply?: boolean;
     characteristics?: CharacteristicGroup[] | undefined;
-    about?: Characteristic[] | null;
     category?: number;
     market: number;
     in_wishlist: boolean;
