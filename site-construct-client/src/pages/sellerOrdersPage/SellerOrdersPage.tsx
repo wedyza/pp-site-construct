@@ -9,7 +9,7 @@ import { formatPrice } from '../../utils/formatPrice';
 
 const SellerOrdersPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { orders, loading } = useAppSelector(state => state.orders);
+    const { orders/*, loading*/ } = useAppSelector(state => state.orders);
 
     useEffect(() => {
         dispatch(fetchOrders());

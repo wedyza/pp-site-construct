@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import './searchPage.scss'
 import HeaderCategories from '../../components/headerCategories/HeaderCategories';
 import Header from '../../components/header/Header';
@@ -11,7 +11,7 @@ const SearchPage: React.FC = () => {
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get('search') || '';
     const dispatch = useAppDispatch();
-    const { items, loading, error } = useAppSelector((state) => state.goods);
+    const { items/*, loading, error*/ } = useAppSelector((state) => state.goods);
 
     useEffect(() => {
         if (searchQuery) {

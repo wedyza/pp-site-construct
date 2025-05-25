@@ -42,7 +42,7 @@ const RegisterPage: React.FC = () => {
     
     useEffect(() => {
         if (token) navigate('/');
-    }, [token]);
+    }, [token, navigate]);
 
     return (
         <div className="login-page">

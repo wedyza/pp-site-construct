@@ -12,6 +12,8 @@ import ordersReducer from './orderSlice';
 import characteristicsReducer from './characteristicsSlice';
 import notificationsReducer from './notificationsSlice';
 import reviewsReducer from './reviewsSlice';
+import analyticsReducer from './analyticsSlice';
+import sellDynamicsReducer from './sellDynamicsSlice';
 
 const store = configureStore({
     reducer: {
@@ -28,6 +30,8 @@ const store = configureStore({
         characteristics: characteristicsReducer,
         notifications: notificationsReducer,
         reviews: reviewsReducer,
+        analytics: analyticsReducer,
+        sellDynamics: sellDynamicsReducer,
     },
 });
 

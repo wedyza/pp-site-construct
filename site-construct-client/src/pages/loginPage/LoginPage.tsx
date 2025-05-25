@@ -31,11 +31,10 @@ const LoginPage: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log(token);
         if (token) {
             navigate('/');
         }
-    }, [token]);
+    }, [token, navigate]);
 
     return (
         <div className="login-page">

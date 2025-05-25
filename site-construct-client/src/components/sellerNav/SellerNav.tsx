@@ -55,7 +55,7 @@ const SellerNav: React.FC = () => {
         dispatch(fetchGoods());
     }, [dispatch]);
 
-    const { orders, loading } = useAppSelector(state => state.orders);
+    const { orders } = useAppSelector(state => state.orders);
 
     useEffect(() => {
         dispatch(fetchOrders());

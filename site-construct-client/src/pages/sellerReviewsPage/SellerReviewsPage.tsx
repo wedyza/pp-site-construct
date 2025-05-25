@@ -8,7 +8,7 @@ import { addReply, fetchComments } from '../../store/reviewsSlice';
 
 const SellerReviewsPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { comments, loading, error } = useAppSelector((state) => state.reviews);
+    const { comments/*, loading, error*/ } = useAppSelector((state) => state.reviews);
 
     useEffect(() => {
         dispatch(fetchComments());

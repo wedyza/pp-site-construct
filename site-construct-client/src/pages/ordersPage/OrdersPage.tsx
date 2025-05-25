@@ -12,32 +12,6 @@ import { fetchBoughtGoods } from '../../store/goodsSlice';
 
 const OrdersPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
-    // const purchasedGoods: Order[] = [
-    //     {
-    //         id: 65854,
-    //         placement_date: '5 марта',
-    //         delivery_date: '6 марта',
-    //         payment_total: 900,
-    //         address: 'г. Екатеринбург ул. Малышева 17',
-    //         status: 'Получен'
-    //     },
-    //     {
-    //         id: 565854,
-    //         placement_date: '7 марта',
-    //         delivery_date: '9 марта',
-    //         payment_total: 800,
-    //         address: 'г. Екатеринбург ул. Малышева 16',
-    //         status: 'Получен'
-    //     },
-    //     {
-    //         id: 5658541,
-    //         placement_date: '10 марта',
-    //         delivery_date: '10 марта',
-    //         payment_total: 800,
-    //         address: 'г. Екатеринбург ул. Малышева 16',
-    //         status: 'Получен'
-    //     }
-    // ];
     const refundsGoods: Order[] = [
         {
             id: 658540,
@@ -57,7 +31,7 @@ const OrdersPage: React.FC = () => {
         }
     ];
     const dispatch = useAppDispatch();
-    const { currentOrders, completedOrders, loading } = useAppSelector(state => state.orders);
+    const { currentOrders, completedOrders/*, loading*/ } = useAppSelector(state => state.orders);
     const { boughtItems: purchasedGoods } = useAppSelector(state => state.goods);
 
     useEffect(() => {

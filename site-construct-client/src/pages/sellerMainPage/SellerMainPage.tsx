@@ -1,8 +1,19 @@
 import { Link } from 'react-router-dom';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerMainPage.scss'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useEffect } from 'react';
+import { fetchAnalytics } from '../../store/analyticsSlice';
+import SellDynamicsCharts from '../../components/sellDynamicsCharts/SellDynamicsCharts';
 
 const SellerMainPage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { data/*, loading, error*/ } = useAppSelector((state) => state.analytics);
+
+    useEffect(() => {
+        dispatch(fetchAnalytics());
+    }, [dispatch]);
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -17,11 +28,11 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        152 000 ₽
+                                        {(data?.total_payed.amount__sum || 0) + (data?.total_freezed.amount__sum || 0)} ₽
                                     </span>
-                                    <span className='seller-main_kpi-stat text-n14'>
+                                    {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+12% за неделю)
-                                    </span>
+                                    </span> */}
                                 </div>
                             </div>
                             <div className='seller-main_kpi-item'>
@@ -30,11 +41,11 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        87
+                                        {data?.orders_per_this_month.total}
                                     </span>
-                                    <span className='seller-main_kpi-stat text-n14'>
+                                    {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+5 новых)
-                                    </span>
+                                    </span> */}
                                 </div>
                             </div>
                             <div className='seller-main_kpi-item'>
@@ -43,11 +54,11 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        3
+                                        {data?.refunds_per_this_month.total}
                                     </span>
-                                    <span className='seller-main_kpi-stat text-n14'>
+                                    {/* <span className='seller-main_kpi-stat text-n14'>
                                         (4% от заказов)
-                                    </span>
+                                    </span> */}
                                 </div>
                             </div>
                             <div className='seller-main_kpi-item'>
@@ -56,11 +67,11 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        4.8
+                                        {data?.average_rating.rate__avg}
                                     </span>
-                                    <span className='seller-main_kpi-stat text-n14'>
+                                    {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+142 отзыва за март)
-                                    </span>
+                                    </span> */}
                                 </div>
                             </div>
                         </div>
@@ -256,7 +267,9 @@ const SellerMainPage: React.FC = () => {
                             </h1>
                         </div>
                         <div className='seller-main_item-body'>
-                            <div className="grafictemp"></div>
+                            <div className="grafictemp">
+                                <SellDynamicsCharts />
+                            </div>
                         </div>
                     </div>
                 </div>

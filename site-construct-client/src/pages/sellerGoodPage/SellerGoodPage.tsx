@@ -62,7 +62,7 @@ const SellerGoodPage: React.FC = () => {
         if (selectedItem?.category) {
             dispatch(fetchCharacteristics(selectedItem.category));
         }
-    }, [selectedItem?.category]);
+    }, [selectedItem?.category, dispatch]);
 
     const { data } = useAppSelector((state) => state.characteristics);
 
