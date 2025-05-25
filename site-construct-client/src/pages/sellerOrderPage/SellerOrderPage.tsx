@@ -1,12 +1,13 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerOrderPage.scss'
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useEffect } from 'react';
-import { fetchOrderById } from '../../store/orderSlice';
+import { changeOrderStatus, fetchOrderById } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
 
 const SellerOrderPage: React.FC = () => {
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
     const selectedOrder = useAppSelector((state) => state.orders.selectedOrder);
@@ -16,6 +17,11 @@ const SellerOrderPage: React.FC = () => {
             dispatch(fetchOrderById(Number(id)));
         }
     }, [dispatch, id]);
+
+    const handleChangeStatus = () => {
+        dispatch(changeOrderStatus({ id: Number(id), status: 'RECEIVED' }));
+        navigate('/seller/orders');
+    };
 
     return (
         <div className='page-content__seller'>
@@ -119,7 +125,10 @@ const SellerOrderPage: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                <button className='seller-order_btn btn-black text-btn'>
+                <button 
+                    className='seller-order_btn btn-black text-btn'
+                    onClick={handleChangeStatus}
+                >
                     Заказ обработан и передан в доставку
                 </button>
             </div>

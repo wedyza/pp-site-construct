@@ -161,6 +161,31 @@ export const createOrder = createAsyncThunk<
     }
 );
 
+export const changeOrderStatus = createAsyncThunk<
+    Order,
+    { id: number; status: string },
+    { state: RootState }
+>(
+    'orders/changeOrderStatus',
+    async ({ id, status }, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        try {
+            const response = await axiosInstance.patch(
+                `/orders/${id}/change_status/`,
+                { status },
+                {
+                    headers: {
+                        Authorization: `Token ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка смены статуса заказа');
+        }
+    }
+);
+
 const orderSlice = createSlice({
     name: 'orders',
     initialState,
@@ -235,6 +260,18 @@ const orderSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
                 state.selectedOrder = null;
+            })
+            .addCase(changeOrderStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(changeOrderStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedOrder = action.payload;
+            })
+            .addCase(changeOrderStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
     },
 });
