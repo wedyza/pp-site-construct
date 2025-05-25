@@ -39,7 +39,7 @@ const MakeOrderPage: React.FC = () => {
         const basketIds = selectedGoods.map(({ item }) => item.id);
 
         try {
-            await dispatch(
+            const response = await dispatch(
                 createOrder({
                     address: pickupPoint,
                     payment_method: selectedMethodId,
@@ -48,7 +48,7 @@ const MakeOrderPage: React.FC = () => {
                 })
             ).unwrap();
 
-            navigate('/orders');
+            window.location.href = response.payment_url;
         } catch (error: any) {
             alert(`Ошибка: ${error}`);
         }

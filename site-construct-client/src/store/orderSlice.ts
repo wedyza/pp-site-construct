@@ -42,6 +42,15 @@ const initialState: OrderState = {
     error: null,
 };
 
+export interface OrderPaymentResponse {
+    amount: {
+        value: string;
+        currency: string;
+    };
+    description: string;
+    payment_url: string;
+}
+
 export const fetchCurrentOrders = createAsyncThunk<Order[], void, { state: RootState }>(
     'orders/fetchCurrentOrders',
     async (_, { getState, rejectWithValue }) => {
@@ -117,7 +126,7 @@ export const fetchOrderById = createAsyncThunk<
 });
 
 export const createOrder = createAsyncThunk<
-    Order, 
+    OrderPaymentResponse, 
     { address: string; payment_method: number; delivery_method: number; basket_ids: number[] }, 
     { state: RootState }
 >(
@@ -140,7 +149,7 @@ export const createOrder = createAsyncThunk<
                 )
             );
 
-            const response = await axiosInstance.post(
+            const response = await axiosInstance.post<OrderPaymentResponse>(
                 '/orders/',
                 {
                     address,
@@ -242,7 +251,7 @@ const orderSlice = createSlice({
             })
             .addCase(createOrder.fulfilled, (state, action) => {
                 state.loading = false;
-                state.currentOrders.push(action.payload);
+                //state.currentOrders.push(action.payload);
             })
             .addCase(createOrder.rejected, (state, action) => {
                 state.loading = false;
