@@ -27,6 +27,7 @@ export interface Order {
 interface OrderState {
     currentOrders: Order[];
     completedOrders: Order[];
+    selectedOrder: Order | null;
     orders: Order[];
     loading: boolean;
     error: string | null;
@@ -35,6 +36,7 @@ interface OrderState {
 const initialState: OrderState = {
     currentOrders: [],
     completedOrders: [],
+    selectedOrder: null,
     orders: [],
     loading: false,
     error: null,
@@ -90,6 +92,29 @@ export const fetchOrders = createAsyncThunk<Order[], void, { state: RootState }>
         }
     }
 );
+
+export const fetchOrderById = createAsyncThunk<
+    Order,
+    number,
+    { state: RootState }
+>('orders/fetchOrderById', async (id, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    try {
+        if (token) {
+            const response = await axiosInstance.get(`/orders/${id}/`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return response.data;
+        } else {
+            const response = await axiosInstance.get(`/goods/${id}/`);
+            return response.data;
+        }
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки заказа');
+    }
+});
 
 export const createOrder = createAsyncThunk<
     Order, 
@@ -197,6 +222,19 @@ const orderSlice = createSlice({
             .addCase(createOrder.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(fetchOrderById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchOrderById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedOrder = action.payload;
+            })
+            .addCase(fetchOrderById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.selectedOrder = null;
             });
     },
 });

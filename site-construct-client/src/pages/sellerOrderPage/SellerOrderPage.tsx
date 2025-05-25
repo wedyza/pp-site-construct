@@ -1,7 +1,22 @@
+import { useParams } from 'react-router-dom';
 import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerOrderPage.scss'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useEffect } from 'react';
+import { fetchOrderById } from '../../store/orderSlice';
+import { formatPrice } from '../../utils/formatPrice';
 
 const SellerOrderPage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const dispatch = useAppDispatch();
+    const selectedOrder = useAppSelector((state) => state.orders.selectedOrder);
+
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchOrderById(Number(id)));
+        }
+    }, [dispatch, id]);
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -13,10 +28,10 @@ const SellerOrderPage: React.FC = () => {
                             Основная информация
                         </h2>
                         <p className='seller-order_info-id text-card'>
-                            №4565854
+                            №{selectedOrder?.id}
                         </p>
                         <div className='seller-order_info-list seller-order_list'>
-                            <div className='seller-order_info-item seller-order_item'>
+                            {/* <div className='seller-order_info-item seller-order_item'>
                                 <span className='seller-order_label seller-order_info-label text-n14'>
                                     Дата и время оформления заказа
                                 </span>
@@ -31,13 +46,14 @@ const SellerOrderPage: React.FC = () => {
                                 <span className='seller-order_value seller-order_info-value text-n16'>
                                     6 марта, 14:51 <span className='seller-order_value__accent'>(осталось 2 ч 15 мин)</span>
                                 </span>
-                            </div>
+                            </div> */}
                             <div className='seller-order_info-item seller-order_item'>
                                 <span className='seller-order_label seller-order_info-label text-n14'>
                                     Доставка
                                 </span>
                                 <span className='seller-order_value seller-order_info-value text-n16'>
-                                    г. Екатеринбург ул. Малышева 15, 13.05 – 15.05
+                                    {/* г. Екатеринбург ул. Малышева 15, 13.05 – 15.05 */}
+                                    {selectedOrder?.address}
                                 </span>
                             </div>
                             <div className='seller-order_info-item seller-order_item'>
@@ -45,7 +61,8 @@ const SellerOrderPage: React.FC = () => {
                                     Сумма
                                 </span>
                                 <span className='seller-order_value seller-order_info-value text-n16'>
-                                    704 ₽ <span className='seller-order_value__accent'>(доход с заказа 650)</span>
+                                    {/* 704 ₽ <span className='seller-order_value__accent'>(доход с заказа 650)</span> */}
+                                    {selectedOrder ? formatPrice(selectedOrder?.payment_total) : ''} ₽
                                 </span>
                             </div>
                         </div>
@@ -58,17 +75,17 @@ const SellerOrderPage: React.FC = () => {
                                     Покупатель
                                 </span>
                                 <span className='seller-order_value seller-order_buyer-value text-n16'>
-                                    Иванов Алексей 
+                                    {`${selectedOrder?.user?.first_name} ${selectedOrder?.user?.last_name}`}
                                 </span>
                             </div>
-                            <div className='seller-order_buyer-item seller-order_item'>
+                            {/* <div className='seller-order_buyer-item seller-order_item'>
                                 <span className='seller-order_label seller-order_buyer-label text-n14'>
                                     Телефон
                                 </span>
                                 <span className='seller-order_value seller-order_buyer-value text-n16'>
                                     +7 (XXX) XXX-XX-XX (замаскирован)
                                 </span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -83,36 +100,23 @@ const SellerOrderPage: React.FC = () => {
                             <div className='seller-orders_table-cell'>Цена</div>
                             <div className='seller-orders_table-cell'>Товара в наличии</div>
                         </div>
-                        <div className='seller-orders_table-body seller-orders_table-row'>
-                            <div className='seller-orders_table-cell'>4565854</div>
-                            <div className='seller-orders_table-cell seller-order_table-imgs'>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
+                        
+                        {selectedOrder?.items?.map((item) => (
+                            <div className='seller-orders_table-body seller-orders_table-row'>
+                                <div className='seller-orders_table-cell'>{item.good_item.id}</div>
+                                <div className='seller-orders_table-cell seller-order_table-imgs'>
+                                    {item.good_item.media?.map((img) => (
+                                        <div className='seller-order_table-img'>
+                                            <img src={img.source} alt="" />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className='seller-orders_table-cell'>{item.good_item.name}</div>
+                                <div className='seller-orders_table-cell'>{item.count} шт</div>
+                                <div className='seller-orders_table-cell'>{formatPrice(item.good_item.price)}</div>
+                                <div className='seller-orders_table-cell'>480 шт</div>
                             </div>
-                            <div className='seller-orders_table-cell'>Робот мойщик окон с распылением</div>
-                            <div className='seller-orders_table-cell'>1 шт</div>
-                            <div className='seller-orders_table-cell'>5 520 ₽</div>
-                            <div className='seller-orders_table-cell'>480 шт</div>
-                        </div>
-                        <div className='seller-orders_table-body seller-orders_table-row'>
-                            <div className='seller-orders_table-cell'>4565854</div>
-                            <div className='seller-orders_table-cell seller-order_table-imgs'>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                            </div>
-                            <div className='seller-orders_table-cell'>Робот мойщик окон с распылением</div>
-                            <div className='seller-orders_table-cell'>1 шт</div>
-                            <div className='seller-orders_table-cell'>5 520 ₽</div>
-                            <div className='seller-orders_table-cell'>480 шт</div>
-                        </div>
+                        ))}
                     </div>
                 </div>
                 <button className='seller-order_btn btn-black text-btn'>

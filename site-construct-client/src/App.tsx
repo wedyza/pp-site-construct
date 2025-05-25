@@ -47,7 +47,7 @@ function App() {
         <Route path="/seller/good" element={<SellerGoodPage />} />
         <Route path="/seller/good/:id" element={<SellerGoodPage />} />
         <Route path="/seller/orders" element={<SellerOrdersPage />} />
-        <Route path="/seller/order" element={<SellerOrderPage />} />
+        <Route path="/seller/order/:id" element={<SellerOrderPage />} />
         <Route path="/seller/finance" element={<SellerFinancePage />} />
         <Route path="/seller/profile" element={<SellerProfilePage />} />
         <Route path="/seller/reviews" element={<SellerReviewsPage />} />

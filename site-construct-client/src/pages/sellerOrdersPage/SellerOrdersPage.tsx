@@ -55,7 +55,7 @@ const SellerOrdersPage: React.FC = () => {
                         <div className='seller-orders_table-cell'>Пункт выдачи</div>
                     </div>
                     {orders.map((order) => (
-                        <Link to='/seller/order' key={order.id} className='seller-orders_table-body seller-orders_table-row'>
+                        <Link to={`/seller/order/${order.id}`} key={order.id} className='seller-orders_table-body seller-orders_table-row'>
                             <div className='seller-orders_table-cell'>№{order.id}</div>
                             <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
                             <div className='seller-orders_table-cell'>
