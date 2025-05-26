@@ -18,6 +18,12 @@ export interface Good {
     basket_id?: number;
 }
 
+interface CategoryInput {
+    title: string;
+    description: string;
+    parent?: number | null;
+}
+
 export interface Category {
     id: number;
     title: string;
@@ -166,6 +172,63 @@ export const fetchGoodsByCategory = createAsyncThunk<
     }
 );
 
+export const createCategory = createAsyncThunk<Category, CategoryInput>(
+    'categories/createCategory',
+    async (data, { rejectWithValue, getState }) => {
+        try {
+            const state: any = getState();
+            const token = state.auth?.token;
+
+            const res = await axiosInstance.post('/good-categories/', data, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return res.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка при создании категории');
+        }
+    }
+);
+
+export const updateCategory = createAsyncThunk<Category, { id: number; data: CategoryInput }>(
+    'categories/updateCategory',
+    async ({ id, data }, { rejectWithValue, getState }) => {
+        try {
+            const state: any = getState();
+            const token = state.auth?.token;
+
+            const res = await axiosInstance.put(`/good-categories/${id}/`, data, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return res.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка при обновлении категории');
+        }
+    }
+);
+
+export const deleteCategory = createAsyncThunk<number, number>(
+    'categories/deleteCategory',
+    async (id, { rejectWithValue, getState }) => {
+        try {
+            const state: any = getState();
+            const token = state.auth?.token;
+
+            await axiosInstance.delete(`/good-categories/${id}/`, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+            return id;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка при удалении категории');
+        }
+    }
+);
+
 const categoriesSlice = createSlice({
     name: 'categories',
     initialState,
@@ -225,6 +288,30 @@ const categoriesSlice = createSlice({
                     loading: false,
                     error: action.payload as string,
                 };
+            })
+            .addCase(createCategory.fulfilled, (state, action) => {
+                state.raw.push(action.payload);
+                state.structured = buildStructuredCategories(state.raw);
+            })
+            .addCase(createCategory.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(updateCategory.fulfilled, (state, action) => {
+                const index = state.raw.findIndex(cat => cat.id === action.payload.id);
+                if (index !== -1) {
+                    state.raw[index] = action.payload;
+                    state.structured = buildStructuredCategories(state.raw);
+                }
+            })
+            .addCase(updateCategory.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(deleteCategory.fulfilled, (state, action) => {
+                state.raw = state.raw.filter(cat => cat.id !== action.payload);
+                state.structured = buildStructuredCategories(state.raw);
+            })
+            .addCase(deleteCategory.rejected, (state, action) => {
+                state.error = action.payload as string;
             });
     },
 });
