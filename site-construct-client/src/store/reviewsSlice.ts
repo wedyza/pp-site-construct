@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
-import { fetchGoodById, Good } from './goodsSlice';
+import { fetchGoodById, Good, MediaItem } from './goodsSlice';
 import { Reply } from './commentsSlice';
 
 export interface Comment {
@@ -10,9 +10,9 @@ export interface Comment {
     item: number;
     body: string;
     rate: number;
-    media: any[];
     good?: Good;
     reply: Reply;
+    media?: MediaItem[];
 }
 
 interface ReviewsState {
@@ -52,22 +52,20 @@ export const fetchUncommentedGoods = createAsyncThunk<
 
 export const addComment = createAsyncThunk<
     void,
-    { item: number; body: string; rate: number },
+    FormData,
     { state: RootState; dispatch: any }
 >(
     'reviews/addComment',
-    async ({ item, body, rate }, { getState, rejectWithValue, dispatch }) => {
+    async (formData, { getState, rejectWithValue, dispatch }) => {
         const token = getState().auth.token;
+
         try {
-            await axiosInstance.post(
-                '/comments/',
-                { item, body, rate },
-                {
-                    headers: {
-                        Authorization: `Token ${token}`,
-                    },
-                }
-            );
+            await axiosInstance.post('/comments/', formData, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            });
+
             await dispatch(fetchComments());
         } catch (err: any) {
             return rejectWithValue(err.response?.data?.message || 'Ошибка отправки отзыва');

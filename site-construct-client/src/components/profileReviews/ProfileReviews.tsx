@@ -28,22 +28,27 @@ const ProfileReviews: React.FC = () => {
             return;
         }
 
-        dispatch(addComment({
-            item: selectedGood.id,
-            body: reviewText,
-            rate: rating,
-        }))
-        .unwrap()
-        .then(() => {
-            setIsModalOpen(false);
-            setReviewText('');
-            setRating(0);
-            setFiles([]);
-        })
-        .catch((err) => {
-            console.error("Ошибка при добавлении отзыва:", err);
-            alert("Ошибка при отправке отзыва.");
+        const formData = new FormData();
+        formData.append('item', selectedGood.id.toString());
+        formData.append('body', reviewText);
+        formData.append('rate', rating.toString());
+
+        files.forEach((file) => {
+            formData.append('media', file);
         });
+
+        dispatch(addComment(formData))
+            .unwrap()
+            .then(() => {
+                setIsModalOpen(false);
+                setReviewText('');
+                setRating(0);
+                setFiles([]);
+            })
+            .catch((err) => {
+                console.error("Ошибка при добавлении отзыва:", err);
+                //alert("Ошибка при отправке отзыва.");
+            });
     };
     
     return (

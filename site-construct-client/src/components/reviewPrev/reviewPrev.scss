@@ -57,6 +57,14 @@
 .review-prev_imgs {
     display: flex;
     gap: 8px;
+    overflow: hidden;
+    border-radius: var(--radius);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }
 
 .review-prev_img {
@@ -64,4 +72,11 @@
     width: 88px;
     background-color: var(--temp-color);
     border-radius: var(--radius);
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }

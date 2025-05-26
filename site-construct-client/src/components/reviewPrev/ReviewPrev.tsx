@@ -4,7 +4,7 @@ import { ReviewCardProps } from '../reviewCard/ReviewCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchUserById } from '../../store/usersSlice';
 
-const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date, reply }) => {
+const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date, reply, media }) => {
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.users.users[userId]);
 
@@ -44,10 +44,13 @@ const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date, reply
                 <div className="review-prev_text text-n14">
                     {body}
                 </div>
-                {/* <div className="review-prev_imgs">
-                    <div className="review-prev_img"></div>
-                    <div className="review-prev_img"></div>
-                </div> */}
+                <div className="review-prev_imgs">
+                    {media?.map((img) => (
+                        <div className="review-prev_img">
+                            <img src={img.source} alt="" />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

@@ -233,6 +233,7 @@ const ProductPage: React.FC = () => {
                                     rate={comment.rate}
                                     date={'14 апреля 2025'}
                                     reply={comment.reply}
+                                    media={comment.media}
                                 />
                             </li>
                         ))}
