@@ -989,9 +989,8 @@ class ItemsLeftViewSet(views.APIView):
         response = []
         for item in good_items:
             good_item = GoodItem.objects.get(id=item["good_item"])
-            serialzier = SimplifiedGoodItemSerializer(instance=good_item)
             data = {
-                "item": serialzier.data,
+                "item": good_item.name,
                 "sell_count": item["sell_count"],
                 "status": get_status(good_item.warehouse_count),
             }
