@@ -432,7 +432,6 @@ class UsersViewSet(
             serializer = self.serializer_class(request.user)
             return Response(serializer.data)
         if self.request.method == "PATCH":
-            print(request.data)
             serializer = self.serializer_class(
                 request.user, data=request.data, partial=True
             )
@@ -774,10 +773,16 @@ class RefundViewSet(viewsets.ModelViewSet):
         order = Order.objects.get(id=payload.initial_data["order"])
         
         order_items = GoodItem.objects.filter(id__in=BasketItem.objects.filter(basket=order.basket).values_list('good_item_id', flat=True)).values_list('id', flat=True)
-        if payload.data['item'] not in order_items:
+
+        if payload.initial_data['item'] not in list(order_items):
             return Response({'detail': 'You cant refund item, that is not in your order'}, status=status.HTTP_400_BAD_REQUEST)
         
-        item = GoodItem.objects.get(payload.data['item'])
+        existed_refund = Refund.objects.filter(user=request.user, order=order, item_id=payload.initial_data['item']).first()
+
+        if existed_refund is not None:
+            return Response({'detail': 'You cant refund this item 2 times'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        item = GoodItem.objects.get(id=payload.initial_data['item'])
 
 
         payout =  MoneyPayout.objects.filter(user_from=self.request.user, order=order, good_item=item).first()
@@ -788,7 +793,8 @@ class RefundViewSet(viewsets.ModelViewSet):
             'body': f"На ваш товар \"{item.name}\" оформлен возрат. ",
             'type': 'Возврат'
         })
-
+        
+        payload.save(user=request.user, applied=True)
         return Response(payload.data)
     
 

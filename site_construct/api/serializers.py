@@ -162,7 +162,6 @@ class SimplifiedGoodItemSerializer(serializers.ModelSerializer):
         fields = ("media", "id", "name", "description", "price", "discount", "category")
         # exclude = ('visible', 'apply', 'characteristics')
 
-
 class GoodItemSerializer(serializers.ModelSerializer):
     # category = GoodCategorySerializer()
     characteristics = serializers.SerializerMethodField(
@@ -662,6 +661,9 @@ class RefundCreateSerializer(serializers.ModelSerializer):
 
 
 class RefundResponseSerializer(serializers.ModelSerializer):
+    item = SimplifiedGoodItemSerializer()
+    order = OrderToBuyerSerializer()
+    
     class Meta:
         model = Refund
         fields = "__all__"
