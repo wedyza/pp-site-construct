@@ -70,7 +70,7 @@ class GoodItemCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoodItem
-        fields = ("category", "name", "description", "price", "media", "visible")
+        fields = ("category", "name", "description", "price", "media", "visible", "warehouse_count")
         extra_kwargs = {"price": {"required": True}}
 
     def update(self, instance, validated_data):
@@ -159,7 +159,7 @@ class SimplifiedGoodItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoodItem
-        fields = ("media", "id", "name", "description", "price", "discount", "category")
+        fields = ("media", "id", "name", "description", "price", "discount", "category", "warehouse_count")
         # exclude = ('visible', 'apply', 'characteristics')
 
 class GoodItemSerializer(serializers.ModelSerializer):
@@ -187,6 +187,7 @@ class GoodItemSerializer(serializers.ModelSerializer):
             "in_wishlist",
             "id",
             "media",
+            "warehouse_count"
         )
 
     def get_characteristics(self, obj):
@@ -265,6 +266,7 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
             "basket_count",
             "basket_id",
             "media",
+            "warehouse_count"
         )
 
     def get_characteristics(self, obj):

@@ -69,6 +69,7 @@ class GoodItem(models.Model):
         related_name="characteristics",
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Продавец")
+    warehouse_count = models.IntegerField("Количество на складе", default=0)
 
     def __str__(self) -> str:
         return self.name

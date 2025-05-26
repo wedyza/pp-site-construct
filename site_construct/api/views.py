@@ -498,6 +498,11 @@ class OrderViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        aviable_to_create = BasketItem.objects.filter(basket=basket).select_related("good_item").filter(count__gt=F("good_item__warehouse_count")).count()
+
+        if aviable_to_create > 0:
+            return Response({"error": "Невозможно создать заказ с товаром, количество которого превышает его количество на складе"}, status=status.HTTP_400_BAD_REQUEST)
+
         sum_total = (
             BasketItem.objects.filter(basket=basket)
             .select_related("good_item")
@@ -637,6 +642,9 @@ class OrderViewSet(
             amount = basket_item.good_item.price * basket_item.count
             payout = MoneyPayout.objects.create(user_from=order.user, user_to=seller, amount=amount, good_item=basket_item.good_item, order=order)
 
+            basket_item.good_item.warehouse_count -= basket_item.count
+            basket_item.good_item.save()
+            
             data = {
                 'user_id': seller.id,
                 'type': 'Новый заказ',
@@ -716,7 +724,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             .distinct()
         )
 
-        if comment.initial_data["item"] not in basket_ids:
+        if int(comment.initial_data["item"]) not in basket_ids:
             return Response(
                 {"detail": "You did not ordered this item yet"},
                 status=status.HTTP_401_UNAUTHORIZED,
