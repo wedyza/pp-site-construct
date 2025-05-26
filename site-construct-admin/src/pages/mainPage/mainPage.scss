@@ -1,0 +1,132 @@
+.admin-cat {
+    background-color: var(--background);
+    border-radius: var(--big-radius);
+    padding: 16px;
+    padding-top: 24px;
+}
+
+.seller-orders_title {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-left: 16px;
+
+    svg {
+        height: 24px;
+        width: 24px;
+    }
+}
+
+
+
+.seller-orders_create-btn {
+    position: absolute;
+    right: 0;
+    top: -8px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    border: 1px solid var(--black15);
+    border-radius: 15px;
+
+    svg {
+        height: 13.5px;
+        width: 13.5px;
+    }
+}
+
+.seller-orders_search {
+    width: 412px;
+    height: 44px;
+    margin-top: 32px;
+    display: flex;
+    gap: 16px;
+    cursor: pointer;
+
+    path {
+        fill: var(--black40)
+    }
+}
+
+.admin-table {
+    width: 100%;
+    margin-top: 16px;
+    border: 1px solid var(--black15);
+    border-radius: var(--big-radius);
+    display: grid;
+}
+
+.admin-cat_table {
+    grid-template-columns: 3% 16% 1fr 1fr 1fr;
+}
+
+.seller-orders_table-row {
+    display: contents;
+    
+    .seller-orders_table-cell {
+        padding: 14px 16px;
+        padding-right: 20px;
+        border-right: 1px solid var(--black15);
+        border-top: 1px solid var(--black15);
+    }
+    
+    .seller-orders_table-cell:last-child {
+        border-right: none;
+    }
+}
+
+.seller-orders_table-head {
+    .seller-orders_table-cell {
+        background-color: var(--s-background);
+        border: none;
+    }
+
+    .seller-orders_table-cell:first-child {
+        border-radius: var(--big-radius) 0 0 0;
+    }
+
+    .seller-orders_table-cell:last-child {
+        border-radius: 0 var(--big-radius) 0 0;
+    }
+}
+
+.admin-cat_subwrapper.seller-orders_table-cell {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+
+    .admin-cat_cell {
+        padding: 14px 16px;
+    }
+}
+
+.admin-cat_subrow {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+
+    .admin-cat_cell {
+        border-right: 1px solid var(--black15);
+        border-top: 1px solid var(--black15);
+    }
+}
+
+.admin-cat_subrow:first-child {
+    .admin-cat_cell {
+        border-top: none;
+    }
+}
+
+.admin-cat_subsub-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+}
+
+.admin-cat_subsub {
+    border-top: 1px solid var(--black05);
+}
