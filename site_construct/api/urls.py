@@ -24,7 +24,8 @@ from .views import (
     RefundViewSet,
     AnalyticsViewSet,
     CharacteristicCategoryViewSet,
-    SellDynamicsViewSet
+    ItemsLeftViewSet,
+    SellDynamicsViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -49,8 +50,13 @@ urlpatterns = [
     # path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
     path("auth/", include("users.urls")),
     path("me/wishlist/", GetMyWishlistView.as_view(), name="get-my-wishlist"),
-    path("me/analytics/", AnalyticsViewSet.as_view(), name='analytics'),
-    path("me/analytics/sell_dynamics/", SellDynamicsViewSet.as_view(), name='sell-dynamics')
+    path("me/analytics/", AnalyticsViewSet.as_view(), name="analytics"),
+    path(
+        "me/analytics/sell_dynamics/",
+        SellDynamicsViewSet.as_view(),
+        name="sell-dynamics",
+    ),
+    path("me/analytics/items_left/", ItemsLeftViewSet.as_view(), name="sell-dynamics"),
 ]
 
 schema_view = get_schema_view(

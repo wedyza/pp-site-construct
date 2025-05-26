@@ -17,7 +17,7 @@ class GoodCategory(models.Model):
         default=None,
         verbose_name="Родительская категория",
         on_delete=models.SET_NULL,
-        related_name='daughter'
+        related_name="daughter",
     )
 
     def __str__(self) -> str:
@@ -211,7 +211,10 @@ class Transaction(models.Model):
     )
     created_at = models.DateTimeField("Дата создания", auto_now_add=True)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='transactions', verbose_name='Транзакция'
+        User,
+        on_delete=models.CASCADE,
+        related_name="transactions",
+        verbose_name="Транзакция",
     )
     checkout_id = models.CharField("Айди чекаута YoMoney", max_length=40)
 
@@ -328,7 +331,9 @@ class Refund(models.Model):
 
 
 class CommentMedia(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, verbose_name="отзыв", related_name='media')
+    comment = models.ForeignKey(
+        Comment, on_delete=models.CASCADE, verbose_name="отзыв", related_name="media"
+    )
     source = models.ImageField("Картинка", upload_to="comments")
 
 
@@ -338,14 +343,20 @@ class MoneyPayout(models.Model):
         PAYOUT = "Выплата"
         FREEZED = "Заморожен"
 
-    user_to = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Кому", related_name="receiver")
-    user_from = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="От кого", related_name="sender")
+    user_to = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Кому", related_name="receiver"
+    )
+    user_from = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="От кого", related_name="sender"
+    )
     amount = models.FloatField("Сумма", null=False)
     state = models.TextField(
         "Статус",
         choices=[(status.name, status.value) for status in States],
-        default="FREEZED"
+        default="FREEZED",
     )
-    good_item = models.ForeignKey(GoodItem, on_delete=models.CASCADE, verbose_name="Товар")
+    good_item = models.ForeignKey(
+        GoodItem, on_delete=models.CASCADE, verbose_name="Товар"
+    )
     order = models.ForeignKey(Order, on_delete=models.Case, verbose_name="Заказ")
     created_at = models.DateTimeField("Создано", auto_now_add=True)

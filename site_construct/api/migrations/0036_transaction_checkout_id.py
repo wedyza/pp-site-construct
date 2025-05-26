@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0035_alter_goodcategory_parent'),
+        ("api", "0035_alter_goodcategory_parent"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='checkout_id',
-            field=models.CharField(default='', max_length=40, verbose_name='Айди чекаута YoMoney'),
+            model_name="transaction",
+            name="checkout_id",
+            field=models.CharField(
+                default="", max_length=40, verbose_name="Айди чекаута YoMoney"
+            ),
             preserve_default=False,
         ),
     ]

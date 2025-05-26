@@ -9,14 +9,20 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0033_alter_commentmedia_comment'),
+        ("api", "0033_alter_commentmedia_comment"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='user',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='transactions', to='users.customabstractuser', verbose_name='Транзакция'),
+            model_name="transaction",
+            name="user",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="transactions",
+                to="users.customabstractuser",
+                verbose_name="Транзакция",
+            ),
             preserve_default=False,
         ),
     ]

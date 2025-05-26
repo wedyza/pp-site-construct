@@ -8,34 +8,64 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0031_auto_20250517_1032'),
+        ("api", "0031_auto_20250517_1032"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата создания'),
+            model_name="comment",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                verbose_name="Дата создания",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='commentreply',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата создания'),
+            model_name="commentreply",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                verbose_name="Дата создания",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='transaction',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата создания'),
+            model_name="transaction",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                verbose_name="Дата создания",
+            ),
             preserve_default=False,
         ),
         migrations.CreateModel(
-            name='CommentMedia',
+            name="CommentMedia",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source', models.ImageField(upload_to='comments', verbose_name='Картинка')),
-                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.comment', verbose_name='отзыв')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "source",
+                    models.ImageField(upload_to="comments", verbose_name="Картинка"),
+                ),
+                (
+                    "comment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.comment",
+                        verbose_name="отзыв",
+                    ),
+                ),
             ],
         ),
     ]

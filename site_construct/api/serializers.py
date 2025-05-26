@@ -29,6 +29,7 @@ User = get_user_model()
 
 BASE_NOTIFICATION_URL = "http://localhost/api/v1/notifications"
 
+
 class CharacteristicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Characteristics
@@ -70,7 +71,15 @@ class GoodItemCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoodItem
-        fields = ("category", "name", "description", "price", "media", "visible", "warehouse_count")
+        fields = (
+            "category",
+            "name",
+            "description",
+            "price",
+            "media",
+            "visible",
+            "warehouse_count",
+        )
         extra_kwargs = {"price": {"required": True}}
 
     def update(self, instance, validated_data):
@@ -159,8 +168,18 @@ class SimplifiedGoodItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoodItem
-        fields = ("media", "id", "name", "description", "price", "discount", "category", "warehouse_count")
+        fields = (
+            "media",
+            "id",
+            "name",
+            "description",
+            "price",
+            "discount",
+            "category",
+            "warehouse_count",
+        )
         # exclude = ('visible', 'apply', 'characteristics')
+
 
 class GoodItemSerializer(serializers.ModelSerializer):
     # category = GoodCategorySerializer()
@@ -187,7 +206,7 @@ class GoodItemSerializer(serializers.ModelSerializer):
             "in_wishlist",
             "id",
             "media",
-            "warehouse_count"
+            "warehouse_count",
         )
 
     def get_characteristics(self, obj):
@@ -266,7 +285,7 @@ class GoodItemRetrieveSerializer(serializers.ModelSerializer):
             "basket_count",
             "basket_id",
             "media",
-            "warehouse_count"
+            "warehouse_count",
         )
 
     def get_characteristics(self, obj):
@@ -447,7 +466,7 @@ class BasketSerializer(serializers.ModelSerializer):
 class OrderStatusChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('status',)
+        fields = ("status",)
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
@@ -459,6 +478,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             "payment_method": {"required": True},
             "delivery_method": {"required": True},
         }
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -585,7 +605,7 @@ class CommentMediaSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     media = CommentMediaSerializer(many=True)
-    reply = serializers.SerializerMethodField('get_reply')
+    reply = serializers.SerializerMethodField("get_reply")
 
     class Meta:
         model = Comment
@@ -596,6 +616,7 @@ class CommentSerializer(serializers.ModelSerializer):
         reply = CommentReply.objects.filter(comment=obj).first()
         serializer = CommentReplySerializer(instance=reply)
         return serializer.data
+
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     media = CommentMediaSerializer(many=True, required=False)
@@ -665,10 +686,41 @@ class RefundCreateSerializer(serializers.ModelSerializer):
 class RefundResponseSerializer(serializers.ModelSerializer):
     item = SimplifiedGoodItemSerializer()
     order = OrderToBuyerSerializer()
-    
+
     class Meta:
         model = Refund
         fields = "__all__"
+
+
+class GoodItemWithSellsCountSerializer(serializers.ModelSerializer):
+    sell_count = serializers.IntegerField()
+    status = serializers.SerializerMethodField("get_status")
+
+    class Meta:
+        model = GoodItem
+        fields = (
+            "media",
+            "id",
+            "name",
+            "description",
+            "price",
+            "discount",
+            "category",
+            "warehouse_count",
+            "sell_count",
+            "status",
+        )
+
+    def get_status(self, obj):
+        print(obj)
+        status = "В наличии"
+        if obj.sell_count <= 50:
+            status = "Мало"
+        elif obj.sell_cunt <= 10:
+            status = "Очень мало"
+        else:
+            status = "Нет в наличии"
+        return status
 
 
 # class CountSerializer(serializers.Serializer):

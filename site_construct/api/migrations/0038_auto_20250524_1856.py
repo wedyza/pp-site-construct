@@ -9,26 +9,40 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0037_moneypayout'),
+        ("api", "0037_moneypayout"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='moneypayout',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Создано'),
+            model_name="moneypayout",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                verbose_name="Создано",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='moneypayout',
-            name='good_item',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api.gooditem', verbose_name='Товар'),
+            model_name="moneypayout",
+            name="good_item",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="api.gooditem",
+                verbose_name="Товар",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='moneypayout',
-            name='order',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.expressions.Case, to='api.order', verbose_name='Заказ'),
+            model_name="moneypayout",
+            name="order",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.expressions.Case,
+                to="api.order",
+                verbose_name="Заказ",
+            ),
             preserve_default=False,
         ),
     ]

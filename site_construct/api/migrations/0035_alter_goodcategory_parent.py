@@ -7,13 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0034_transaction_user'),
+        ("api", "0034_transaction_user"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='goodcategory',
-            name='parent',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='daughter', to='api.goodcategory', verbose_name='Родительская категория'),
+            model_name="goodcategory",
+            name="parent",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="daughter",
+                to="api.goodcategory",
+                verbose_name="Родительская категория",
+            ),
         ),
     ]

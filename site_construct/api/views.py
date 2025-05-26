@@ -5,7 +5,14 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from enum import Enum
 import datetime
-from .functions import define_this_week_period, fill_this_week_with_days, unwrap_categories, unwrap_categories_items, define_this_month_period
+from .functions import (
+    define_this_week_period,
+    fill_this_week_with_days,
+    get_status,
+    unwrap_categories,
+    unwrap_categories_items,
+    define_this_month_period,
+)
 from .models import (
     Basket,
     BasketItem,
@@ -39,6 +46,7 @@ from .serializers import (
     GoodItemInWishListSerializer,
     GoodItemRetrieveSerializer,
     GoodItemSerializer,
+    GoodItemWithSellsCountSerializer,
     ItemApplyCharacteristic,
     ListApply,
     OrderStatusChangeSerializer,
@@ -76,6 +84,8 @@ from django.conf import settings
 
 User = get_user_model()
 BASE_NOTIFICATION_URL = "http://188.68.80.72/api/v1/notifications/"
+TAX = 0.12
+
 
 class GoodCategoryViewSet(viewsets.ModelViewSet):
     queryset = GoodCategory.objects.all()
@@ -116,7 +126,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     queryset = GoodItem.objects.all()
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     permission_classes = (permissions.AllowAny,)
-    filterset_fields = ('visible',)
+    filterset_fields = ("visible",)
     search_fields = ("name", "description")
     pagination_class = CustomPagination
 
@@ -452,7 +462,7 @@ class OrderViewSet(
     filterset_fields = ("status",)
 
     def get_serializer_class(self):
-        if self.action == 'patch_change_status':
+        if self.action == "patch_change_status":
             return OrderStatusChangeSerializer
         if self.request.method == "GET":
             if self.request.user.user_type == "Продавец":
@@ -498,10 +508,20 @@ class OrderViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        aviable_to_create = BasketItem.objects.filter(basket=basket).select_related("good_item").filter(count__gt=F("good_item__warehouse_count")).count()
+        aviable_to_create = (
+            BasketItem.objects.filter(basket=basket)
+            .select_related("good_item")
+            .filter(count__gt=F("good_item__warehouse_count"))
+            .count()
+        )
 
         if aviable_to_create > 0:
-            return Response({"error": "Невозможно создать заказ с товаром, количество которого превышает его количество на складе"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "error": "Невозможно создать заказ с товаром, количество которого превышает его количество на складе"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         sum_total = (
             BasketItem.objects.filter(basket=basket)
@@ -514,35 +534,35 @@ class OrderViewSet(
                 {"error": "Невозможно создать заказ с пустой корзиной!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
-        instance = order.save(basket=basket, payment_total=sum_total, user=self.request.user)
-        transaction = Transaction.objects.create(amount=sum_total, order=instance, user=self.request.user)
+
+        instance = order.save(
+            basket=basket, payment_total=sum_total, user=self.request.user
+        )
+        transaction = Transaction.objects.create(
+            amount=sum_total, order=instance, user=self.request.user
+        )
 
         try:
             # тут оплата будет
             authorization = f"Basic {settings.YOMONEY_TESTKEY}"
             headers = {
                 "Idempotence-Key": str(uuid.uuid4()),
-                "Authorization": authorization
+                "Authorization": authorization,
             }
             data = {
-                "amount":{
-                    "value": sum_total,
-                    "currency": "RUB"
-                },
+                "amount": {"value": sum_total, "currency": "RUB"},
                 "capture": True,
                 "confirmation": {
                     "type": "redirect",
-                    "return_url": "http://localhost:3000/orders"
+                    "return_url": "http://localhost:3000/orders",
                 },
                 "description": f"Оплата заказа №{instance.id}",
-                "metadata": {
-                    "order_id": instance.id,
-                    "transaction_id": transaction.id
-                }
+                "metadata": {"order_id": instance.id, "transaction_id": transaction.id},
             }
 
-            response = httpx.post(url="https://api.yookassa.ru/v3/payments", headers=headers, json=data)
+            response = httpx.post(
+                url="https://api.yookassa.ru/v3/payments", headers=headers, json=data
+            )
             response = response.json()
 
             transaction.checkout_id = response["id"]
@@ -551,14 +571,16 @@ class OrderViewSet(
             user_response = {
                 "payment_url": response["confirmation"]["confirmation_url"],
                 "description": response["description"],
-                "amount": response["amount"]
+                "amount": response["amount"],
             }
             return Response(user_response, status=status.HTTP_200_OK)
         except Exception as e:
             instance.delete()
             transaction.delete()
             print(e)
-            return Response({"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @action(detail=False, url_path="ended", methods=["GET"])
     def get_ended(self, request):
@@ -586,69 +608,90 @@ class OrderViewSet(
         orders_serializer = self.get_serializer(data=orders, many=True)
         orders_serializer.is_valid()
         return Response(orders_serializer.data)
-    
-    @action(detail=True, url_path="change_status", methods=["PATCH"], permission_classes=())
+
+    @action(
+        detail=True, url_path="change_status", methods=["PATCH"], permission_classes=()
+    )
     def patch_change_status(self, request, pk):
         status = self.get_serializer(data=request.data)
         if not status.is_valid():
             return Response(status.errors)
         instance = Order.objects.get(id=pk)
-        instance.status = status.data['status']
+        instance.status = status.data["status"]
         instance.save()
 
         if instance.status == Order.OrderStatusChoices.RECEIVED:
-            MoneyPayout.objects.filter(user_from=instance.user, order=instance).update(status=MoneyPayout.States.PAYOUT)
+            MoneyPayout.objects.filter(user_from=instance.user, order=instance).update(
+                status=MoneyPayout.States.PAYOUT
+            )
             return Response({"status": "Выплаты произведены"})
-        else:        
+        else:
             data = {
                 "user_id": instance.user.id,
                 "body": f"Статус вашего заказа №{instance.id} изменился на {instance.status}",
-                "type": "Изменился статус заказа" 
+                "type": "Изменился статус заказа",
             }
 
             httpx.post(BASE_NOTIFICATION_URL, json=data)
             return Response(status.data)
-    
-    @action(detail=False, url_path="payment_accept", methods=["POST"], permission_classes=(permissions.AllowAny,))
+
+    @action(
+        detail=False,
+        url_path="payment_accept",
+        methods=["POST"],
+        permission_classes=(permissions.AllowAny,),
+    )
     def payment_accept(self, request):
         response = request.data
 
-        metadata = response['object']['metadata']
-        
-        order_id = metadata['order_id']
-        transaction_id = metadata['transaction_id']
-        success = response['event'] == "payment.succeeded"
+        metadata = response["object"]["metadata"]
+
+        order_id = metadata["order_id"]
+        transaction_id = metadata["transaction_id"]
+        success = response["event"] == "payment.succeeded"
 
         order = Order.objects.get(id=order_id)
         transaction = Transaction.objects.get(id=transaction_id)
 
-        transaction.status = Transaction.StatusChoices.SUCCESS if success else Transaction.StatusChoices.ERROR
+        transaction.status = (
+            Transaction.StatusChoices.SUCCESS
+            if success
+            else Transaction.StatusChoices.ERROR
+        )
         transaction.save()
 
         if not success:
             order.delete()
             return Response({"success": False}, status=status.HTTP_200_OK)
-        
+
         # Тут получается, что деньги у нас, и надо будет создать переводы всем продавцам с вычетом коммисии
         basket = order.basket
 
         basket.currently_for_order = False
         basket.save()
-        
-        sellers = BasketItem.objects.filter(basket=basket).select_related("good_item").all()
+
+        sellers = (
+            BasketItem.objects.filter(basket=basket).select_related("good_item").all()
+        )
 
         for basket_item in sellers:
             seller = basket_item.good_item.user
             amount = basket_item.good_item.price * basket_item.count
-            payout = MoneyPayout.objects.create(user_from=order.user, user_to=seller, amount=amount, good_item=basket_item.good_item, order=order)
+            payout = MoneyPayout.objects.create(
+                user_from=order.user,
+                user_to=seller,
+                amount=amount,
+                good_item=basket_item.good_item,
+                order=order,
+            )
 
             basket_item.good_item.warehouse_count -= basket_item.count
             basket_item.good_item.save()
-            
+
             data = {
-                'user_id': seller.id,
-                'type': 'Новый заказ',
-                'body': f'Появился новый заказ! Его номер {order.id}. Скорее посмотрите, что в нем!'
+                "user_id": seller.id,
+                "type": "Новый заказ",
+                "body": f"Появился новый заказ! Его номер {order.id}. Скорее посмотрите, что в нем!",
             }
             response = httpx.post(BASE_NOTIFICATION_URL, json=data)
 
@@ -671,7 +714,12 @@ class GetMyWishlistView(views.APIView):
 
     def get(self, request):
         user = request.user
-        wishlist = Like.objects.filter(user=user).select_related("item").filter(item__visible=True).all()
+        wishlist = (
+            Like.objects.filter(user=user)
+            .select_related("item")
+            .filter(item__visible=True)
+            .all()
+        )
 
         items = [like.item for like in wishlist]
 
@@ -681,10 +729,11 @@ class GetMyWishlistView(views.APIView):
 
 
 class SellerAnalyticsView(views.APIView):
-    permission_classes = (IsSeller, )
+    permission_classes = (IsSeller,)
 
     def get(self, request):
         pass
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
@@ -768,51 +817,73 @@ class RefundViewSet(viewsets.ModelViewSet):
         return RefundResponseSerializer
 
     def get_queryset(self):
-        if self.request.user.user_type != 'Продавец':
+        if self.request.user.user_type != "Продавец":
             return Refund.objects.filter(user=self.request.user).all()  # dodelat
-        return Refund.objects.filter(good_item__in=GoodItem.objects.filter(user=self.request.user).all()).all()
+        return Refund.objects.filter(
+            good_item__in=GoodItem.objects.filter(user=self.request.user).all()
+        ).all()
 
     def create(self, request, *args, **kwargs):
         payload = self.get_serializer(data=request.data)
 
         if not payload.is_valid():
             return Response(payload.errors)
-        
-        order = Order.objects.get(id=payload.initial_data["order"])
-        
-        order_items = GoodItem.objects.filter(id__in=BasketItem.objects.filter(basket=order.basket).values_list('good_item_id', flat=True)).values_list('id', flat=True)
 
-        if payload.initial_data['item'] not in list(order_items):
-            return Response({'detail': 'You cant refund item, that is not in your order'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        existed_refund = Refund.objects.filter(user=request.user, order=order, item_id=payload.initial_data['item']).first()
+        order = Order.objects.get(id=payload.initial_data["order"])
+
+        order_items = GoodItem.objects.filter(
+            id__in=BasketItem.objects.filter(basket=order.basket).values_list(
+                "good_item_id", flat=True
+            )
+        ).values_list("id", flat=True)
+
+        if payload.initial_data["item"] not in list(order_items):
+            return Response(
+                {"detail": "You cant refund item, that is not in your order"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        existed_refund = Refund.objects.filter(
+            user=request.user, order=order, item_id=payload.initial_data["item"]
+        ).first()
 
         if existed_refund is not None:
-            return Response({'detail': 'You cant refund this item 2 times'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        item = GoodItem.objects.get(id=payload.initial_data['item'])
+            return Response(
+                {"detail": "You cant refund this item 2 times"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
+        item = GoodItem.objects.get(id=payload.initial_data["item"])
 
-        payout =  MoneyPayout.objects.filter(user_from=self.request.user, order=order, good_item=item).first()
+        payout = MoneyPayout.objects.filter(
+            user_from=self.request.user, order=order, good_item=item
+        ).first()
         if payout is not None:
-            payout.state = payout.States.REFUND # Возврат
-        httpx.post(url=BASE_NOTIFICATION_URL, json={ # вообще по-хорошему добавить очередь, так как если проихсодит ошибка, то все падает. Но в рамках теста все гарантируется (надо бы исправить)
-            'user_id': item.id,
-            'body': f"На ваш товар \"{item.name}\" оформлен возрат. ",
-            'type': 'Возврат'
-        })
-        
+            payout.state = payout.States.REFUND  # Возврат
+        httpx.post(
+            url=BASE_NOTIFICATION_URL,
+            json={  # вообще по-хорошему добавить очередь, так как если проихсодит ошибка, то все падает. Но в рамках теста все гарантируется (надо бы исправить)
+                "user_id": item.id,
+                "body": f'На ваш товар "{item.name}" оформлен возрат. ',
+                "type": "Возврат",
+            },
+        )
+
         payload.save(user=request.user, applied=True)
         return Response(payload.data)
-    
+
 
 class AnalyticsViewSet(views.APIView):
     permission_classes = (permissions.IsAuthenticated, IsSeller)
     # serializer = AnalyticsSerializer
-    
-    def get(self, request): #in this month
-        total_payed = MoneyPayout.objects.filter(user_to=request.user, state="Выплата").aggregate(Sum('amount'))
-        total_freezed = MoneyPayout.objects.filter(user_to=request.user, state="Заморожен").aggregate(Sum('amount'))
+
+    def get(self, request):  # in this month
+        total_payed = MoneyPayout.objects.filter(
+            user_to=request.user, state="Выплата"
+        ).aggregate(Sum("amount"))
+        total_freezed = MoneyPayout.objects.filter(
+            user_to=request.user, state="Заморожен"
+        ).aggregate(Sum("amount"))
         good_items = GoodItem.objects.filter(user=request.user).all()
         bought_baskets = (
             Basket.objects.filter(visible=False)
@@ -828,41 +899,101 @@ class AnalyticsViewSet(views.APIView):
             .all()
         )
         start, end = define_this_month_period()
-        orders = Order.objects.filter(basket_id__in=baskets).filter(created_at__gte=start, created_at__lte=end).all()
-        today_orders = Order.objects.filter(basket_id__in=baskets).filter(created_at__date=datetime.date.today()).count()
-        refunds = Refund.objects.filter(item__in=good_items).filter(created_at__gte=start, created_at__lte=end).all()
-        today_refudns = Refund.objects.filter(item__in=good_items).filter(created_at__date=datetime.date.today()).count()
-        average_rating = Comment.objects.filter(item__in=good_items).aggregate(Avg("rate"), Count("rate"))
+        orders = (
+            Order.objects.filter(basket_id__in=baskets)
+            .filter(created_at__gte=start, created_at__lte=end)
+            .all()
+        )
+        today_orders = (
+            Order.objects.filter(basket_id__in=baskets)
+            .filter(created_at__date=datetime.date.today())
+            .count()
+        )
+        refunds = (
+            Refund.objects.filter(item__in=good_items)
+            .filter(created_at__gte=start, created_at__lte=end)
+            .all()
+        )
+        today_refudns = (
+            Refund.objects.filter(item__in=good_items)
+            .filter(created_at__date=datetime.date.today())
+            .count()
+        )
+        average_rating = Comment.objects.filter(item__in=good_items).aggregate(
+            Avg("rate"), Count("rate")
+        )
 
-        return Response({
-            'total_payed': total_payed,
-            'total_freezed': total_freezed,
-            'orders_per_this_month': {
-                'total': len(orders),
-                'newest': today_orders
-            },
-            'refunds_per_this_month': {
-                'total': len(refunds),
-                'newset': today_refudns
-            },
-            'average_rating': average_rating
-        })
+        return Response(
+            {
+                "total_payed": total_payed,
+                "total_freezed": total_freezed,
+                "orders_per_this_month": {"total": len(orders), "newest": today_orders},
+                "refunds_per_this_month": {
+                    "total": len(refunds),
+                    "newset": today_refudns,
+                },
+                "average_rating": average_rating,
+            }
+        )
 
 
 class SellDynamicsViewSet(views.APIView):
     permission_classes = (permissions.IsAuthenticated, IsSeller)
-    
+
     def get(self, request):
         start, end = define_this_week_period()
-        orders = Order.objects.values('created_at__date').annotate(count=Count('id')).values('created_at__date', 'count').filter(created_at__gte=start, created_at__lte=end).order_by('created_at__date')
-        total_profits = MoneyPayout.objects.filter(Q(state="FREEZED") | Q(state="PAYOUT")).filter(user_to=request.user).filter(created_at__gte=start, created_at__lte=end).values('created_at__date').annotate(count=Sum('amount')).values('created_at__date', 'count').order_by('created_at__date')
-        
+        orders = (
+            Order.objects.values("created_at__date")
+            .annotate(count=Count("id"))
+            .values("created_at__date", "count")
+            .filter(created_at__gte=start, created_at__lte=end)
+            .order_by("created_at__date")
+        )
+        total_profits = (
+            MoneyPayout.objects.filter(Q(state="FREEZED") | Q(state="PAYOUT"))
+            .filter(user_to=request.user)
+            .filter(created_at__gte=start, created_at__lte=end)
+            .values("created_at__date")
+            .annotate(count=Sum("amount"))
+            .values("created_at__date", "count")
+            .order_by("created_at__date")
+        )
+
         orders = fill_this_week_with_days(orders, start)
         total_profits = fill_this_week_with_days(total_profits, start)
 
-        data = {
-            'order_counts': orders,
-            'order_profits': total_profits
-        }
+        data = {"order_counts": orders, "order_profits": total_profits}
 
         return Response(data)
+
+
+class ItemsLeftViewSet(views.APIView):
+    permission_classes = (permissions.IsAuthenticated, IsSeller)
+
+    def get(self, request):
+        start, end = define_this_week_period()
+        good_items = (
+            BasketItem.objects.filter(
+                basket__in=(
+                    Basket.objects.filter(
+                        order__in=Order.objects.filter(
+                            created_at__gte=start, created_at__lte=end
+                        ).all()
+                    ).all()
+                )
+            )
+            .filter(good_item__user=request.user)
+            .values("good_item")
+            .annotate(sell_count=Sum("count"))
+        )
+        response = []
+        for item in good_items:
+            good_item = GoodItem.objects.get(id=item["good_item"])
+            serialzier = SimplifiedGoodItemSerializer(instance=good_item)
+            data = {
+                "item": serialzier.data,
+                "sell_count": item["sell_count"],
+                "status": get_status(good_item.warehouse_count),
+            }
+            response.append(data)
+        return Response(response)

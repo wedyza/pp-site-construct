@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0032_auto_20250519_1519'),
+        ("api", "0032_auto_20250519_1519"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='commentmedia',
-            name='comment',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='media', to='api.comment', verbose_name='отзыв'),
+            model_name="commentmedia",
+            name="comment",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="media",
+                to="api.comment",
+                verbose_name="отзыв",
+            ),
         ),
     ]
