@@ -9,6 +9,7 @@ const AdminNav: React.FC = () => {
     const handleLogout = () => {
         dispatch(logout());
     };
+    
     return (
         <div className='seller-nav'>
             <div className='seller-nav_head'>

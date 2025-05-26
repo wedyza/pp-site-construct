@@ -20,7 +20,7 @@ export interface Good {
 
 interface CategoryInput {
     title: string;
-    description: string;
+    description?: string;
     parent?: number | null;
 }
 
@@ -81,6 +81,7 @@ export const fetchCategories = createAsyncThunk<Category[]>(
 );
 
 function buildStructuredCategories(categories: Category[]): NestedCategories {
+    categories.sort((a, b) => a.id - b.id);
     const mapById = new Map<number, Category>();
     const result: NestedCategories = {};
 
@@ -191,14 +192,15 @@ export const createCategory = createAsyncThunk<Category, CategoryInput>(
     }
 );
 
-export const updateCategory = createAsyncThunk<Category, { id: number; data: CategoryInput }>(
+export const updateCategory = createAsyncThunk<Category, { id: number; title: string }>(
     'categories/updateCategory',
-    async ({ id, data }, { rejectWithValue, getState }) => {
+    async ({ id, title }, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
             const token = state.auth?.token;
+            console.log(title);
 
-            const res = await axiosInstance.put(`/good-categories/${id}/`, data, {
+            const res = await axiosInstance.patch(`/good-categories/${id}/`, {title}, {
                 headers: {
                     Authorization: `Token ${token}`,
                 },

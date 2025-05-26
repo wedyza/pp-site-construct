@@ -3,7 +3,7 @@ import AdminNav from '../../components/adminNav/AdminNav';
 import Search from '../../components/search/Search';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useEffect, useState } from 'react';
-import { fetchCategories } from '../../store/categoriesSlice';
+import { Category, createCategory, deleteCategory, fetchCategories, updateCategory } from '../../store/categoriesSlice';
 import Modal from '../../components/modal/Modal';
 
 const MainPage: React.FC = () => {
@@ -30,15 +30,38 @@ const MainPage: React.FC = () => {
         }
     }, [selectedCat, categories]);
 
-    const handleDeleteSubCategory = (title: string) => {
-        setTempSubcategories(prev => prev.filter(sub => sub.data.title !== title));
+    const handleSelectCategory = (cat: Category) => {
+        setSelectedCat({
+            ...cat,
+            originalTitle: cat.title
+        });
     };
 
-    const handleSaveCategory = () => {
-        // dispatch(saveCategory({ updated: selectedCat, subcategories: tempSubcategories }))
-        console.log("Saving", selectedCat, tempSubcategories);
-        setIsModalOpen(false);
+    const handleDeleteSubCategory = (id: number) => {
+        dispatch(deleteCategory(id));
     };
+
+    const handleUpdateTitle = (id: number, title: string) => {
+        dispatch(updateCategory({id, title}));
+    };
+
+    const handleSaveTitle = (id: number, title: string) => {
+        if (id) {
+            dispatch(updateCategory({id, title}));
+        } else {
+            dispatch(createCategory({title, description: 'test', parent: selectedCat.id}))
+        }
+    };
+
+    const handleSaveSub = (id: number, title: string) => {
+        if (id) {
+            dispatch(updateCategory({id, title}));
+        } else {
+            dispatch(createCategory({title, description: 'test', parent: currentSubEdit.id}))
+        }
+    };
+
+    console.log(currentSubEdit);
 
     return (
         <div className='page-content__seller'>
@@ -78,7 +101,7 @@ const MainPage: React.FC = () => {
                                 {topCat.title}
                                 <button 
                                     onClick={() => {
-                                        setSelectedCat(topCat);
+                                        handleSelectCategory(topCat);
                                         setIsModalOpen(true);
                                     }}
                                     className="admin-cat_btn"
@@ -137,7 +160,15 @@ const MainPage: React.FC = () => {
                             value={selectedCat?.title || ''}
                             onChange={(e) => setSelectedCat((prev: any) => prev ? { ...prev, title: e.target.value } : null)}
                         />
-                        
+                        <button 
+                            className='btn-black text-btn admin-cat_save-btn' 
+                            onClick={() => handleUpdateTitle(selectedCat.id, selectedCat.title)}
+                        >
+                            Сохранить
+                        </button>
+                    </div>
+                    <h3 className="text-n14 admin-cat_modal-subtitle">Подкатегории</h3>
+                    <ul className="admin-cat_subcategory-list">
                         <button
                             className="admin-cat_modal-btn text-n14"
                             onClick={() => {
@@ -151,12 +182,7 @@ const MainPage: React.FC = () => {
                                 <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="#02040F"/>
                             </svg>
                         </button>
-                    </div>
-
-                    <h3 className="text-n14 admin-cat_modal-subtitle">Подкатегории</h3>
-                    <ul className="admin-cat_subcategory-list">
-                        {selectedCat &&
-                            tempSubcategories.map(({ data: subCat }) => (
+                        {selectedCat && Object.values(categories[selectedCat.originalTitle]?.subcategories || {}).map(({ data: subCat }) => (
                                 <li key={subCat.id} className="admin-cat_subcategory-item text-n16">
                                     <div className='admin-cat_subcategory-main'>
                                         <span>{subCat.title}</span>
@@ -174,7 +200,7 @@ const MainPage: React.FC = () => {
                                     
                                     <button 
                                         className='admin-cat_subcategory-del'
-                                        onClick={() => handleDeleteSubCategory(subCat.title)}
+                                        onClick={() => handleDeleteSubCategory(subCat.id)}
                                     >
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M16.7737 6.88442C17.1137 6.9442 17.3408 7.26825 17.281 7.60821L15.6185 17.0634C15.6185 17.0634 15.6185 17.0635 15.6185 17.0635C15.4259 18.1592 14.4741 18.9583 13.3616 18.9583H6.63609C5.52352 18.9583 4.5717 18.1592 4.37904 17.0635L2.71658 7.60821C2.6568 7.26825 2.88394 6.9442 3.22391 6.88442C3.56387 6.82465 3.88792 7.05179 3.94769 7.39175L5.61016 16.847C5.69774 17.3451 6.1304 17.7083 6.63609 17.7083H13.3616C13.8672 17.7083 14.2999 17.3451 14.3874 16.847L14.3874 16.847L16.0499 7.39175C16.1097 7.05179 16.4337 6.82465 16.7737 6.88442Z" fill="black"/>
@@ -185,8 +211,6 @@ const MainPage: React.FC = () => {
                             ))
                         }
                     </ul>
-
-                    <button className="admin-cat_save-btn btn-black text-btn" onClick={handleSaveCategory}>Сохранить</button>
                 </div>
             </Modal>
             <Modal
@@ -212,7 +236,6 @@ const MainPage: React.FC = () => {
                         </svg>
                     </button>
                 </div>
-
                 <div className="admin-cat_modal-body">
                     <div className="admin-cat_sub-block">
                         <label className="text-n14">Подкатегория</label>
@@ -227,26 +250,31 @@ const MainPage: React.FC = () => {
                                     )
                                 }
                             />
-                            <button
-                                className="admin-cat_modal-btn text-n14"
-                                onClick={() =>
-                                    setCurrentSubEdit((prev: any) => ({
-                                        ...prev,
-                                        subcategories: [...(prev?.subcategories || []), { id: Date.now(), title: '' }]
-                                    }))
-                                }
+                            <button 
+                                className='btn-black text-btn admin-cat_save-btn'
+                                onClick={() => handleSaveTitle(currentSubEdit.id, currentSubEdit.title)}
                             >
-                                Добавить подподкатегорию
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="#02040F"/>
-                                </svg>
+                                Сохранить
                             </button>
                         </div>
                     </div>
-
+                    <h3 className="text-n14 admin-cat_modal-subtitle">Подподкатегории</h3>
+                    <button
+                        className="admin-cat_modal-btn text-n14"
+                        onClick={() =>
+                            setCurrentSubEdit((prev: any) => ({
+                                ...prev,
+                                subcategories: [...(prev?.subcategories || []), { title: '' }]
+                            }))
+                        }
+                    >
+                        Добавить подподкатегорию
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="#02040F"/>
+                        </svg>
+                    </button>
                     {currentSubEdit?.subcategories?.length > 0 && (
                         <>
-                            <h3 className="text-n14 admin-cat_modal-subtitle">Подподкатегории</h3>
                             <ul className="admin-cat_subcategory-list">
                                 {(currentSubEdit.subcategories).map((subSub: any, index: number) => (
                                     <div key={subSub.id || index} className="admin-cat_subcategory-item">
@@ -262,13 +290,14 @@ const MainPage: React.FC = () => {
                                                 })
                                             }
                                         />
+                                        <button 
+                                            className='admin-cat_modal-btn admin-subcat_modal-btn text-n14'
+                                            onClick={() => handleSaveSub(subSub.id, subSub.title)}
+                                        >
+                                            Сохранить
+                                        </button>
                                         <button
-                                            onClick={() =>
-                                                setCurrentSubEdit((prev: any) => {
-                                                    const updated = (prev.subcategories || []).filter((_: any, i: number) => i !== index);
-                                                    return { ...prev, subcategories: updated };
-                                                })
-                                            }
+                                            onClick={() => handleDeleteSubCategory(subSub.id)}
                                         >
                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16.7737 6.88442C17.1137 6.9442 17.3408 7.26825 17.281 7.60821L15.6185 17.0634C15.6185 17.0634 15.6185 17.0635 15.6185 17.0635C15.4259 18.1592 14.4741 18.9583 13.3616 18.9583H6.63609C5.52352 18.9583 4.5717 18.1592 4.37904 17.0635L2.71658 7.60821C2.6568 7.26825 2.88394 6.9442 3.22391 6.88442C3.56387 6.82465 3.88792 7.05179 3.94769 7.39175L5.61016 16.847C5.69774 17.3451 6.1304 17.7083 6.63609 17.7083H13.3616C13.8672 17.7083 14.2999 17.3451 14.3874 16.847L14.3874 16.847L16.0499 7.39175C16.1097 7.05179 16.4337 6.82465 16.7737 6.88442Z" fill="black"/>
@@ -280,19 +309,6 @@ const MainPage: React.FC = () => {
                             </ul>
                         </>
                     )}
-
-                    <button
-                        className="admin-cat_save-btn btn-black text-btn"
-                        onClick={() => {
-                            setTempSubcategories((prev) => {
-                                const without = prev.filter(s => s.data.id !== currentSubEdit?.id);
-                                return [...without, { data: currentSubEdit, subcategories: currentSubEdit?.subcategories || [] }];
-                            });
-                            setIsSubModalOpen(false);
-                        }}
-                    >
-                        Сохранить
-                    </button>
                 </div>
             </Modal>
         </div>

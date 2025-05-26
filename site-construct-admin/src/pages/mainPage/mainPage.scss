@@ -176,10 +176,13 @@
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     padding: 0 16px;
     border: 1px solid var(--black15);
     border-radius: 15px;
+    width: 250px;
+    margin-top: 8px;
 
     svg {
         height: 13.5px;
@@ -212,7 +215,7 @@
     display: grid;
     gap: 16px;
     width: 100%;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
 }
 
 .admin-cat_subcategory-main {
@@ -226,6 +229,9 @@
 }
 
 .admin-cat_save-btn {
-    margin-top: 84px;
+    width: 109px;
+}
+
+.admin-subcat_modal-btn {
     width: 109px;
 }
