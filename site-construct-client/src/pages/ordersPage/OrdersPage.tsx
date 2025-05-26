@@ -9,37 +9,19 @@ import EmptyOrders from '../../components/emptyOrders/EmptyOrders';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchCompletedOrders, fetchCurrentOrders, Order } from '../../store/orderSlice';
 import { fetchBoughtGoods } from '../../store/goodsSlice';
+import { fetchRefunds } from '../../store/refundSlice';
 
 const OrdersPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'current' | 'completed' | 'purchased' | 'refunds'>('current');
-    const refundsGoods: Order[] = [
-        {
-            id: 658540,
-            placement_date: '5 марта',
-            delivery_date: '6 марта',
-            payment_total: 900,
-            address: 'г. Екатеринбург ул. Малышева 17',
-            status: 'возвращен'
-        },
-        {
-            id: 5658540,
-            placement_date: '7 марта',
-            delivery_date: '9 марта',
-            payment_total: 800,
-            address: 'г. Екатеринбург ул. Малышева 16',
-            status: 'возвращен'
-        }
-    ];
     const dispatch = useAppDispatch();
     const { currentOrders, completedOrders/*, loading*/ } = useAppSelector(state => state.orders);
     const { boughtItems: purchasedGoods } = useAppSelector(state => state.goods);
+    const { refunds } = useAppSelector(state => state.refund)
 
     useEffect(() => {
         dispatch(fetchCurrentOrders());
         dispatch(fetchCompletedOrders());
-    }, [dispatch]);
-
-    useEffect(() => {
+        dispatch(fetchRefunds());
         dispatch(fetchBoughtGoods());
     }, [dispatch]);
 
@@ -70,7 +52,7 @@ const OrdersPage: React.FC = () => {
                     className={`orders-tab text-h2 ${activeTab === 'refunds' ? 'orders-tab__active' : ''}`}
                     onClick={() => setActiveTab('refunds')}
                 >
-                    Возвраты ({refundsGoods.length})
+                    Возвраты ({refunds.length})
                 </button>
             </div>
             <div className="orders-content">
@@ -114,11 +96,11 @@ const OrdersPage: React.FC = () => {
                     )
                 )}
                 {activeTab === 'refunds' && (
-                    refundsGoods.length > 0 ? (
+                    refunds.length > 0 ? (
                         <ul className="orders_goods-list">
-                            {refundsGoods.map((order, index) => (
+                            {refunds.map((refund, index) => (
                                 <li className='order' key={index}>
-                                    {/* <PurchasedCard good={order} /> */}
+                                    <PurchasedCard good={refund.item} order={refund.order} />
                                 </li>
                             ))}
                         </ul>

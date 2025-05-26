@@ -5,6 +5,7 @@ import RefundForm from '../refundForm/RefundForm';
 import { Order } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { Link } from 'react-router-dom';
+import { Good } from '../../store/goodsSlice';
 
 interface OrderCardProps {
     order: Order;
@@ -14,6 +15,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
     const [isRefundGoodModalOpen, setIsRefundGoodModalOpen] = useState(false);
     const [isRefundDoneModalOpen, setIsRefundDoneModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [selectedGood, setSelectedGood] = useState<Good | null>(null);
+    const [body, setBody] = useState('');
 
     return (
         <div className="order-card order-card__wide">
@@ -45,14 +49,14 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                         </div>
                     </div>
                 )}
-                {order.status === 'Получен' && (
+                {order.status === 'RECEIVED' && (
                     <div className='order-card_actions'>
-                        <div className='order-card_action text-n14 order-card_rate'>
+                        {/* <div className='order-card_action text-n14 order-card_rate'>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M2.75 1.8125C2.23223 1.8125 1.8125 2.23223 1.8125 2.75V13.8964L3.3604 11.9616C3.7518 11.4723 4.34438 11.1875 4.97094 11.1875H13.25C13.7678 11.1875 14.1875 10.7678 14.1875 10.25V2.75C14.1875 2.23223 13.7678 1.8125 13.25 1.8125H2.75ZM0.6875 2.75C0.6875 1.61091 1.61091 0.6875 2.75 0.6875H13.25C14.3891 0.6875 15.3125 1.61091 15.3125 2.75V10.25C15.3125 11.3891 14.3891 12.3125 13.25 12.3125H4.97094C4.68614 12.3125 4.41678 12.442 4.23887 12.6643L2.49063 14.8497C1.89274 15.597 0.6875 15.1742 0.6875 14.2171V2.75Z" fill="black"/>
                             </svg>
                             <span>Оставить отзыв и оценить заказ</span>
-                        </div>
+                        </div> */}
                         <div className='order-card_action text-n14 order-card_refund'>
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clipPath="url(#clip0_197_1764)">
@@ -68,7 +72,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                                 </clipPath>
                                 </defs>
                             </svg>
-                            <button onClick={() => setIsRefundModalOpen(true)}>
+                            <button 
+                                onClick={() => {
+                                    setSelectedOrder(order);
+                                    setIsRefundModalOpen(true)
+                                }}
+                            >
                                 Оформить возврат
                             </button>
                         </div>
@@ -101,7 +110,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 </button>
 
                 <div className='refund-modal_info'>
-                    <p className='refund-modal_info-id text-card'>№4565854</p>
+                    <p className='refund-modal_info-id text-card'>№{selectedOrder?.id}</p>
                     <div className="refund-modal_info-item">
                         <p className='refund-modal_info-label text-n14'>
                             Дата оформления заказа
@@ -115,64 +124,47 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                             В пункт выдачи
                         </p>
                         <p className='refund-modal_info-value text-n16'>
-                            г. Екатеринбург ул. Малышева 15
+                            {selectedOrder?.address}
                         </p>
                     </div>
-                    <div className="refund-modal_info-item">
+                    {/* <div className="refund-modal_info-item">
                         <p className='refund-modal_info-label text-n14'>
                             Дата доставки
                         </p>
                         <p className='refund-modal_info-value text-n16'>
                             8 марта
                         </p>
-                    </div>
+                    </div> */}
                     <div className="refund-modal_info-item">
                         <p className='refund-modal_info-label text-n14'>
                             Оплачено
                         </p>
                         <p className='refund-modal_info-value text-n16'>
-                            704 ₽
+                            {selectedOrder ? formatPrice(selectedOrder.payment_total) : ''} ₽
                         </p>
                     </div>
                 </div>
                 <p className='text-desc refund-modal_select-title'>Выберете заказ для оформления возврата</p>
                 <div className="refund-modal_select-list">
-                    <div className="refund-modal_select-item">
-                        <div className="refund_select-img"></div>
-                        <button
-                            className="refund_select-btn text-n14"
-                            onClick={() => {
-                                setIsRefundModalOpen(false);
-                                setIsRefundGoodModalOpen(true);
-                            }}
-                        >
-                            Этот товар
-                        </button>
-                    </div>
-                    <div className="refund-modal_select-item">
-                        <div className="refund_select-img"></div>
-                        <button
-                            className="refund_select-btn text-n14"
-                            onClick={() => {
-                                setIsRefundModalOpen(false);
-                                setIsRefundGoodModalOpen(true);
-                            }}
-                        >
-                            Этот товар
-                        </button>
-                    </div>
-                    <div className="refund-modal_select-item">
-                        <div className="refund_select-img"></div>
-                        <button
-                            className="refund_select-btn text-n14"
-                            onClick={() => {
-                                setIsRefundModalOpen(false);
-                                setIsRefundGoodModalOpen(true);
-                            }}
-                        >
-                            Этот товар
-                        </button>
-                    </div>
+                    {selectedOrder?.items?.map((good) => (
+                        <div className="refund-modal_select-item">
+                            <div className="refund_select-img">
+                                {good.good_item.media && (
+                                    <img src={good.good_item.media[0].source} alt="" />
+                                )}
+                            </div>
+                            <button
+                                className="refund_select-btn text-n14"
+                                onClick={() => {
+                                    setSelectedGood(good.good_item);
+                                    setIsRefundModalOpen(false);
+                                    setIsRefundGoodModalOpen(true);
+                                }}
+                            >
+                                Этот товар
+                            </button>
+                        </div>
+                    ))}
                 </div>
             </Modal>
             <Modal
@@ -188,7 +180,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 </button>
                 
                 <div className='refund-modal_info'>
-                    <p className='refund-modal_info-id text-card'>№4565854</p>
+                    <p className='refund-modal_info-id text-card'>№{selectedOrder?.id}</p>
                     <div className="refund-modal_info-item">
                         <p className='refund-modal_info-label text-n14'>
                             Дата оформления заказа
@@ -202,41 +194,52 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                             В пункт выдачи
                         </p>
                         <p className='refund-modal_info-value text-n16'>
-                            г. Екатеринбург ул. Малышева 15
+                            {selectedOrder?.address}
                         </p>
                     </div>
-                    <div className="refund-modal_info-item">
+                    {/* <div className="refund-modal_info-item">
                         <p className='refund-modal_info-label text-n14'>
                             Дата доставки
                         </p>
                         <p className='refund-modal_info-value text-n16'>
                             8 марта
                         </p>
-                    </div>
+                    </div> */}
                     <div className="refund-modal_info-item">
                         <p className='refund-modal_info-label text-n14'>
                             Оплачено
                         </p>
                         <p className='refund-modal_info-value text-n16'>
-                            704 ₽
+                            {selectedOrder ? formatPrice(selectedOrder.payment_total) : ''} ₽
                         </p>
                     </div>
                 </div>
                 <div className='refund-good_content'>
                     <div className="refund-good_current">
-                        <div className="refund-good_img"></div>
+                        <div className="refund-good_img">
+                            {selectedGood?.media && (
+                                <img src={selectedGood.media[0].source} alt="" />
+                            )}
+                        </div>
                         <button 
                             className="refund-good_btn text-n14"
                             onClick={(e) => {
                                 setIsRefundGoodModalOpen(false);
-                                //setTimeout(() => setIsRefundModalOpen(true), 0);
                                 setIsRefundModalOpen(true);
                             }}
                         >
                             Не этот товар
                         </button>
                     </div>
-                    <RefundForm setIsOpenFirst={setIsRefundGoodModalOpen} setIsOpenSecond={setIsRefundDoneModalOpen} />
+                    {selectedGood && selectedOrder?.id && (
+                        <RefundForm
+                            itemId={selectedGood.id}
+                            orderId={selectedOrder.id}
+                            setIsOpenFirst={setIsRefundGoodModalOpen}
+                            setIsOpenSecond={setIsRefundDoneModalOpen}
+                        />
+                    )}
+                    
                 </div>
             </Modal>
             <Modal

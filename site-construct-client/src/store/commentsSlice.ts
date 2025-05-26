@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
+import { MediaItem } from './goodsSlice';
 
 export interface Reply {
     id: number;
@@ -16,6 +17,7 @@ interface Comment {
     user: number;
     item: number;
     reply: Reply;
+    media?: MediaItem[];
 }
 
 interface CommentsState {
