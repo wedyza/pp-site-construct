@@ -449,7 +449,6 @@ class OrderViewSet(
     mixins.DestroyModelMixin,
     mixins.CreateModelMixin,
 ):
-    permission_classes = (OwnerOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ("status",)
 
@@ -561,7 +560,7 @@ class OrderViewSet(
     def get_ended(self, request):
         orders = (
             self.get_queryset()
-            .filter(Q(status="Получено") | Q(status="Отклонен") | Q(status="Возврат"))
+            .filter(Q(status="RECEIVED") | Q(status="DECLINED") | Q(status="REFUND"))
             .all()
         )
         orders_serializer = self.get_serializer(data=orders, many=True)
@@ -573,10 +572,10 @@ class OrderViewSet(
         orders = (
             self.get_queryset()
             .filter(
-                Q(status="В пути")
-                | Q(status="Доставлено")
-                | Q(status="Оплачено")
-                | Q(status="В обработке")
+                Q(status="ON_THE_WAY")
+                | Q(status="DELIVERED")
+                | Q(status="PAYED")
+                | Q(status="PROCESSING")
             )
             .all()
         )
@@ -762,7 +761,7 @@ class RefundViewSet(viewsets.ModelViewSet):
         return RefundResponseSerializer
 
     def get_queryset(self):
-        if self.request.user.class_type != 'Продавец':
+        if self.request.user.user_type != 'Продавец':
             return Refund.objects.filter(user=self.request.user).all()  # dodelat
         return Refund.objects.filter(good_item__in=GoodItem.objects.filter(user=self.request.user).all()).all()
 
@@ -842,7 +841,7 @@ class SellDynamicsViewSet(views.APIView):
     def get(self, request):
         start, end = define_this_week_period()
         orders = Order.objects.values('created_at__date').annotate(count=Count('id')).values('created_at__date', 'count').filter(created_at__gte=start, created_at__lte=end).order_by('created_at__date')
-        total_profits = MoneyPayout.objects.filter(Q(state="Заморожен") | Q(state="Выплата")).filter(user_to=request.user).filter(created_at__gte=start, created_at__lte=end).values('created_at__date').annotate(count=Sum('amount')).values('created_at__date', 'count').order_by('created_at__date')
+        total_profits = MoneyPayout.objects.filter(Q(state="FREEZED") | Q(state="PAYOUT")).filter(user_to=request.user).filter(created_at__gte=start, created_at__lte=end).values('created_at__date').annotate(count=Sum('amount')).values('created_at__date', 'count').order_by('created_at__date')
         
         orders = fill_this_week_with_days(orders, start)
         total_profits = fill_this_week_with_days(total_profits, start)

@@ -181,7 +181,7 @@ class Order(models.Model):
     status = models.TextField(
         "Статус",
         choices=[(status.name, status.value) for status in OrderStatusChoices],
-        default="В обработке",
+        default="PROCESSING",
     )
     created_at = models.DateTimeField("Дата создания", auto_now_add=True)
 
@@ -343,7 +343,7 @@ class MoneyPayout(models.Model):
     state = models.TextField(
         "Статус",
         choices=[(status.name, status.value) for status in States],
-        default="Заморожен"
+        default="FREEZED"
     )
     good_item = models.ForeignKey(GoodItem, on_delete=models.CASCADE, verbose_name="Товар")
     order = models.ForeignKey(Order, on_delete=models.Case, verbose_name="Заказ")
