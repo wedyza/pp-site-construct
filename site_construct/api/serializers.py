@@ -47,6 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
             "sex",
             "id",
             "avatar",
+            "is_active"
         )
 
 
