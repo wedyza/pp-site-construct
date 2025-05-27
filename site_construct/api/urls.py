@@ -25,6 +25,7 @@ from .views import (
     AnalyticsViewSet,
     CharacteristicCategoryViewSet,
     ItemsLeftViewSet,
+    TodayOrdersWithItems,
     SellDynamicsViewSet,
 )
 
@@ -57,6 +58,11 @@ urlpatterns = [
         name="sell-dynamics",
     ),
     path("me/analytics/items_left/", ItemsLeftViewSet.as_view(), name="sell-dynamics"),
+    path(
+        "me/analytics/today_orders/",
+        TodayOrdersWithItems.as_view(),
+        name="today-orders",
+    ),
 ]
 
 schema_view = get_schema_view(

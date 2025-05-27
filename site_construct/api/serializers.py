@@ -737,3 +737,34 @@ class GoodItemWithSellsCountSerializer(serializers.ModelSerializer):
 #     orders_per_this_month = CountSerializer()
 #     refunds_per_this_month = CountSerializer()
 #     average_rating = RateSerializer()
+
+
+class AnalyticsSimplifiedBasketItemSerializer(serializers.ModelSerializer):
+    good_item = serializers.StringRelatedField()
+
+    class Meta:
+        model = BasketItem
+        fields = ("good_item", "count")
+
+
+class OrderToSellerAnalyticsSerializer(serializers.ModelSerializer):
+    items = serializers.SerializerMethodField("get_items")
+
+    class Meta:
+        model = Order
+        fields = ("items", "id", "created_at")
+        read_only_fields = ("items",)
+
+    def get_items(self, obj):
+        basket = obj.basket
+        request = self.context["request"]
+        basket_items = (
+            BasketItem.objects.filter(basket=basket)
+            .filter(good_item__user=request.user)
+            .all()
+        )
+        basket_items = AnalyticsSimplifiedBasketItemSerializer(
+            data=basket_items, many=True
+        )
+        basket_items.is_valid()
+        return basket_items.data

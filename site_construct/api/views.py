@@ -50,6 +50,7 @@ from .serializers import (
     ItemApplyCharacteristic,
     ListApply,
     OrderStatusChangeSerializer,
+    OrderToSellerAnalyticsSerializer,
     OrderToSellerSerializer,
     PaymentMethodCreateSerializer,
     PaymentMethodSerializer,
@@ -66,6 +67,7 @@ from .serializers import (
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from .permissions import (
     AdminOrReadOnly,
     IsSeller,
@@ -680,7 +682,7 @@ class OrderViewSet(
             payout = MoneyPayout.objects.create(
                 user_from=order.user,
                 user_to=seller,
-                amount=amount,
+                amount=amount * (1 - TAX),
                 good_item=basket_item.good_item,
                 order=order,
             )
@@ -990,9 +992,44 @@ class ItemsLeftViewSet(views.APIView):
         for item in good_items:
             good_item = GoodItem.objects.get(id=item["good_item"])
             data = {
-                "item": good_item.name,
+                "item": {
+                    "name": good_item.name,
+                    "warehouse_count": good_item.warehouse_count,
+                },
                 "sell_count": item["sell_count"],
                 "status": get_status(good_item.warehouse_count),
             }
             response.append(data)
         return Response(response)
+
+
+# one thousand row of code =)
+
+
+class TodayOrdersWithItems(views.APIView):
+    permission_classes = (permissions.IsAuthenticated, IsSeller)
+
+    def get(self, request):
+        bought_baskets = (
+            Basket.objects.filter(visible=False)
+            .filter(currently_for_order=False)
+            .filter()
+            .all()
+        )
+        baskets = (
+            BasketItem.objects.filter(basket__in=bought_baskets)
+            .select_related("good_item")
+            .filter(good_item__user=self.request.user)
+            .values_list("basket_id", flat=True)
+            .all()
+        )
+        orders = (
+            Order.objects.filter(basket_id__in=baskets)
+            .filter(created_at__date=timezone.now().date())
+            .all()
+        )
+        serializer = OrderToSellerAnalyticsSerializer(
+            data=orders, many=True, context={"request": request}
+        )
+        serializer.is_valid()
+        return Response(serializer.data)
