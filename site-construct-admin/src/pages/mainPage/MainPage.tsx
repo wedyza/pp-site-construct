@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useEffect, useState } from 'react';
 import { Category, createCategory, deleteCategory, fetchCategories, updateCategory } from '../../store/categoriesSlice';
 import Modal from '../../components/modal/Modal';
+import { logout } from '../../store/authSlice';
 
 const MainPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -129,8 +130,7 @@ const MainPage: React.FC = () => {
                                 {Object.values(subcategories).length < 1 && (
                                     <div className="admin-cat_subrow">
                                         <div className="admin-cat_cell"></div>
-                                        <div className="admin-cat_cell"></div>
-                                        <div className="admin-cat_cell"></div>
+                                        <div className="admin-cat_cell admin-cat_subsub-wrapper"></div>
                                     </div>
                                 )}
                             </div>

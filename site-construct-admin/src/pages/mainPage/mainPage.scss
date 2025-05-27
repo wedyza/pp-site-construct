@@ -1,8 +1,7 @@
 .admin-cat {
     background-color: var(--background);
     border-radius: var(--big-radius);
-    padding: 16px;
-    padding-top: 24px;
+    padding: 24px 32px;
 }
 
 .seller-orders_title {
@@ -10,7 +9,6 @@
     display: flex;
     gap: 12px;
     align-items: center;
-    padding-left: 16px;
 
     svg {
         height: 24px;
@@ -107,6 +105,7 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 2fr;
+    height: 100%;
 
     .admin-cat_cell {
         border-right: 1px solid var(--black15);
@@ -125,6 +124,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4px 12px;
+}
+
+.admin-cat_cell.admin-cat_subsub-wrapper {
+    border-right: none;
 }
 
 .admin-cat_subsub {

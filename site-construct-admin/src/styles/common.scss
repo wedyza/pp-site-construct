@@ -17,6 +17,8 @@
     --black5: rgba(2, 4, 15, 0.05);
     --red: #CD1E0E;
     --red50: rgba(205, 30, 14, 0.5);
+    --red1: #F02532;
+    --red120: rgba(240, 37, 50, 0.2);
     --green: #3ACD0E;
     --red10: rgba(205, 30, 14, 0.1);
     --white-text: #FEFEFE;
@@ -68,6 +70,11 @@ body {
     font-size: 0.7em;
     line-height: 120%;
     letter-spacing: 0%;
+}
+
+.text-h {
+    font-size: 26px;
+    letter-spacing: -0.5px;
 }
 
 .text-h1 {
@@ -128,6 +135,17 @@ body {
     font-size: 12px;
     line-height: 100%;
     letter-spacing: 0%;
+}
+
+.text-body {
+    font-size: 0.8em;
+    line-height: 135%;
+    letter-spacing: -0.5px;
+}
+
+.text-big {
+    line-height: 125%;
+    letter-spacing: -0.5px;
 }
 
 

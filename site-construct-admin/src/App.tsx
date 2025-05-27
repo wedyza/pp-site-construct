@@ -5,6 +5,8 @@ import LoginPage from "./pages/loginPage/LoginPage";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { useEffect } from "react";
 import { fetchUserInfo } from "./store/userSlice";
+import UsersPage from "./pages/usersPage/UsersPage";
+import UserPage from "./pages/userPage/UserPage";
 
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
+      <Route path="/users" element={<UsersPage />} />
+      <Route path="/user/:id" element={<UserPage />} />
 
       <Route element={<ProtectedRoute onlyGuest />}>
         <Route path="/login" element={<LoginPage />} />
