@@ -360,3 +360,21 @@ class MoneyPayout(models.Model):
     )
     order = models.ForeignKey(Order, on_delete=models.Case, verbose_name="Заказ")
     created_at = models.DateTimeField("Создано", auto_now_add=True)
+
+
+class Document(models.Model):
+    class Type(Enum):
+        REFUND_POLICY = "Политика возвратов"
+        OTHER = "Другие"
+        OFFER = "Оферта"
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+    source = models.FileField("Документ", upload_to="documents")
+    created_at = models.DateTimeField("Создано", auto_now_add=True)
+    type = models.TextField(
+        "Тип",
+        choices=[(status.name, status.value) for status in Type],
+        default="OTHER",
+    )

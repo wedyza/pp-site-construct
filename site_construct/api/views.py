@@ -19,6 +19,7 @@ from .models import (
     CharacteristicsCategory,
     CommentReply,
     DeliveryMethod,
+    Document,
     GoodCategory,
     GoodItem,
     ItemMedia,
@@ -41,6 +42,7 @@ from .serializers import (
     CommentSerializer,
     CommentToSellerSerialzier,
     DeliveryMethodSerializer,
+    DocumentSerializer,
     GoodCategorySerializer,
     GoodItemCreateSerializer,
     GoodItemInWishListSerializer,
@@ -71,6 +73,7 @@ from django.utils import timezone
 from .permissions import (
     AdminOrReadOnly,
     IsSeller,
+    IsSellerOrAdmin,
     Owner,
     OwnerOrReadOnly,
     AdminOrModerator,
@@ -1033,3 +1036,21 @@ class TodayOrdersWithItems(views.APIView):
         )
         serializer.is_valid()
         return Response(serializer.data)
+
+
+class DocumentViewSet(
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+):
+    serializer_class = DocumentSerializer
+    permission_classes = (IsSellerOrAdmin,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("type",)
+
+    def get_queryset(self):
+        return Document.objects.filter(user=self.request.user).all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

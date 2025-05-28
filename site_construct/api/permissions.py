@@ -55,3 +55,11 @@ class IsBuyer(permissions.BasePermission):
 class IsSeller(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.user_type == "Продавец"
+
+
+class IsSellerOrAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and (
+            request.user.user_type == "Продавец"
+            or request.user.user_type == "Администратор"
+        )

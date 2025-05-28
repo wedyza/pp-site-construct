@@ -27,6 +27,7 @@ from .views import (
     ItemsLeftViewSet,
     TodayOrdersWithItems,
     SellDynamicsViewSet,
+    DocumentViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -43,12 +44,10 @@ router.register("comments", CommentViewSet, basename="comments")
 router.register("comments-replies", CommentReplyViewSet, basename="comments-replies")
 router.register("characteristics-categories", CharacteristicCategoryViewSet)
 router.register("refunds", RefundViewSet, basename="refunds")
+router.register("me/documents", DocumentViewSet, basename="documents")
 
 urlpatterns = [
     path("", include(router.urls)),
-    # path('auth/', include('djoser.urls')),
-    # path('auth/', include('djoser.urls.jwt')),
-    # path("auth/activation/<uid>/<token>/", ActivationView.as_view({'get': 'activation'}), name='email-activation'),
     path("auth/", include("users.urls")),
     path("me/wishlist/", GetMyWishlistView.as_view(), name="get-my-wishlist"),
     path("me/analytics/", AnalyticsViewSet.as_view(), name="analytics"),

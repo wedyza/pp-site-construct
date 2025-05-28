@@ -1,4 +1,4 @@
-from rest_framework import serializers, validators
+from rest_framework import serializers
 from .models import (
     Basket,
     BasketItem,
@@ -6,6 +6,7 @@ from .models import (
     CharacteristicsCategory,
     CommentMedia,
     CommentReply,
+    Document,
     ItemMedia,
     Order,
     DeliveryMethod,
@@ -19,10 +20,8 @@ from .models import (
     Like,
 )
 from django.contrib.auth import get_user_model
-from django_enum.drf import EnumField
 from django.db.models import Avg, Count
 from .functions import unwrap_categories
-import httpx
 
 User = get_user_model()
 
@@ -47,7 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
             "sex",
             "id",
             "avatar",
-            "is_active"
+            "is_active",
         )
 
 
@@ -769,3 +768,10 @@ class OrderToSellerAnalyticsSerializer(serializers.ModelSerializer):
         )
         basket_items.is_valid()
         return basket_items.data
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ("source", "id", "created_at", "type")
+        # read_only_fields = ("id", "created_at")
