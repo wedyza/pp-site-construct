@@ -1,5 +1,5 @@
 .seller-goods_table {    
-    grid-template-columns: 7% 13% 1fr 12% 12% 8% 13.5% 13% 68px;
+    grid-template-columns: 7% 13% 1fr 12% 12% 8% 13.5% 10% 68px;
 }
 
 .seller-goods_actions {
@@ -28,4 +28,20 @@
         height: 13.5px;
         width: 13.5px;
     }
+}
+
+.seller-orders_table-cell__warehouse {
+    display: flex;
+    align-items: self-start;
+    gap: 4px;
+
+    svg {
+        height: 14px;
+    }
+}
+
+.warehouse-modal_form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
 }

@@ -5,13 +5,26 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useEffect } from 'react';
 import { fetchAnalytics } from '../../store/analyticsSlice';
 import SellDynamicsCharts from '../../components/sellDynamicsCharts/SellDynamicsCharts';
+import { fetchTodayOrders } from '../../store/todayOrdersSlice';
+import { formatDate } from '../../utils/formatDate';
+import { fetchItemsLeft } from '../../store/itemsLeftSlice';
 
 const SellerMainPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { data/*, loading, error*/ } = useAppSelector((state) => state.analytics);
+    const { orders, total } = useAppSelector((state) => state.todayOrders);
+    const { items } = useAppSelector((state) => state.itemsLeft);
+
+    useEffect(() => {
+        dispatch(fetchItemsLeft());
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(fetchAnalytics());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(fetchTodayOrders());
     }, [dispatch]);
 
     return (
@@ -77,65 +90,27 @@ const SellerMainPage: React.FC = () => {
                         </div>
                     </div>
                     <div className='seller-main_item'>
-                        <h1 className='text-h3 seller-main_item-title'>К отправке сегодня (12 мая)</h1>
+                        <h1 className='text-h3 seller-main_item-title'>Последние заказы сегодня (12 мая)</h1>
                         <div className='seller-main_item-body seller-main_del-body'>
                             <div className='seller-main_del-head'>
-                                <p className='text-desc'>19 заказов</p>
+                                <p className='text-desc'>{total} заказов</p>
                                 <Link to='' className='text-n14'>
                                     <span className='seller-main_del-link'>Смотреть все</span>
                                 </Link>
                             </div>
                             <div className='seller-main_del-list'>
-                                <div className='seller-main_del-item'>
-                                    <div className='seller-main_del-item-id text-n11'>
-                                        № 1235654
+                                {orders.map((order) => (
+                                    <div key={order.id} className='seller-main_del-item'>
+                                        <div className='seller-main_del-item-id text-n11'>
+                                            № {order.id}
+                                        </div>
+                                        <div className='seller-main_del-item-info text-n11'>
+                                            <span className='seller-main_del-item-info__name'>{order.items[0].good_item}</span>
+                                            <span>{order.items[0].count} шт</span>
+                                            <span className='seller-main_del-item-info__last'>{formatDate(order.created_at).slice(0, 5)}</span>
+                                        </div>
                                     </div>
-                                    <div className='seller-main_del-item-info text-n11'>
-                                        <span>Смартфон XIAOMI 13</span>
-                                        <span>1шт</span>
-                                        <span>до 18:00</span>
-                                    </div>
-                                </div>
-                                <div className='seller-main_del-item'>
-                                    <div className='seller-main_del-item-id text-n11'>
-                                        № 1235654
-                                    </div>
-                                    <div className='seller-main_del-item-info text-n11'>
-                                        <span>Смартфон XIAOMI 13</span>
-                                        <span>1шт</span>
-                                        <span>до 18:00</span>
-                                    </div>
-                                </div>
-                                <div className='seller-main_del-item'>
-                                    <div className='seller-main_del-item-id text-n11'>
-                                        № 1235654
-                                    </div>
-                                    <div className='seller-main_del-item-info text-n11'>
-                                        <span>Смартфон XIAOMI 13</span>
-                                        <span>1шт</span>
-                                        <span>до 18:00</span>
-                                    </div>
-                                </div>
-                                <div className='seller-main_del-item'>
-                                    <div className='seller-main_del-item-id text-n11'>
-                                        № 1235654
-                                    </div>
-                                    <div className='seller-main_del-item-info text-n11'>
-                                        <span>Смартфон XIAOMI 13</span>
-                                        <span>1шт</span>
-                                        <span>до 18:00</span>
-                                    </div>
-                                </div>
-                                <div className='seller-main_del-item'>
-                                    <div className='seller-main_del-item-id text-n11'>
-                                        № 1235654
-                                    </div>
-                                    <div className='seller-main_del-item-info text-n11'>
-                                        <span>Смартфон XIAOMI 13</span>
-                                        <span>1шт</span>
-                                        <span>до 18:00</span>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -157,106 +132,24 @@ const SellerMainPage: React.FC = () => {
                                     <p className="seller-main_rem-cell">Остаток</p>
                                     <p className="seller-main_rem-cell">Статус</p>
                                 </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">1</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
+                                {items.map((item, index) => (
+                                    <div key={index} className="seller-main_rem-row">
+                                        <p className="seller-main_rem-cell">{index + 1}</p>
+                                        <div className="seller-main_rem-cell">
+                                            <p className='seller-main_rem-cell__name'>
+                                                {item.item.name}
+                                            </p>
+                                        </div>
+                                        <p className="seller-main_rem-cell">{item.sell_count}</p>
+                                        <p className="seller-main_rem-cell">{item.item.warehouse_count}</p>
+                                        <div className="seller-main_rem-cell">
+                                            <div className={`seller-main_rem-cell-img ${
+                                                item.status === 'В наличии' ? 'available' : 'out-of-stock'
+                                            }`}></div>
+                                            {item.status}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">2</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">3</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">4</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">5</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">6</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">7</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">8</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">9</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
-                                <div className="seller-main_rem-row">
-                                    <p className="seller-main_rem-cell">10</p>
-                                    <p className="seller-main_rem-cell">Смартфон XIAOMI 13</p>
-                                    <p className="seller-main_rem-cell">45</p>
-                                    <p className="seller-main_rem-cell">456</p>
-                                    <div className="seller-main_rem-cell">
-                                        <div className="seller-main_rem-cell-img"></div>
-                                        В наличии
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>

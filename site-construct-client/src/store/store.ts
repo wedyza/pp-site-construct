@@ -15,6 +15,8 @@ import reviewsReducer from './reviewsSlice';
 import analyticsReducer from './analyticsSlice';
 import sellDynamicsReducer from './sellDynamicsSlice';
 import refundReducer from './refundSlice';
+import todayOrdersReducer from './todayOrdersSlice';
+import itemsLeftReducer from './itemsLeftSlice';
 
 const store = configureStore({
     reducer: {
@@ -33,7 +35,9 @@ const store = configureStore({
         reviews: reviewsReducer,
         analytics: analyticsReducer,
         sellDynamics: sellDynamicsReducer,
+        todayOrders: todayOrdersReducer,
         refund: refundReducer,
+        itemsLeft: itemsLeftReducer,
     },
 });
 

@@ -121,8 +121,32 @@
 }
 
 .seller-main_del-item-info {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 20% auto;
+    gap: 16px;
+}
+
+.seller-main_del-item-info__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2em;
+}
+
+.seller-main_rem-cell__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2em;
+    width: 90%;
+}
+
+.seller-main_del-item-info__last {
+    margin-left: auto;
 }
 
 .seller-main_rem-title {

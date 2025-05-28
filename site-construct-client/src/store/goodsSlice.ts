@@ -30,6 +30,7 @@ export interface Good {
     basket_id?: number;
     rate?: Rating;
     media?: MediaItem[];
+    warehouse_count?: number;
 }
 
 interface GoodsState {
@@ -145,6 +146,24 @@ export const updateGood = createAsyncThunk<
             price,
             visible,
         }, {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка обновления товара');
+    }
+});
+
+export const updateWarehouse = createAsyncThunk<
+    Good,
+    { id: number; warehouse: number },
+    { state: RootState }
+>('goods/updateWarehouse', async ({ id, warehouse }, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+    try {
+        const response = await axiosInstance.patch(`/goods/${id}/`, {warehouse_count: warehouse}, {
             headers: {
                 Authorization: `Token ${token}`,
             },
@@ -329,6 +348,23 @@ const goodsSlice = createSlice({
                 }
             })
             .addCase(updateGood.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(updateWarehouse.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateWarehouse.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedItem = action.payload;
+                const index = state.items.findIndex(item => item.id === action.payload.id);
+                console.log(index, action.payload);
+                if (index !== -1) {
+                    state.items[index] = action.payload;
+                }
+            })
+            .addCase(updateWarehouse.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
