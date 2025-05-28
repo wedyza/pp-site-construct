@@ -1,0 +1,75 @@
+.admin-char_table {
+    grid-template-columns: 40% 1fr;
+    margin-top: 32px;
+}
+
+.seller-good_cat {
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding: 0 16px;
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-title {
+    display: grid;
+    grid-template-columns: 1fr 9px;
+    align-items: center;
+    gap: 5.5px;
+}
+
+.dropdown-title:hover {
+    color: var(--accent);
+    svg path {
+        fill: var(--accent);
+    }
+}
+
+.dropdown-title_text {
+    white-space: nowrap;
+}
+
+.dropdown-list {
+    border: 1px solid var(--black15);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: absolute;
+    z-index: 50;
+    background-color: var(--background);
+    width: 250px;
+}
+
+.dropdown-item {
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+        color: var(--accent);
+    }
+}
+
+.seller-good_info-cat {
+    margin-top: 24px;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.seller-good_cat span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-table_char {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}

@@ -170,7 +170,7 @@ const MainPage: React.FC = () => {
                     <h3 className="text-n14 admin-cat_modal-subtitle">Подкатегории</h3>
                     <ul className="admin-cat_subcategory-list">
                         <button
-                            className="admin-cat_modal-btn text-n14"
+                            className="admin-cat_modal-btn admin-cat_modal-btn__mt text-n14"
                             onClick={() => {
                                 setIsSubModalOpen(true);
                                 setIsModalOpen(false);
@@ -260,7 +260,7 @@ const MainPage: React.FC = () => {
                     </div>
                     <h3 className="text-n14 admin-cat_modal-subtitle">Подподкатегории</h3>
                     <button
-                        className="admin-cat_modal-btn text-n14"
+                        className="admin-cat_modal-btn admin-cat_modal-btn__mt text-n14"
                         onClick={() =>
                             setCurrentSubEdit((prev: any) => ({
                                 ...prev,

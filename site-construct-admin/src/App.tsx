@@ -8,6 +8,8 @@ import { fetchUserInfo } from "./store/userSlice";
 import UsersPage from "./pages/usersPage/UsersPage";
 import UserPage from "./pages/userPage/UserPage";
 import { logout } from "./store/authSlice";
+import CharPage from "./pages/charPage/CharPage";
+import ProfilePage from "./pages/profilePage/ProfilePage";
 
 
 function App() {
@@ -33,8 +35,10 @@ function App() {
     <Routes>
       <Route element={<ProtectedRoute allowedRoles={['Администратор']} />}>
         <Route path="/" element={<MainPage />} />
+        <Route path="/characteristics" element={<CharPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/user/:id" element={<UserPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
 
       <Route element={<ProtectedRoute onlyGuest />}>

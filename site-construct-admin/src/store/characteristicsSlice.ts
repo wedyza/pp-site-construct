@@ -6,6 +6,7 @@ export interface Characteristic {
     id: number;
     title: string;
     value?: string;
+    category?: number;
 }
 
 export interface CharacteristicGroup {
@@ -66,6 +67,71 @@ export const applyCharacteristicsToGood = createAsyncThunk<
     }
 );
 
+export const upsertCharacteristicGroup = createAsyncThunk<
+    CharacteristicGroup,
+    { id?: number; title: string; category: number },
+    { state: RootState }
+>('characteristics/upsertGroup', async (payload, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+
+    try {
+        const method = payload.id ? 'patch' : 'post';
+        const url = payload.id
+            ? `/characteristics-categories/${payload.id}/`
+            : '/characteristics-categories/';
+
+        const response = await axiosInstance[method](url, payload, {
+            headers: { Authorization: `Token ${token}` },
+        });
+
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка сохранения группы');
+    }
+});
+
+export const upsertCharacteristic = createAsyncThunk<
+    Characteristic,
+    { id?: number; title: string; category: number },
+    { state: RootState }
+>('characteristics/upsert', async (payload, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+
+    try {
+        const method = payload.id ? 'patch' : 'post';
+        const url = payload.id
+            ? `/characteristics/${payload.id}/`
+            : '/characteristics/';
+
+        const response = await axiosInstance[method](url, payload, {
+            headers: { Authorization: `Token ${token}` },
+        });
+
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка сохранения характеристики');
+    }
+});
+
+export const deleteCharacteristic = createAsyncThunk<
+    { id: number; categoryId: number },
+    { id: number; categoryId: number },
+    { state: RootState }
+>('characteristics/delete', async ({ id, categoryId }, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+
+    try {
+        await axiosInstance.delete(`/characteristics/${id}/`, {
+            headers: { Authorization: `Token ${token}` },
+        });
+
+        return { id, categoryId };
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка удаления характеристики');
+    }
+});
+
+
 const characteristicsSlice = createSlice({
     name: 'characteristics',
     initialState,
@@ -100,6 +166,31 @@ const characteristicsSlice = createSlice({
             .addCase(fetchCharacteristics.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(upsertCharacteristicGroup.fulfilled, (state, action) => {
+                const existingIndex = state.data.findIndex(group => group.id === action.payload.id);
+                if (existingIndex !== -1) {
+                    state.data[existingIndex] = { ...state.data[existingIndex], ...action.payload };
+                } else {
+                    state.data.push({ ...action.payload, characteristics: [] });
+                }
+            })
+            .addCase(upsertCharacteristic.fulfilled, (state, action) => {
+                const group = state.data.find(g => g.id === action.payload.category);
+                if (group) {
+                    const index = group.characteristics.findIndex(c => c.id === action.payload.id);
+                    if (index !== -1) {
+                        group.characteristics[index] = action.payload;
+                    } else {
+                        group.characteristics.push(action.payload);
+                    }
+                }
+            })
+            .addCase(deleteCharacteristic.fulfilled, (state, action) => {
+                const group = state.data.find(g => g.id === action.payload.categoryId);
+                if (group) {
+                    group.characteristics = group.characteristics.filter(c => c.id !== action.payload.id);
+                }
             });
     },
 });

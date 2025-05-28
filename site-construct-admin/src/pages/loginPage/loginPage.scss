@@ -45,3 +45,15 @@
     border-bottom: 1px solid var(--accent);
 }
 
+
+.login-form__radio {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+
+    .custom-radio {
+        .radio-label {
+            color: var(--black60);
+        }
+    }
+}
