@@ -79,8 +79,10 @@ class GoodItemCreateSerializer(serializers.ModelSerializer):
             "media",
             "visible",
             "warehouse_count",
+            "id"
         )
         extra_kwargs = {"price": {"required": True}}
+        read_only_fields = ("id",)
 
     def update(self, instance, validated_data):
         if "media" in self.initial_data:
