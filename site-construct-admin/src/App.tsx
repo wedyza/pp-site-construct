@@ -7,11 +7,21 @@ import { useEffect } from "react";
 import { fetchUserInfo } from "./store/userSlice";
 import UsersPage from "./pages/usersPage/UsersPage";
 import UserPage from "./pages/userPage/UserPage";
+import { logout } from "./store/authSlice";
 
 
 function App() {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
+    
+  const { user_type } = useAppSelector((state) => state.user);
+  console.log(user_type);
+
+  useEffect(() => {
+    if (user_type && user_type !== 'Администратор') {
+      dispatch(logout());
+    }
+  })
 
   useEffect(() => {
     if (token) {
@@ -21,9 +31,11 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/users" element={<UsersPage />} />
-      <Route path="/user/:id" element={<UserPage />} />
+      <Route element={<ProtectedRoute allowedRoles={['Администратор']} />}>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/user/:id" element={<UserPage />} />
+      </Route>
 
       <Route element={<ProtectedRoute onlyGuest />}>
         <Route path="/login" element={<LoginPage />} />

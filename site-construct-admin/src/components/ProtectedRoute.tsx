@@ -15,6 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
     const { token } = useAppSelector((state) => state.auth);
     const { user_type, loaded } = useAppSelector((state) => state.user);
+    console.log(1);
 
     const isAuthenticated = Boolean(token);
 

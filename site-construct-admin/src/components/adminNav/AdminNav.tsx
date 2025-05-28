@@ -1,7 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import './adminNav.scss'
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { logout } from '../../store/authSlice';
+import { useEffect } from 'react';
+import { fetchUserInfo } from '../../store/userSlice';
 
 const AdminNav: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -16,6 +18,12 @@ const AdminNav: React.FC = () => {
         location.pathname === '/user' ||
         location.pathname.startsWith('/user/');
     
+    const { firstName } = useAppSelector((state) => state.user);
+
+    useEffect(() => {
+        dispatch(fetchUserInfo());
+    }, [dispatch]);
+
     return (
         <div className='seller-nav'>
             <div className='seller-nav_head'>
@@ -24,7 +32,7 @@ const AdminNav: React.FC = () => {
                         admin
                     </span>
                     <span className='seller-nav_head-greet text-n16'>
-                        Добрый день, {}!
+                        Добрый день, {firstName}!
                     </span>
                 </div>
                 <div className='seller-nav_head-links'>
