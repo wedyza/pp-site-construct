@@ -79,10 +79,11 @@ const SellerReviewsPage: React.FC = () => {
                                 {comment.body}
                             </div>
                             <div className='seller-orders_table-cell seller-order_table-imgs'>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
-                                <div className='seller-order_table-img'></div>
+                                {comment.media?.map((img) => (
+                                    <div className='seller-order_table-img'>
+                                        <img src={img.source} alt="" />
+                                    </div>
+                                ))}
                             </div>
                             <div className='seller-orders_table-cell'>
                                 {comment.reply.body ? (

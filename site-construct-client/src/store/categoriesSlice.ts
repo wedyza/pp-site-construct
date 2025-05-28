@@ -59,6 +59,7 @@ export const fetchCategories = createAsyncThunk<Category[]>(
 );
 
 function buildStructuredCategories(categories: Category[]): NestedCategories {
+    categories.sort((a, b) => a.id - b.id);
     const mapById = new Map<number, Category>();
     const result: NestedCategories = {};
 

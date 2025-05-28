@@ -41,7 +41,20 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        {(data?.total_payed.amount__sum || 0) + (data?.total_freezed.amount__sum || 0)} ₽
+                                        {(data?.total_payed.amount__sum || 0)} ₽
+                                    </span>
+                                    {/* <span className='seller-main_kpi-stat text-n14'>
+                                        (+12% за неделю)
+                                    </span> */}
+                                </div>
+                            </div>
+                            <div className='seller-main_kpi-item'>
+                                <span className='seller-main_kpi-label text-n14'>
+                                    Замороженные деньги
+                                </span>
+                                <div className='seller-main_kpi-value-main'>
+                                    <span className='seller-main_kpi-value text-n16'>
+                                        {(data?.total_freezed.amount__sum || 0)} ₽
                                     </span>
                                     {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+12% за неделю)
@@ -80,7 +93,7 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        {data?.average_rating.rate__avg}
+                                        {data?.average_rating.rate__avg.toFixed(2)}
                                     </span>
                                     {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+142 отзыва за март)
