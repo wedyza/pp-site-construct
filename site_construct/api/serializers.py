@@ -656,10 +656,11 @@ class CommentReplySerializer(serializers.ModelSerializer):
 
 class CommentToSellerSerialzier(serializers.ModelSerializer):
     reply = serializers.SerializerMethodField("get_reply")
+    media = CommentMediaSerializer(many=True)
 
     class Meta:
         model = Comment
-        fields = ("user", "item", "body", "rate", "reply", "id")
+        fields = ("user", "item", "body", "rate", "reply", "id", "media")
 
     def get_reply(self, obj):
         reply = CommentReply.objects.filter(comment=obj).first()
