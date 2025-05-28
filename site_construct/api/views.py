@@ -82,7 +82,7 @@ from .permissions import (
 )
 from .paginators import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Sum, Q, F, Avg, Count
+from django.db.models import Sum, Q, F, Avg, Count, Value
 import httpx
 import uuid
 from django.conf import settings
@@ -989,8 +989,16 @@ class ItemsLeftViewSet(views.APIView):
             )
             .filter(good_item__user=request.user)
             .values("good_item")
-            .annotate(sell_count=Sum("count"))
         )
+        good_items_without_sells = (
+            GoodItem.objects.filter(user=request.user)
+            .exclude(id__in=good_items)
+            .annotate(good_item=F("id"))
+            .annotate(sell_count=Value(0))
+            .values("good_item", "sell_count")
+        )
+        good_items = good_items.annotate(sell_count=Sum("count"))
+        good_items = good_items.union(good_items_without_sells)
         response = []
         for item in good_items:
             good_item = GoodItem.objects.get(id=item["good_item"])

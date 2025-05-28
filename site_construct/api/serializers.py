@@ -79,7 +79,7 @@ class GoodItemCreateSerializer(serializers.ModelSerializer):
             "media",
             "visible",
             "warehouse_count",
-            "id"
+            "id",
         )
         extra_kwargs = {"price": {"required": True}}
         read_only_fields = ("id",)
