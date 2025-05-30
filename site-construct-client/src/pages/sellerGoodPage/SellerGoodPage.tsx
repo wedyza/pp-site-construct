@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { createGoodForm, fetchGoodById, MediaItem, removeGoodMedia, updateGoodForm } from '../../store/goodsSlice';
 import CustomCheckbox from '../../components/customCheckbox/CustomCheckbox';
 import AddCharacteristicModal from '../../components/addCharacteristicModal/AddCharacteristicModal';
-import { applyCharacteristicsToGood, CharacteristicGroup, fetchCharacteristics } from '../../store/characteristicsSlice';
+import { applyCharacteristicsToGood, Characteristic, CharacteristicGroup, fetchCharacteristics } from '../../store/characteristicsSlice';
 import { fetchCategories } from '../../store/categoriesSlice';
 import { AddAboutModal } from '../../components/addAboutModal/AddAboutModal';
 
@@ -27,6 +27,8 @@ const SellerGoodPage: React.FC = () => {
     const [newImages, setNewImages] = useState<File[]>([]);
     const [serverImages, setServerImages] = useState<MediaItem[]>([]);
     const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
+    const [editedChar, setEditedChar] = useState<Characteristic | null>(null);
+    const [editingGroup, setEditingGroup] = useState<CharacteristicGroup | null>(null);
 
     useEffect(() => {
         if (selectedItem?.media) {
@@ -170,7 +172,10 @@ const SellerGoodPage: React.FC = () => {
     const [aboutModalOpen, setAboutModalOpen] = useState(false);
 
     const handleSave = (data: CharacteristicGroup) => {
-        setCharGroups((prev) => [...prev, data]);
+        setCharGroups((prev) => {
+            const filtered = prev.filter((g) => g.id !== data.id);
+            return [...filtered, data];
+        });
     };
 
     const { structured: categories } = useAppSelector((state) => state.categories);
@@ -451,13 +456,37 @@ const SellerGoodPage: React.FC = () => {
                                             <p className="seller-good_desc-label text-n14">{item.title}</p>
                                             <p className="seller-good_desc-value text-n14">{item.value}</p>
                                             <div className="seller-good_desc-actions">
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.7427 5.96311C14.4587 5.24715 14.4587 4.08635 13.7427 3.37039L12.7999 2.42758C12.0839 1.71162 10.9231 1.71162 10.2072 2.42758L2.81007 9.82468C2.50566 10.1291 2.31809 10.5309 2.28021 10.9597L2.11882 12.7867C2.05492 13.51 2.66027 14.1154 3.38362 14.0515L5.21056 13.8901C5.63938 13.8522 6.0412 13.6646 6.3456 13.3602L13.7427 5.96311ZM13.0356 4.07749C13.361 4.40293 13.361 4.93057 13.0356 5.256L12.4025 5.88911L10.2812 3.76779L10.9143 3.13468C11.2397 2.80925 11.7673 2.80925 12.0928 3.13468L13.0356 4.07749ZM9.57406 4.4749L11.6954 6.59622L5.63849 12.6531C5.50013 12.7915 5.31749 12.8767 5.12257 12.8939L3.29562 13.0553C3.19229 13.0645 3.10581 12.978 3.11494 12.8747L3.27633 11.0477C3.29355 10.8528 3.37881 10.6701 3.51717 10.5318L9.57406 4.4749Z" fill="black"/>
-                                                </svg>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M13.4213 5.50764C13.6933 5.55546 13.875 5.8147 13.8272 6.08667L12.4972 13.6508C12.4972 13.6509 12.4972 13.6509 12.4972 13.6509C12.3431 14.5275 11.5816 15.1667 10.6916 15.1667H5.31121C4.42116 15.1667 3.6597 14.5275 3.50558 13.6509L2.17561 6.08667C2.12779 5.8147 2.3095 5.55546 2.58147 5.50764C2.85344 5.45982 3.11268 5.64153 3.1605 5.9135L4.49047 13.4777C4.56053 13.8762 4.90666 14.1667 5.31121 14.1667H10.6916C11.0961 14.1667 11.4422 13.8762 11.5123 13.4777L11.5123 13.4777L12.8423 5.9135C12.8901 5.64153 13.1493 5.45982 13.4213 5.50764Z" fill="black"/>
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M7.08333 1.83325C6.6231 1.83325 6.25 2.20635 6.25 2.66659V3.49992H9.75V2.66659C9.75 2.20634 9.37692 1.83325 8.91667 1.83325H7.08333ZM5.25 3.49992V2.66659C5.25 1.65406 6.07081 0.833252 7.08333 0.833252H8.91667C9.92921 0.833252 10.75 1.65407 10.75 2.66659V3.49992H14C14.2761 3.49992 14.5 3.72378 14.5 3.99992C14.5 4.27606 14.2761 4.49992 14 4.49992H2C1.72386 4.49992 1.5 4.27606 1.5 3.99992C1.5 3.72378 1.72386 3.49992 2 3.49992H5.25Z" fill="black"/>
-                                                </svg>
+                                                <button 
+                                                    className='seller-good_desc-action'
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setEditedChar(item);
+                                                        setAboutModalOpen(true);
+                                                    }}
+                                                >
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fillRule="evenodd" clipRule="evenodd" d="M13.7427 5.96311C14.4587 5.24715 14.4587 4.08635 13.7427 3.37039L12.7999 2.42758C12.0839 1.71162 10.9231 1.71162 10.2072 2.42758L2.81007 9.82468C2.50566 10.1291 2.31809 10.5309 2.28021 10.9597L2.11882 12.7867C2.05492 13.51 2.66027 14.1154 3.38362 14.0515L5.21056 13.8901C5.63938 13.8522 6.0412 13.6646 6.3456 13.3602L13.7427 5.96311ZM13.0356 4.07749C13.361 4.40293 13.361 4.93057 13.0356 5.256L12.4025 5.88911L10.2812 3.76779L10.9143 3.13468C11.2397 2.80925 11.7673 2.80925 12.0928 3.13468L13.0356 4.07749ZM9.57406 4.4749L11.6954 6.59622L5.63849 12.6531C5.50013 12.7915 5.31749 12.8767 5.12257 12.8939L3.29562 13.0553C3.19229 13.0645 3.10581 12.978 3.11494 12.8747L3.27633 11.0477C3.29355 10.8528 3.37881 10.6701 3.51717 10.5318L9.57406 4.4749Z" fill="black"/>
+                                                    </svg>
+                                                </button>
+                                                <button 
+                                                    className='seller-good_desc-action'
+                                                     onClick={() =>
+                                                        setAboutList((prev) => {
+                                                            if (!prev) return prev;
+                                                            return {
+                                                                id: prev.id,
+                                                                title: prev.title,
+                                                                characteristics: prev.characteristics.filter((_, i) => i !== index),
+                                                            };
+                                                        })
+                                                    }
+                                                >
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fillRule="evenodd" clipRule="evenodd" d="M13.4213 5.50764C13.6933 5.55546 13.875 5.8147 13.8272 6.08667L12.4972 13.6508C12.4972 13.6509 12.4972 13.6509 12.4972 13.6509C12.3431 14.5275 11.5816 15.1667 10.6916 15.1667H5.31121C4.42116 15.1667 3.6597 14.5275 3.50558 13.6509L2.17561 6.08667C2.12779 5.8147 2.3095 5.55546 2.58147 5.50764C2.85344 5.45982 3.11268 5.64153 3.1605 5.9135L4.49047 13.4777C4.56053 13.8762 4.90666 14.1667 5.31121 14.1667H10.6916C11.0961 14.1667 11.4422 13.8762 11.5123 13.4777L11.5123 13.4777L12.8423 5.9135C12.8901 5.64153 13.1493 5.45982 13.4213 5.50764Z" fill="black"/>
+                                                        <path fillRule="evenodd" clipRule="evenodd" d="M7.08333 1.83325C6.6231 1.83325 6.25 2.20635 6.25 2.66659V3.49992H9.75V2.66659C9.75 2.20634 9.37692 1.83325 8.91667 1.83325H7.08333ZM5.25 3.49992V2.66659C5.25 1.65406 6.07081 0.833252 7.08333 0.833252H8.91667C9.92921 0.833252 10.75 1.65407 10.75 2.66659V3.49992H14C14.2761 3.49992 14.5 3.72378 14.5 3.99992C14.5 4.27606 14.2761 4.49992 14 4.49992H2C1.72386 4.49992 1.5 4.27606 1.5 3.99992C1.5 3.72378 1.72386 3.49992 2 3.49992H5.25Z" fill="black"/>
+                                                    </svg>
+                                                </button>
                                             </div>
                                         </div>
                                     ))}
@@ -483,6 +512,34 @@ const SellerGoodPage: React.FC = () => {
                                         <div key={group.id} className="product-charc_card">
                                             <div className="product-charc_list-title">
                                                 <h4>{group.title}</h4>
+                                                <div className="seller-good_desc-actions">
+                                                    <button 
+                                                        className='seller-good_desc-action'
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            setEditingGroup(group);
+                                                            setModalOpen(true);
+                                                        }}
+                                                    >
+                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fillRule="evenodd" clipRule="evenodd" d="M13.7427 5.96311C14.4587 5.24715 14.4587 4.08635 13.7427 3.37039L12.7999 2.42758C12.0839 1.71162 10.9231 1.71162 10.2072 2.42758L2.81007 9.82468C2.50566 10.1291 2.31809 10.5309 2.28021 10.9597L2.11882 12.7867C2.05492 13.51 2.66027 14.1154 3.38362 14.0515L5.21056 13.8901C5.63938 13.8522 6.0412 13.6646 6.3456 13.3602L13.7427 5.96311ZM13.0356 4.07749C13.361 4.40293 13.361 4.93057 13.0356 5.256L12.4025 5.88911L10.2812 3.76779L10.9143 3.13468C11.2397 2.80925 11.7673 2.80925 12.0928 3.13468L13.0356 4.07749ZM9.57406 4.4749L11.6954 6.59622L5.63849 12.6531C5.50013 12.7915 5.31749 12.8767 5.12257 12.8939L3.29562 13.0553C3.19229 13.0645 3.10581 12.978 3.11494 12.8747L3.27633 11.0477C3.29355 10.8528 3.37881 10.6701 3.51717 10.5318L9.57406 4.4749Z" fill="black"/>
+                                                        </svg>
+                                                    </button>
+                                                    <button 
+                                                        className='seller-good_desc-action'
+                                                        onClick={() =>
+                                                            setCharGroups((prev) =>
+                                                                prev.filter((g) => g.id !== group.id)
+                                                            )
+                                                        }
+                                                    >
+                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fillRule="evenodd" clipRule="evenodd" d="M13.4213 5.50764C13.6933 5.55546 13.875 5.8147 13.8272 6.08667L12.4972 13.6508C12.4972 13.6509 12.4972 13.6509 12.4972 13.6509C12.3431 14.5275 11.5816 15.1667 10.6916 15.1667H5.31121C4.42116 15.1667 3.6597 14.5275 3.50558 13.6509L2.17561 6.08667C2.12779 5.8147 2.3095 5.55546 2.58147 5.50764C2.85344 5.45982 3.11268 5.64153 3.1605 5.9135L4.49047 13.4777C4.56053 13.8762 4.90666 14.1667 5.31121 14.1667H10.6916C11.0961 14.1667 11.4422 13.8762 11.5123 13.4777L11.5123 13.4777L12.8423 5.9135C12.8901 5.64153 13.1493 5.45982 13.4213 5.50764Z" fill="black"/>
+                                                            <path fillRule="evenodd" clipRule="evenodd" d="M7.08333 1.83325C6.6231 1.83325 6.25 2.20635 6.25 2.66659V3.49992H9.75V2.66659C9.75 2.20634 9.37692 1.83325 8.91667 1.83325H7.08333ZM5.25 3.49992V2.66659C5.25 1.65406 6.07081 0.833252 7.08333 0.833252H8.91667C9.92921 0.833252 10.75 1.65407 10.75 2.66659V3.49992H14C14.2761 3.49992 14.5 3.72378 14.5 3.99992C14.5 4.27606 14.2761 4.49992 14 4.49992H2C1.72386 4.49992 1.5 4.27606 1.5 3.99992C1.5 3.72378 1.72386 3.49992 2 3.49992H5.25Z" fill="black"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <ul className="product-charc_list">
                                                 {group.characteristics.map((char) => (
@@ -506,14 +563,22 @@ const SellerGoodPage: React.FC = () => {
             </div>
             <AddCharacteristicModal
                 isOpen={modalOpen}
-                onClose={() => setModalOpen(false)}
+                onClose={() => {
+                    setModalOpen(false);
+                    setEditingGroup(null);
+                }}
                 onSave={handleSave}
                 usedGroupIds={charGroups.map(group => group.id)}
                 catGroup={selectedGroup?.id}
+                editingGroup={editingGroup}
             />
-            <AddAboutModal
+           <AddAboutModal
+                catGroup={selectedGroup?.id}
                 isOpen={aboutModalOpen}
-                onClose={() => setAboutModalOpen(false)}
+                onClose={() => {
+                    setAboutModalOpen(false);
+                    setEditedChar(null);
+                }}
                 onSave={(group) => {
                     setAboutList((prev) => {
                         const existing = prev?.characteristics || [];
@@ -534,6 +599,7 @@ const SellerGoodPage: React.FC = () => {
                 }}
                 usedChar={aboutList?.characteristics.map(c => c.title) || []}
                 availableChars={aboutCharacteristics}
+                editingChar={editedChar}
             />
         </div>
     );

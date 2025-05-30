@@ -10,9 +10,10 @@ type Props = {
     onSave: (data: CharacteristicGroup) => void;
     usedGroupIds: number[];
     catGroup?: number;
+    editingGroup?: CharacteristicGroup | null;
 };
 
-const AddCharacteristicModal: React.FC<Props> = ({ isOpen, onClose, onSave, usedGroupIds, catGroup }) => {
+const AddCharacteristicModal: React.FC<Props> = ({ isOpen, onClose, onSave, usedGroupIds, catGroup, editingGroup }) => {
     const dispatch = useAppDispatch();
     const { data } = useAppSelector((state) => state.characteristics);
 
@@ -22,6 +23,30 @@ const AddCharacteristicModal: React.FC<Props> = ({ isOpen, onClose, onSave, used
 
     const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
     const [isCharDropdownOpen, setIsCharDropdownOpen] = useState(false);
+
+    useEffect(() => {
+        if (editingGroup) {
+            setSelectedGroup(() => {
+                const matchingDataItem = data.find(item => item.title === editingGroup.title);
+                if (matchingDataItem) {
+                    return {
+                    ...editingGroup,
+                    characteristics: matchingDataItem.characteristics
+                    };
+                }
+                return editingGroup;
+            });
+            setSelectedChars(
+                editingGroup.characteristics.map((c) => ({
+                    characteristic: c,
+                    value: c.value || '',
+                }))
+            );
+        } else {
+            setSelectedGroup(null);
+            setSelectedChars([]);
+        }
+    }, [editingGroup]);
 
     useEffect(() => {
         if (isOpen && catGroup) {
@@ -108,10 +133,14 @@ const AddCharacteristicModal: React.FC<Props> = ({ isOpen, onClose, onSave, used
                                 <div className="custom-dropdown_header text-n16" onClick={() => setIsGroupDropdownOpen(!isGroupDropdownOpen)}>
                                     {selectedGroup ? selectedGroup.title : 'Выберите группу'}
                                 </div>
-                                {isGroupDropdownOpen && (
+                                {isGroupDropdownOpen && !editingGroup && (
                                     <ul className="custom-dropdown-list">
                                         {data
-                                            .filter((group) => !usedGroupIds.includes(group.id))
+                                            .filter(
+                                                (group) =>
+                                                    !usedGroupIds.includes(group.id) &&
+                                                    group.title !== "О товаре"
+                                            )
                                             .map((group) => (
                                                 <li className='custom-dropdown-list_item text-n16' key={group.id} onClick={() => handleGroupSelect(group)}>
                                                     {group.title}

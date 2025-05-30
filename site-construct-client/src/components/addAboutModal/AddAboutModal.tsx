@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Characteristic, CharacteristicGroup } from '../../store/characteristicsSlice';
+import React, { useEffect, useState } from 'react';
+import { Characteristic, CharacteristicGroup, fetchCharacteristics } from '../../store/characteristicsSlice';
 import Modal from '../modal/Modal';
 import './addAboutModal.scss'
+import { useAppDispatch } from '../../store/hooks';
 
 interface AddAboutModalProps {
     isOpen: boolean;
@@ -9,6 +10,8 @@ interface AddAboutModalProps {
     onSave: (data: CharacteristicGroup) => void;
     availableChars: Characteristic[];
     usedChar: string[];
+    catGroup?: number;
+    editingChar?: Characteristic | null;
 }
 
 export const AddAboutModal: React.FC<AddAboutModalProps> = ({
@@ -16,18 +19,38 @@ export const AddAboutModal: React.FC<AddAboutModalProps> = ({
     onClose,
     onSave,
     availableChars,
-    usedChar
+    usedChar,
+    catGroup,
+    editingChar
 }) => {
+    const dispatch = useAppDispatch();
     const [selectedChar, setSelectedChar] = useState<Characteristic | null>(null);
     const [inputValue, setInputValue] = useState('');
     const [addedChars, setAddedChars] = useState<Characteristic[]>([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    useEffect(() => {
+        if (editingChar) {
+            setSelectedChar(editingChar);
+            if (editingChar.value) setInputValue(editingChar.value);
+            setAddedChars([editingChar]);
+        }
+    }, [editingChar]);
+
+    useEffect(() => {
+        if (isOpen && catGroup) {
+            dispatch(fetchCharacteristics(catGroup));
+        }
+    }, [isOpen, dispatch]);
+
     const handleSave = () => {
+        if (!selectedChar) return;
+
+        const updatedCharacteristic = { ...selectedChar, value: inputValue };
         onSave({
             id: Date.now(),
             title: 'О товаре',
-            characteristics: addedChars,
+            characteristics: [updatedCharacteristic],
         });
         setSelectedChar(null);
         setInputValue('');
