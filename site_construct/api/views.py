@@ -801,11 +801,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             )
 
         comment.save(user=self.request.user)
-        data = {
-            "comment": comment.data,
-            "good_id": comment.initial_data['item']
-        }
-        return Response(data)
+        return Response(comment.data)
 
 
 class CommentReplyViewSet(
