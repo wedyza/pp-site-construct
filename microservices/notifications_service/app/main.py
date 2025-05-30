@@ -54,8 +54,8 @@ app = FastAPI(
 
 ENUM_TABLE = {
     "Возврат": NotificationType.REFUND,
-    'Новый заказ': NotificationType.NEW_ORDER,
-    "Изменился статус заказа": NotificationType.ORDER_STATUS_CHANGED
+    "Новый заказ": NotificationType.NEW_ORDER,
+    "Изменился статус заказа": NotificationType.ORDER_STATUS_CHANGED,
 }
 
 origins = [
@@ -150,6 +150,7 @@ async def list_unreaded_notifications(
         .count()
     )
 
+
 @app.get("/api/v1/notifications/test")
 async def test(db: Session = Depends(get_db)):
 
@@ -163,5 +164,6 @@ async def test(db: Session = Depends(get_db)):
     db.commit()
     db.refresh(notification)
     return "all is ok"
+
 
 app.openapi = custom_openapi

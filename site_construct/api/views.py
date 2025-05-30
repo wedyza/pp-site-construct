@@ -197,21 +197,22 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             )
         return Response({"success": "Успешно"}, status=status.HTTP_200_OK)
 
-
     @action(
         detail=True,
-        methods=['GET'],
-        url_path='my_comment',
-        permission_classes=(permissions.IsAuthenticated,)
+        methods=["GET"],
+        url_path="my_comment",
+        permission_classes=(permissions.IsAuthenticated,),
     )
     def my_comment(self, request, pk):
         comment = Comment.objects.filter(item_id=pk, user=request.user).first()
         if comment is None:
-            return Response({'detail': 'did not found any comment'},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "did not found any comment"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         comments_serializer = CommentSerializer(instance=comment)
         # comments_serializer.is_valid()
         return Response(comments_serializer.data)
-
 
     @action(
         detail=True,
@@ -965,7 +966,17 @@ class SellDynamicsViewSet(views.APIView):
         start, end = define_this_week_period()
         orders = (
             Order.objects.values("created_at__date")
-            .filter(user=request.user)
+            .filter(
+                basket_id__in=BasketItem.objects.filter(
+                    basket__in=Basket.objects.filter(visible=False)
+                    .filter(currently_for_order=False)
+                    .all()
+                )
+                .select_related("good_item")
+                .filter(good_item__user=self.request.user)
+                .values_list("basket_id", flat=True)
+                .all()
+            )
             .annotate(count=Count("id"))
             .values("created_at__date", "count")
             .filter(created_at__gte=start, created_at__lte=end)

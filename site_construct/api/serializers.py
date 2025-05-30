@@ -27,7 +27,8 @@ User = get_user_model()
 
 
 BASE_NOTIFICATION_URL = "http://localhost/api/v1/notifications"
-#ЕСЛИ ТЫ В БУДУЩЕМ СМОТРИШЬ ЭТОТ КОД. НЕ ИСПОЛЬЗУЙ CREATE SERIALIZERS, ЛУЧШЕ ПРОСТО УКАЗЫВАЙ __all__ fields ДЛЯ ВОЗВРАТА, А НА ПОЛЯ, КОТОРЫЕ НЕ НАДО УКАЗЫВАТЬ НАВЕШИВАЙ READ_ONLY, ЭТО ПОМОЖЕТ ИСБЕЖАТЬ ПРОБЛЕМ
+# ЕСЛИ ТЫ В БУДУЩЕМ СМОТРИШЬ ЭТОТ КОД. НЕ ИСПОЛЬЗУЙ CREATE SERIALIZERS, ЛУЧШЕ ПРОСТО УКАЗЫВАЙ __all__ fields ДЛЯ ВОЗВРАТА, А НА ПОЛЯ, КОТОРЫЕ НЕ НАДО УКАЗЫВАТЬ НАВЕШИВАЙ READ_ONLY, ЭТО ПОМОЖЕТ ИСБЕЖАТЬ ПРОБЛЕМ
+
 
 class CharacteristicSerializer(serializers.ModelSerializer):
     class Meta:
@@ -504,7 +505,7 @@ class OrderToBuyerSerializer(serializers.ModelSerializer):
             "status",
             "payment_total",
             "id",
-            "created_at"
+            "created_at",
         )
         read_only_fields = ("items", "payment_method", "delivery_method")
 
@@ -540,7 +541,7 @@ class OrderToSellerSerializer(serializers.ModelSerializer):
             "payment_total",
             "id",
             "user",
-            "created_at"
+            "created_at",
         )
         read_only_fields = ("items", "payment_method", "delivery_method", "user")
 

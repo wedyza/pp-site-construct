@@ -37,7 +37,6 @@ class Notification(Base_var):
 # if not engine.dialect.has_table(engine, "Notifications"):
 
 
-
 def get_db():
     db = SessionLocal()
     try:

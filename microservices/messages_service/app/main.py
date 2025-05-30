@@ -23,6 +23,7 @@ import datetime
 import json
 from typing import List
 
+
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -70,6 +71,7 @@ manager = ConnectionManager()
 
 # Base_var.metadata.create_all(bind=engine)
 # print('created')
+
 
 @app.websocket("/api/v1/messages/connect/")
 async def websocket_endpoint(
