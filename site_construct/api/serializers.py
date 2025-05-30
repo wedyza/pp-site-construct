@@ -504,6 +504,7 @@ class OrderToBuyerSerializer(serializers.ModelSerializer):
             "status",
             "payment_total",
             "id",
+            "created_at"
         )
         read_only_fields = ("items", "payment_method", "delivery_method")
 
@@ -539,6 +540,7 @@ class OrderToSellerSerializer(serializers.ModelSerializer):
             "payment_total",
             "id",
             "user",
+            "created_at"
         )
         read_only_fields = ("items", "payment_method", "delivery_method", "user")
 

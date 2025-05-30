@@ -15,7 +15,6 @@ from rest_framework import permissions
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.utils import timezone
-
 # Create your views here.
 
 User = get_user_model()
@@ -34,6 +33,30 @@ class ActivationView(UserViewSet):
         super().activation(request, *args, **kwargs)
         return Response(
             {"message": "Account activated successfully!"},
+            status=status.HTTP_200_OK,
+        )
+
+
+class RegisterSellerView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    @swagger_auto_schema(request_body=UserCreateSerializer)
+    def post(self, request):
+        new_user = UserCreateSerializer(data=request.data)
+        if not new_user.is_valid():
+            return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = new_user.save(user_type="Продавец")
+
+        otp = generate_otp()
+        user.otp = otp
+        user.otp_expires = timezone.now() + timezone.timedelta(minutes=15)
+        user.save()
+        send_otp_email(new_user.data["email"], otp)
+
+        return Response(
+            {
+                "message": "Письмо с одноразовым кодом отправлено вам на почту. Он действителен в течении 15 минут"
+            },
             status=status.HTTP_200_OK,
         )
 
