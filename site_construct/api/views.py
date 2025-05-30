@@ -197,22 +197,21 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             )
         return Response({"success": "Успешно"}, status=status.HTTP_200_OK)
 
+
     @action(
         detail=True,
-        methods=["GET"],
-        url_path="my_comment",
-        permission_classes=(permissions.IsAuthenticated,),
+        methods=['GET'],
+        url_path='my_comment',
+        permission_classes=(permissions.IsAuthenticated,)
     )
     def my_comment(self, request, pk):
         comment = Comment.objects.filter(item_id=pk, user=request.user).first()
         if comment is None:
-            return Response(
-                {"detail": "did not found any comment"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({'detail': 'did not found any comment'},status=status.HTTP_400_BAD_REQUEST)
         comments_serializer = CommentSerializer(instance=comment)
         # comments_serializer.is_valid()
         return Response(comments_serializer.data)
+
 
     @action(
         detail=True,
@@ -702,7 +701,7 @@ class OrderViewSet(
             payout = MoneyPayout.objects.create(
                 user_from=order.user,
                 user_to=seller,
-                amount=amount * (1 - TAX),
+                amount=round(amount * (1 - TAX), 2),
                 good_item=basket_item.good_item,
                 order=order,
             )
@@ -901,10 +900,10 @@ class AnalyticsViewSet(views.APIView):
 
     def get(self, request):  # in this month
         total_payed = MoneyPayout.objects.filter(
-            user_to=request.user, state="Выплата"
+            user_to=request.user, state="PAYOUT"
         ).aggregate(Sum("amount"))
         total_freezed = MoneyPayout.objects.filter(
-            user_to=request.user, state="Заморожен"
+            user_to=request.user, state="FREEZED"
         ).aggregate(Sum("amount"))
         good_items = GoodItem.objects.filter(user=request.user).all()
         bought_baskets = (
@@ -966,16 +965,12 @@ class SellDynamicsViewSet(views.APIView):
         start, end = define_this_week_period()
         orders = (
             Order.objects.values("created_at__date")
-            .filter(
-                basket_id__in=BasketItem.objects.filter(
-                    basket__in=Basket.objects.filter(visible=False)
-                    .filter(currently_for_order=False)
+            .filter(basket_id__in = 
+                    BasketItem.objects.filter(basket__in=Basket.objects.filter(visible=False).filter(currently_for_order=False).all())
+                    .select_related("good_item")
+                    .filter(good_item__user=self.request.user)
+                    .values_list("basket_id", flat=True)
                     .all()
-                )
-                .select_related("good_item")
-                .filter(good_item__user=self.request.user)
-                .values_list("basket_id", flat=True)
-                .all()
             )
             .annotate(count=Count("id"))
             .values("created_at__date", "count")
