@@ -43,7 +43,7 @@ const SellerReviewsPage: React.FC = () => {
                     </svg>
                     <h1>Отзывы</h1>
                 </div>
-                <div className="seller-orders_search-container">
+                {/* <div className="seller-orders_search-container">
                     <div className="seller-orders_search">
                         <Search
                             value={''}
@@ -51,7 +51,7 @@ const SellerReviewsPage: React.FC = () => {
                             onSubmit={() => {}}
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className='seller-reviews_table seller-table text-n11'>
                     <div className='seller-orders_table-head seller-orders_table-row'>
                         <div className='seller-orders_table-cell'>Дата отзыва</div>

@@ -44,3 +44,27 @@ const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export default store;
+
+
+export const selectIsAnyLoading = (state: RootState) => {
+    return (
+        state.auth.loading ||
+        state.paymentMethods.loading ||
+        state.user.loading ||
+        state.goods.loading ||
+        state.basket.loading ||
+        state.wishlist.loading ||
+        state.comments.loading ||
+        state.users.loading ||
+        state.categories.loading ||
+        state.orders.loading ||
+        state.characteristics.loading ||
+        state.notifications.loading ||
+        state.reviews.loading ||
+        state.analytics.loading ||
+        state.sellDynamics.loading ||
+        state.todayOrders.loading ||
+        state.refund.loading ||
+        state.itemsLeft.loading
+    );
+};

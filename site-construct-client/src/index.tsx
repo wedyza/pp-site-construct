@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import store from './store/store';
 import { Provider } from 'react-redux';
+import Loader from './components/loader/Loader';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,6 +16,7 @@ root.render(
       <BrowserRouter>
         <ScrollToTop />
           <div className="App">
+              <Loader />
               <App />
           </div>
       </BrowserRouter>
