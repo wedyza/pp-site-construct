@@ -66,14 +66,14 @@ const SellerNav: React.FC = () => {
     return (
         <div className='seller-nav'>
             <div className='seller-nav_head'>
-                <div className='seller-nav_head-text'>
+                <Link to='/' className='seller-nav_head-text'>
                     <span className='seller-nav_head-role text-desc'>
                         seller
                     </span>
                     <span className='seller-nav_head-greet text-n16'>
                         Добрый день, {firstName}!
                     </span>
-                </div>
+                </Link>
                 <div className='seller-nav_head-links'>
                     <Link to='/seller/profile' className='seller-nav_not'>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
