@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './sellerProfilePage.scss'
 import SellerNav from '../../components/sellerNav/SellerNav';
 import ProfileInfo from '../../components/profileInfo/ProfileInfo';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addPaymentMethod, fetchPaymentMethods } from '../../store/paymentMethodsSlice';
 import Modal from '../../components/modal/Modal';
+import { deleteDocument, fetchDocuments, uploadDocument } from '../../store/documentsSlice';
+import { formatDate } from '../../utils/formatDate';
+import { Document } from '../../store/documentsSlice';
 
 const SellerProfilePage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -57,6 +60,44 @@ const SellerProfilePage: React.FC = () => {
         setCardDate(value);
     };
 
+    
+    const { items, loading, uploadLoading, error } = useAppSelector(state => state.documents);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        dispatch(fetchDocuments());
+    }, [dispatch]);
+
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            dispatch(uploadDocument({ file, type: 'OTHER' }));
+            e.target.value = '';
+        }
+    };
+
+    const getDocumentTitle = (source: string) => {
+        const withoutParams = source.split('?')[0];
+        const filename = withoutParams.split('/').pop();
+        return filename || 'Документ';
+    };
+
+    const handleDownload = (docItem: Document) => { // Переименовали параметр
+        const link = document.createElement('a');
+        link.href = docItem.source; // Используем переименованный параметр
+        
+        const fileName = getDocumentTitle(docItem.source);
+        link.setAttribute('download', fileName);
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -99,26 +140,52 @@ const SellerProfilePage: React.FC = () => {
                         <div className='profile-info_stg seller-profile_docs'>
                             <div className='seller-payment_header'>
                                 <h2 className='text-h1'>Документы</h2>
-                                <button className='seller-payment_add text-btn'>
+                                <button 
+                                    className='seller-payment_add text-btn'
+                                    onClick={handleUploadClick}
+                                    disabled={uploadLoading}
+                                >
                                     Загрузить
                                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" clipRule="evenodd" d="M7 0.25C7.41421 0.25 7.75 0.585786 7.75 1V6.25H13C13.4142 6.25 13.75 6.58579 13.75 7C13.75 7.41421 13.4142 7.75 13 7.75H7.75V13C7.75 13.4142 7.41421 13.75 7 13.75C6.58579 13.75 6.25 13.4142 6.25 13V7.75H1C0.585786 7.75 0.25 7.41421 0.25 7C0.25 6.58579 0.585786 6.25 1 6.25H6.25V1C6.25 0.585786 6.58579 0.25 7 0.25Z" fill="#02040F"/>
                                     </svg>
                                 </button>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    style={{ display: 'none' }}
+                                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                                />
                             </div>
                             <ul className='seller-profile_docs-list'>
-                                <li className='seller-profile_docs-item'>
-                                    <div className='seller-profile_doc-img'></div>
-                                    <div className='seller-profile_doc-text'>
-                                        <p className='seller-profile_doc-name text-n16'>Документ такой то такой то</p>
-                                        <p className='seller-profile_doc-date text-n11'>Дата загрузки: 15.03.2024</p>
-                                    </div>
-                                    <button className='seller-profile_doc-delete'>
-                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M0.226095 0.22703C0.518988 -0.0658633 0.993862 -0.0658636 1.28676 0.22703L5.99907 4.93934L10.7114 0.22703C11.0043 -0.0658633 11.4791 -0.0658637 11.772 0.22703C12.0649 0.519923 12.0649 0.994797 11.772 1.28769L7.05973 6L11.772 10.7123C12.0649 11.0052 12.0649 11.4801 11.772 11.773C11.4791 12.0659 11.0043 12.0659 10.7114 11.773L5.99907 7.06066L1.28676 11.773C0.993862 12.0659 0.518988 12.0659 0.226095 11.773C-0.0667979 11.4801 -0.0667978 11.0052 0.226095 10.7123L4.93841 6L0.226095 1.28769C-0.0667978 0.994797 -0.0667979 0.519923 0.226095 0.22703Z" fill="#02040F"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                {items.map((doc) => (
+                                    <li key={doc.id} className="seller-profile_docs-item">
+                                        <div className="seller-profile_doc-img">
+                                            
+                                        </div>
+                                        <div className="seller-profile_doc-text">
+                                            <button 
+                                                className="seller-profile_doc-name text-n16"
+                                                onClick={() => handleDownload(doc)}
+                                            >
+                                                {getDocumentTitle(doc.source)}
+                                            </button>
+                                            <p className="seller-profile_doc-date text-n11">
+                                                Дата загрузки: {formatDate(doc.created_at)}
+                                            </p>
+                                        </div>
+                                        <button 
+                                            className="seller-profile_doc-delete"
+                                            onClick={() => dispatch(deleteDocument(doc.id))}
+                                            disabled={uploadLoading}
+                                        >
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M0.226095 0.22703C0.518988 -0.0658633 0.993862 -0.0658636 1.28676 0.22703L5.99907 4.93934L10.7114 0.22703C11.0043 -0.0658633 11.4791 -0.0658637 11.772 0.22703C12.0649 0.519923 12.0649 0.994797 11.772 1.28769L7.05973 6L11.772 10.7123C12.0649 11.0052 12.0649 11.4801 11.772 11.773C11.4791 12.0659 11.0043 12.0659 10.7114 11.773L5.99907 7.06066L1.28676 11.773C0.993862 12.0659 0.518988 12.0659 0.226095 11.773C-0.0667979 11.4801 -0.0667978 11.0052 0.226095 10.7123L4.93841 6L0.226095 1.28769C-0.0667978 0.994797 -0.0667979 0.519923 0.226095 0.22703Z" fill="#02040F"/>
+                                            </svg>
+                                        </button>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                     </div>

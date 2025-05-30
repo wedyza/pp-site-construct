@@ -17,6 +17,7 @@ import sellDynamicsReducer from './sellDynamicsSlice';
 import refundReducer from './refundSlice';
 import todayOrdersReducer from './todayOrdersSlice';
 import itemsLeftReducer from './itemsLeftSlice';
+import documentsReducer from './documentsSlice';
 
 const store = configureStore({
     reducer: {
@@ -38,6 +39,7 @@ const store = configureStore({
         todayOrders: todayOrdersReducer,
         refund: refundReducer,
         itemsLeft: itemsLeftReducer,
+        documents: documentsReducer,
     },
 });
 
@@ -65,6 +67,7 @@ export const selectIsAnyLoading = (state: RootState) => {
         state.sellDynamics.loading ||
         state.todayOrders.loading ||
         state.refund.loading ||
-        state.itemsLeft.loading
+        state.itemsLeft.loading ||
+        state.documents.loading
     );
 };
