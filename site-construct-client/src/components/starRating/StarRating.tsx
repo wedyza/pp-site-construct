@@ -14,11 +14,8 @@ const emptyStar = (
     </svg>
 );
 
-const StarRating: React.FC<{ onRate?: (rating: number) => void }> = ({ onRate }) => {
-    const [rating, setRating] = useState(0);
-
+const StarRating: React.FC<{ rating: number, onRate?: (rating: number) => void }> = ({ rating, onRate }) => {
     const handleClick = (index: number) => {
-        setRating(index);
         if (onRate) onRate(index);
     };
 

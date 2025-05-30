@@ -3,6 +3,7 @@ import axiosInstance from '../api/axiosInstance';
 import { RootState } from './store';
 import { removeBasketItem } from './basketSlice';
 import { CharacteristicGroup } from './characteristicsSlice';
+import { addComment } from './reviewsSlice';
 
 export interface Rating {
     rate__avg: number;
@@ -15,6 +16,7 @@ export interface MediaItem {
 }
 
 export interface Good {
+    able_to_comment: boolean;
     id: number;
     name: string;
     description: string;
@@ -32,6 +34,10 @@ export interface Good {
     media?: MediaItem[];
     warehouse_count?: number;
 }
+
+export type GoodWithComment = Good & {
+    comment_id?: number;
+};
 
 interface GoodsState {
     items: Good[];
@@ -423,6 +429,13 @@ const goodsSlice = createSlice({
                         (m) => !action.payload.includes(m.id)
                     );
                 }
+            })
+            .addCase(addComment.fulfilled, (state, action: any) => {
+                state.loading = false;
+                const itemId = Number(action.meta.arg.get('item'));
+                state.boughtItems = state.boughtItems.map((good) =>
+                    good.id === itemId ? { ...good, able_to_comment: false } : good
+                );
             });
     },
 });

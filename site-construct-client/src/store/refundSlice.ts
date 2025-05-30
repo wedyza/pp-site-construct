@@ -3,6 +3,7 @@ import { RootState } from './store';
 import axiosInstance from '../api/axiosInstance';
 import { Good } from './goodsSlice';
 import { Order } from './orderSlice';
+import { addComment } from './reviewsSlice';
 
 export interface Refund {
     id: number;
@@ -95,6 +96,13 @@ const refundSlice = createSlice({
             .addCase(createRefund.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(addComment.fulfilled, (state, action: any) => {
+                state.loading = false;
+                const itemId = Number(action.meta.arg.get('item'));
+                state.refunds = state.refunds.map((refund) =>
+                    refund.id === itemId ? { ...refund, able_to_comment: false } : refund
+                );
             });
     },
 });

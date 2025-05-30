@@ -29,6 +29,12 @@ const initialState: ReviewsState = {
     error: null,
 };
 
+interface UpdateCommentPayload {
+    commentId: number;
+    body: string;
+    rate: number;
+}
+
 export const fetchUncommentedGoods = createAsyncThunk<
     Good[],
     void,
@@ -73,6 +79,30 @@ export const addComment = createAsyncThunk<
     }
 );
 
+export const updateComment = createAsyncThunk<
+    void,
+    UpdateCommentPayload,
+    { state: RootState; dispatch: any }
+>(
+    'reviews/updateComment',
+    async ({ commentId, body, rate }, { getState, rejectWithValue, dispatch }) => {
+        const token = getState().auth.token;
+
+        try {
+            await axiosInstance.patch(`/comments/${commentId}/`, { body, rate }, {
+                headers: {
+                    Authorization: `Token ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            await dispatch(fetchComments());
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка при обновлении отзыва');
+        }
+    }
+);
+
 export const fetchComments = createAsyncThunk<
     Comment[],
     void,
@@ -95,6 +125,25 @@ export const fetchComments = createAsyncThunk<
         return await Promise.all(goodsPromises);
     } catch (err: any) {
         return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки комментариев');
+    }
+});
+
+export const fetchCommentById = createAsyncThunk<
+    Comment,
+    number,
+    { state: RootState }
+>('comments/fetchById', async (goodId, { getState, rejectWithValue }) => {
+    const token = getState().auth.token;
+
+    try {
+        const response = await axiosInstance.get(`/goods/${goodId}/my_comment/`, {
+            headers: {
+                Authorization: `Token ${token}`,
+            },
+        });
+        return response.data;
+    } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || 'Ошибка при загрузке комментария');
     }
 });
 
@@ -147,7 +196,7 @@ const reviewsSlice = createSlice({
             .addCase(addComment.fulfilled, (state, action: any) => {
                 state.loading = false;
                 state.uncommentedGoods = state.uncommentedGoods.filter(
-                    (good) => good.id !== action.meta.arg.item
+                    (good) => good.id !== Number(action.meta.arg.get('item'))
                 );
             })
             .addCase(addComment.rejected, (state, action) => {
@@ -163,6 +212,17 @@ const reviewsSlice = createSlice({
                 state.comments = action.payload;
             })
             .addCase(fetchComments.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(fetchCommentById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCommentById.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(fetchCommentById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

@@ -4,7 +4,7 @@ import Modal from '../modal/Modal';
 import StarRating from '../starRating/StarRating';
 import FileUploader from '../fileUploader/FileUploader';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addComment, fetchComments, fetchUncommentedGoods } from '../../store/reviewsSlice';
+import { addComment, fetchCommentById, fetchComments, fetchUncommentedGoods, updateComment } from '../../store/reviewsSlice';
 
 const ProfileReviews: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,10 +12,25 @@ const ProfileReviews: React.FC = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [reviewText, setReviewText] = useState('');
     const [rating, setRating] = useState(0);
+    const [selectedGoodComment, setSelectedGoodComment] = useState<number | null>(null);
 
-    
     const dispatch = useAppDispatch();
     const { uncommentedGoods, comments, loading, error } = useAppSelector((state) => state.reviews);
+
+    useEffect(() => {
+        if (isModalOpen && selectedGood && !selectedGood.able_to_comment) {
+            dispatch(fetchCommentById(selectedGood.id))
+                .unwrap()
+                .then((comment) => {
+                    setReviewText(comment.body || '');
+                    setRating(comment.rate || 0);
+                    setSelectedGoodComment(comment.id);
+                })
+                .catch((err) => {
+                    console.error('Ошибка при загрузке отзыва:', err);
+                });
+        }
+    }, [isModalOpen, selectedGood, dispatch]);
 
     useEffect(() => {
         dispatch(fetchUncommentedGoods());
@@ -48,6 +63,35 @@ const ProfileReviews: React.FC = () => {
             .catch((err) => {
                 console.error("Ошибка при добавлении отзыва:", err);
                 //alert("Ошибка при отправке отзыва.");
+            });
+    };
+
+    const handleUpdateReview = () => {
+        if (!selectedGood || !reviewText || rating < 1) {
+            console.error("Пожалуйста, заполните отзыв и укажите рейтинг.");
+            return;
+        }
+
+        if (!selectedGoodComment) {
+            console.error("Комментарий не найден для обновления.");
+            return;
+        }
+
+        dispatch(updateComment({
+            commentId: selectedGoodComment,
+            body: reviewText,
+            rate: rating
+        }))
+            .unwrap()
+            .then(() => {
+                setIsModalOpen(false);
+                setReviewText('');
+                setRating(0);
+                setFiles([]);
+                setSelectedGoodComment(null);
+            })
+            .catch((err) => {
+                console.error("Ошибка при обновлении отзыва:", err);
             });
     };
     
@@ -118,15 +162,21 @@ const ProfileReviews: React.FC = () => {
                             </div>
                             <div className='text-n14 reviews-make_card-date'>7 мая 2025</div>
                         </div>
-                        <div className="reviews-make_card-actions">
+                        <button 
+                            className="reviews-make_card-actions"
+                            onClick={() => {
+                                setSelectedGood(comment.good);
+                                setIsModalOpen(true);
+                            }}
+                        >
                             <div className='text-n14 reviews-make_card-btn'>Редактировать отзыв</div>
-                            <button className='reviews-make_card-btn-svg'>
+                            <div className='reviews-make_card-btn-svg'>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd" clipRule="evenodd" d="M20.13 8.26146C20.538 8.33319 20.8105 8.72205 20.7388 9.13L18.7438 20.4763C18.7438 20.4763 18.7438 20.4763 18.7438 20.4763C18.5126 21.7912 17.3704 22.7501 16.0354 22.7501H7.96486C6.62979 22.7501 5.4876 21.7912 5.25642 20.4763L3.26146 9.13C3.18973 8.72205 3.46229 8.33318 3.87025 8.26146C4.2782 8.18973 4.66707 8.46229 4.73879 8.87025L6.73375 20.2165C6.83885 20.8143 7.35804 21.2501 7.96486 21.2501H16.0354C16.6422 21.2501 17.1614 20.8143 17.2664 20.2166L17.2665 20.2165L19.2615 8.87025C19.3332 8.46229 19.722 8.18973 20.13 8.26146Z" fill="#02040F"/>
                                     <path fillRule="evenodd" clipRule="evenodd" d="M10.625 2.75C9.93464 2.75 9.375 3.30964 9.375 4V5.25H14.625V4C14.625 3.30964 14.0654 2.75 13.375 2.75H10.625ZM7.875 5.25V4C7.875 2.48122 9.10622 1.25 10.625 1.25H13.375C14.8938 1.25 16.125 2.48122 16.125 4V5.25H21C21.4142 5.25 21.75 5.58579 21.75 6C21.75 6.41421 21.4142 6.75 21 6.75H3C2.58579 6.75 2.25 6.41421 2.25 6C2.25 5.58579 2.58579 5.25 3 5.25H7.875Z" fill="#02040F"/>
                                 </svg>
-                            </button>
-                        </div>
+                            </div>
+                        </button>
                     </li>
                 ))}
             </ul>
@@ -156,14 +206,20 @@ const ProfileReviews: React.FC = () => {
                         value={reviewText}
                         onChange={(e) => setReviewText(e.target.value)}
                     />
-                    <StarRating onRate={(value) => setRating(value)} />
+                    <StarRating rating={rating} onRate={(value) => setRating(value)} />
                     <div className="reviews-modal_form-uploader">
                         <FileUploader onFilesChange={setFiles} />
                     </div>
                     
                     <button
                         className='btn-black reviews-modal_form-btn text-btn'
-                        onClick={handleSubmitReview}
+                        onClick={() => {
+                            if (selectedGood && selectedGood.able_to_comment) {
+                                handleSubmitReview()
+                            } else {
+                                handleUpdateReview()
+                            }
+                        }}
                     >
                         Оставить отзыв
                     </button>
