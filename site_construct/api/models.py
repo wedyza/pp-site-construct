@@ -367,6 +367,9 @@ class Document(models.Model):
         REFUND_POLICY = "Политика возвратов"
         OTHER = "Другие"
         OFFER = "Оферта"
+        PLATFORM_RULES = 'Правила платформы'
+        USER_REGLAMENT = 'Пользовательское соглашение'
+        PLATFORM_POLICY = 'Политика платформы'
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
