@@ -93,7 +93,7 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        {data?.average_rating.rate__avg.toFixed(2)}
+                                        {data?.average_rating.rate__avg && data?.average_rating.rate__avg.toFixed(2)}
                                     </span>
                                     {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+142 отзыва за март)

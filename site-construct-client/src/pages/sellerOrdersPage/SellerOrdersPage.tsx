@@ -6,6 +6,7 @@ import './sellerOrdersPage.scss'
 import { Link } from 'react-router-dom';
 import { fetchOrders } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
+import { formatDate } from '../../utils/formatDate';
 
 const SellerOrdersPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ const SellerOrdersPage: React.FC = () => {
                         <path d="M6.24609 16.3438C5.47266 16.6172 5 17.2852 5 18.1172C5 18.6641 5.14453 19.043 5.5 19.4219C5.87109 19.8164 6.30469 20 6.875 20C7.44531 20 7.87891 19.8164 8.25 19.4219C8.60547 19.043 8.75 18.6641 8.75 18.125C8.75 17.5859 8.60547 17.207 8.25 16.8281C7.87891 16.4336 7.44141 16.25 6.86719 16.25C6.58984 16.25 6.44531 16.2734 6.24609 16.3438ZM7.17969 17.6172C7.56641 17.8555 7.55469 18.4141 7.15625 18.6445C6.78125 18.8633 6.28906 18.5742 6.28906 18.1289C6.28906 17.6719 6.79297 17.3828 7.17969 17.6172Z" fill="#02040F"/>
                         <path d="M14.9961 16.3438C14.2227 16.6172 13.75 17.2852 13.75 18.1172C13.75 18.6641 13.8945 19.043 14.25 19.4219C14.6211 19.8164 15.0547 20 15.625 20C16.1953 20 16.6289 19.8164 17 19.4219C17.3555 19.043 17.5 18.6641 17.5 18.125C17.5 17.5859 17.3555 17.207 17 16.8281C16.6289 16.4336 16.1914 16.25 15.6172 16.25C15.3398 16.25 15.1953 16.2734 14.9961 16.3438ZM15.9297 17.6172C16.3164 17.8555 16.3047 18.4141 15.9062 18.6445C15.5312 18.8633 15.0391 18.5742 15.0391 18.1289C15.0391 17.6719 15.543 17.3828 15.9297 17.6172Z" fill="#02040F"/>
                     </svg>
-                    <h1>Мои заказы <span className='seller-orders_title__accent'>Все (52)</span></h1>
+                    <h1>Мои заказы <span className='seller-orders_title__accent'>Все ({orders.length})</span></h1>
                 </div>
                 <div className="seller-orders_search-container">
                     <div className="seller-orders_search">
@@ -57,7 +58,7 @@ const SellerOrdersPage: React.FC = () => {
                     {orders.map((order) => (
                         <Link to={`/seller/order/${order.id}`} key={order.id} className='seller-orders_table-body seller-orders_table-row'>
                             <div className='seller-orders_table-cell'>№{order.id}</div>
-                            <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
+                            <div className='seller-orders_table-cell'>{formatDate(order.created_at)}</div>
                             <div className='seller-orders_table-cell'>
                                 {`${order.user?.last_name} ${order.user?.first_name[0]}.`}
                             </div>

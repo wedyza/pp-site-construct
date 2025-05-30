@@ -25,20 +25,20 @@ const SellerNav: React.FC = () => {
         navigate('/login');
     };
 
-    const filters = [
-        { key: 'all', label: 'Все' },
-        { key: 'pending', label: 'В ожидании' },
-        { key: 'shipped', label: 'Отправлено' },
-        { key: 'delivered', label: 'Доставлено' },
-        { key: 'returned', label: 'Возврат' },
-    ];
-    const goodsFilters = [
-        { key: 'all', label: 'Все' },
-        { key: 'pending', label: 'На модерации' },
-        { key: 'shipped', label: 'Активный' },
-        { key: 'delivered', label: 'Приостановленный' },
-        { key: 'returned', label: 'Снятый с продажи' },
-    ];
+    // const filters = [
+    //     { key: 'all', label: 'Все' },
+    //     { key: 'pending', label: 'В ожидании' },
+    //     { key: 'shipped', label: 'Отправлено' },
+    //     { key: 'delivered', label: 'Доставлено' },
+    //     { key: 'returned', label: 'Возврат' },
+    // ];
+    // const goodsFilters = [
+    //     { key: 'all', label: 'Все' },
+    //     { key: 'pending', label: 'На модерации' },
+    //     { key: 'shipped', label: 'Активный' },
+    //     { key: 'delivered', label: 'Приостановленный' },
+    //     { key: 'returned', label: 'Снятый с продажи' },
+    // ];
     
     const isGoodsRoute =
         location.pathname === '/seller/goods' ||
@@ -110,7 +110,7 @@ const SellerNav: React.FC = () => {
                         </div>
                         <span className='seller-nav_item-text text-n16'>Мои заказы</span>
                     </Link>
-                    { ['/seller/orders', '/seller/order'].includes(location.pathname) && (
+                    {/* { ['/seller/orders', '/seller/order'].includes(location.pathname) && (
                         <div className="seller-nav_item-list text-n16">
                             {filters.map(({ key, label }) => (
                                 <button
@@ -123,7 +123,7 @@ const SellerNav: React.FC = () => {
                             ))}
                         </div>
                         )
-                    }
+                    } */}
                 </div>
                 <div className={`seller-nav_item-container ${isGoodsRoute ? 'seller-nav_item__active' : ''}`}>
                     <Link to='/seller/goods' className='seller-nav_item' >
@@ -136,7 +136,7 @@ const SellerNav: React.FC = () => {
                         </div>
                         <span className='seller-nav_item-text text-n16'>Мои товары</span>
                     </Link>
-                    { isGoodsRoute && (
+                    {/* { isGoodsRoute && (
                         <div className="seller-nav_item-list text-n16">
                             {goodsFilters.map(({ key, label }) => (
                                 <button
@@ -149,7 +149,7 @@ const SellerNav: React.FC = () => {
                             ))}
                         </div>
                         )
-                    }
+                    } */}
                 </div>
                 <div className={`seller-nav_item-container ${location.pathname === '/seller/finance' ? 'seller-nav_item__active' : ''}`}>
                     <Link className="seller-nav_item" to='/seller/finance'>

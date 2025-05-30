@@ -51,6 +51,25 @@ export const registerUser = createAsyncThunk(
     }
 );
 
+export const registerSeller = createAsyncThunk(
+    'auth/registerSeller',
+    async (
+        { email, name, sex }: { email: string; name: string; sex: 'MALE' | 'FEMALE' },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axiosInstance.post('/auth/register_seller', {
+                email,
+                first_name: name,
+                sex,
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Ошибка регистрации');
+        }
+    }
+);
+
 export const validateOtp = createAsyncThunk(
     'auth/validateOtp',
     async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
@@ -114,6 +133,18 @@ const authSlice = createSlice({
                 state.step = 'otp';
             })
             .addCase(registerUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(registerSeller.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(registerSeller.fulfilled, (state) => {
+                state.loading = false;
+                state.step = 'otp';
+            })
+            .addCase(registerSeller.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
