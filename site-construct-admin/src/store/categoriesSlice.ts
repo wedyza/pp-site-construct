@@ -27,7 +27,7 @@ interface CategoryInput {
 export interface Category {
     id: number;
     title: string;
-    description: string;
+    description?: string;
     parent: number | null;
 }
 
