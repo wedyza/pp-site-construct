@@ -965,6 +965,7 @@ class SellDynamicsViewSet(views.APIView):
         start, end = define_this_week_period()
         orders = (
             Order.objects.values("created_at__date")
+            .filter(user=request.user)
             .annotate(count=Count("id"))
             .values("created_at__date", "count")
             .filter(created_at__gte=start, created_at__lte=end)
