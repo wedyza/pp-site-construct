@@ -91,13 +91,13 @@ const MainPage: React.FC = () => {
                         </svg>
                     </button>
                 </div>
-                <div className="seller-orders_search">
+                {/* <div className="seller-orders_search">
                     <Search
                         value={''}
                         onChange={() => {}}
                         onSubmit={() => {}}
                     />
-                </div>
+                </div> */}
                 <div className='admin-cat_table admin-table text-n11'>
                     <div className='seller-orders_table-head seller-orders_table-row'>
                         <div className='seller-orders_table-cell'>№</div>

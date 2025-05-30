@@ -18,3 +18,13 @@ const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export default store;
+
+export const selectIsAnyLoading = (state: RootState) => {
+    return (
+        state.auth.loading ||
+        state.user.loading ||
+        state.users.loading ||
+        state.categories.loading ||
+        state.characteristics.loading
+    );
+};
