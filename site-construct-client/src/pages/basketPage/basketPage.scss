@@ -93,3 +93,23 @@
 .basket-placement_link-text {
     color: var(--background);
 }
+
+.basket-empty {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: auto;
+}
+
+.basket-empty_img {
+    width: 418px;
+    height: 369px;
+}
+
+.basket-empty_info {
+    position: relative;
+    display: flex;
+    width: 213px;
+    flex-direction: column;
+    gap: 32px;
+}
