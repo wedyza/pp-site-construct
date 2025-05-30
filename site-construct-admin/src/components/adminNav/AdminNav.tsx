@@ -80,8 +80,8 @@ const AdminNav: React.FC = () => {
                         <span className='seller-nav_item-text text-n16'>Пользователи</span>
                     </Link>
                 </div>
-                <div className={`seller-nav_item-container`}>
-                    <Link className="seller-nav_item" to='/seller/reviews'>
+                <div className={`seller-nav_item-container ${location.pathname === '/documents' ? 'seller-nav_item__active' : ''}`}>
+                    <Link className="seller-nav_item" to='/documents'>
                         <div className="seller-nav_item-img">
                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 7C5.10457 7 6 6.10457 6 5C6 3.89543 5.10457 3 4 3C2.89543 3 2 3.89543 2 5C2 6.10457 2.89543 7 4 7Z" stroke="#02040F" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>

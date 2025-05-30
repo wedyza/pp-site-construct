@@ -10,6 +10,7 @@ import UserPage from "./pages/userPage/UserPage";
 import { logout } from "./store/authSlice";
 import CharPage from "./pages/charPage/CharPage";
 import ProfilePage from "./pages/profilePage/ProfilePage";
+import DocPage from "./pages/docPage/DocPage";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/user/:id" element={<UserPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/documents" element={<DocPage />} />
       </Route>
 
       <Route element={<ProtectedRoute onlyGuest />}>

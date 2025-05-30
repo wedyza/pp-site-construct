@@ -4,6 +4,7 @@ import userReducer from './userSlice';
 import usersReducer from './usersSlice';
 import categoriesReducer from './categoriesSlice';
 import characteristicsReducer from './characteristicsSlice';
+import documentsReducer from './documentsSlice';
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         users: usersReducer,
         characteristics: characteristicsReducer,
         categories: categoriesReducer,
+        documents: documentsReducer,
     },
 });
 
@@ -25,6 +27,7 @@ export const selectIsAnyLoading = (state: RootState) => {
         state.user.loading ||
         state.users.loading ||
         state.categories.loading ||
-        state.characteristics.loading
+        state.characteristics.loading ||
+        state.documents.loading
     );
 };
