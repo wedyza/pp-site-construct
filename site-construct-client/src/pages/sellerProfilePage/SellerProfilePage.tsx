@@ -86,13 +86,11 @@ const SellerProfilePage: React.FC = () => {
         return filename || 'Документ';
     };
 
-    const handleDownload = (docItem: Document) => { // Переименовали параметр
+    const handleDownload = (docItem: Document) => {
         const link = document.createElement('a');
-        link.href = docItem.source; // Используем переименованный параметр
-        
+        link.href = docItem.source;
         const fileName = getDocumentTitle(docItem.source);
         link.setAttribute('download', fileName);
-        
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
