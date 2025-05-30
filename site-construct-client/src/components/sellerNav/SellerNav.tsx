@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './sellerNav.scss'
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -17,10 +17,12 @@ const SellerNav: React.FC = () => {
     }, [dispatch]);
 
     const location = useLocation();
+    const navigate = useNavigate();
     const [activeFilter, setActiveFilter] = useState('all');
 
     const handleLogout = () => {
         dispatch(logout());
+        navigate('/login');
     };
 
     const filters = [

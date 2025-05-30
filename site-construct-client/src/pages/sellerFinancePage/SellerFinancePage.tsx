@@ -1,7 +1,19 @@
+import { useEffect } from 'react';
 import SellerNav from '../../components/sellerNav/SellerNav';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './sellerFinancePage.scss'
+import { fetchOrders } from '../../store/orderSlice';
+import { formatPrice } from '../../utils/formatPrice';
+import { formatDate } from '../../utils/formatDate';
 
 const SellerFinancePage: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { orders/*, loading*/ } = useAppSelector(state => state.orders);
+
+    useEffect(() => {
+        dispatch(fetchOrders());
+    }, [dispatch]);
+
     return (
         <div className='page-content__seller'>
             <SellerNav />
@@ -15,7 +27,6 @@ const SellerFinancePage: React.FC = () => {
                     </svg>
                     <h1>Финансы</h1>
                 </div>
-                    
                 <div className='seller-finance_table seller-table text-n11'>
                     <div className='seller-orders_table-head seller-orders_table-row'>
                         <div className='seller-orders_table-cell'>Дата транзакции</div>
@@ -23,130 +34,31 @@ const SellerFinancePage: React.FC = () => {
                         <div className='seller-orders_table-cell'>Номер заказа</div>
                         <div className='seller-orders_table-cell'>Детали</div>
                         <div className='seller-orders_table-cell'>Сумма заказа</div>
-                        <div className='seller-orders_table-cell'>Комиссия</div>
+                        {/* <div className='seller-orders_table-cell'>Комиссия</div>
                         <div className='seller-orders_table-cell'>Доставка</div>
-                        <div className='seller-orders_table-cell'>Итого</div>
+                        <div className='seller-orders_table-cell'>Итого</div> */}
                     </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
+                    {orders.map((order) => (
+                        <div className='seller-orders_table-body seller-orders_table-row' key={order.id}>
+                            <div className='seller-orders_table-cell'>{formatDate(order.created_at)}</div>
+                            <div className='seller-orders_table-cell'>{formatDate(order.created_at)}</div>
+                            <div className='seller-orders_table-cell'>{order.id}</div>
+                            <div className='seller-orders_table-cell seller-finance_table-cell'>
+                                {order.items?.map((good) => (
+                                    <p>
+                                        {good.good_item.name} 
+                                        <span className='seller-orders_count'>
+                                            ({good.count}шт)
+                                        </span>
+                                    </p>
+                                ))}
+                            </div>
+                            {/* <div className='seller-orders_table-cell'>5 520 ₽</div>
+                            <div className='seller-orders_table-cell'>540 ₽</div>
+                            <div className='seller-orders_table-cell'>63 ₽</div> */}
+                            <div className='seller-orders_table-cell'>{formatPrice(order.payment_total)} ₽</div>
                         </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
-                    <div className='seller-orders_table-body seller-orders_table-row'>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
-                        <div className='seller-orders_table-cell'>565156488</div>
-                        <div className='seller-orders_table-cell'>
-                            Робот мойщик окон с распылением <span className='seller-orders_count'>(3шт)</span>
-                        </div>
-                        <div className='seller-orders_table-cell'>5 520 ₽</div>
-                        <div className='seller-orders_table-cell'>540 ₽</div>
-                        <div className='seller-orders_table-cell'>63 ₽</div>
-                        <div className='seller-orders_table-cell'>5200 ₽</div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>

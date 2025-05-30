@@ -15,7 +15,7 @@ interface User {
 
 export interface Order {
     id?: number;
-    placement_date: string;
+    created_at: string;
     delivery_date?: string;
     payment_total: number;
     address: string;
