@@ -197,6 +197,22 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             )
         return Response({"success": "Успешно"}, status=status.HTTP_200_OK)
 
+
+    @action(
+        detail=True,
+        methods=['GET'],
+        url_path='my_comment',
+        permission_classes=(permissions.IsAuthenticated,)
+    )
+    def my_comment(self, request, pk):
+        comment = Comment.objects.filter(item_id=pk, user=request.user).first()
+        if comment is None:
+            return Response({'detail': 'did not found any comment'},status=status.HTTP_400_BAD_REQUEST)
+        comments_serializer = CommentSerializer(instance=comment)
+        # comments_serializer.is_valid()
+        return Response(comments_serializer.data)
+
+
     @action(
         detail=True,
         methods=["POST"],
