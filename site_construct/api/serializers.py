@@ -614,7 +614,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("user", "item", "body", "rate", "media", "id", "reply")
+        fields = ("user", "item", "body", "rate", "media", "id", "reply", "created_at")
         read_only_fields = ("user", "reply", "media")
 
     def get_reply(self, obj):
@@ -663,7 +663,7 @@ class CommentToSellerSerialzier(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("user", "item", "body", "rate", "reply", "id", "media")
+        fields = ("user", "item", "body", "rate", "reply", "id", "media", "created_at")
 
     def get_reply(self, obj):
         reply = CommentReply.objects.filter(comment=obj).first()
