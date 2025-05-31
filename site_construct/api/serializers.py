@@ -718,7 +718,6 @@ class GoodItemWithSellsCountSerializer(serializers.ModelSerializer):
         )
 
     def get_status(self, obj):
-        print(obj)
         status = "В наличии"
         if obj.sell_count <= 50:
             status = "Мало"
