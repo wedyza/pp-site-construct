@@ -266,7 +266,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
             BasketItem.objects.filter(
                 basket__in=Basket.objects.filter(user=request.user).filter(
                     visible=False
-                )
+                ).filter(currently_for_order=False)
             )
             .values_list("good_item_id", flat=True)
             .distinct()
