@@ -8,6 +8,7 @@ import { fetchPaymentMethods } from '../../store/paymentMethodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { createOrder } from '../../store/orderSlice';
 import { useNavigate } from 'react-router-dom';
+import { getDateTwoWeeksLater } from '../../utils/getDate';
 
 const MakeOrderPage: React.FC = () => {
     const navigate = useNavigate();
@@ -91,10 +92,10 @@ const MakeOrderPage: React.FC = () => {
                     <div className="order_del">
                         <h2 className="text-h2">Доставка</h2>
                         <div className="order_del-info">
-                            <div className="order_del-item">
+                            <div className="order_del-item make-order_adress-cont">
                                 <p className='order_del-label text-n14'>Пункт выдачи</p>
                                 <input
-                                    className='order_del-value text-n16'
+                                    className='order_del-value make-order_adress text-n16'
                                     type="text"
                                     value={pickupPoint}
                                     onChange={(e) => setPickupPoint(e.target.value)}
@@ -111,7 +112,7 @@ const MakeOrderPage: React.FC = () => {
                         <span className='order_del-type text-n14'>самовывоз</span>
                     </div>
                     <div className="order_items">
-                        <h2 className="text-h2">Доставим 15 марта, бесплатно</h2>
+                        <h2 className="text-h2">Доставим {getDateTwoWeeksLater()}, бесплатно</h2>
                         <p className='text-n14 order_items-count'>{selectedGoods.length} товара</p>
                         <div className="order_items-list">
                             {selectedGoods.map((good) => (
