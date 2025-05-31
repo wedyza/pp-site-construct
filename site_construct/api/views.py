@@ -331,7 +331,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentMethodSerializer
-    mission_classes = (OwnerOrReadOnly,)
+    permission_classes = (OwnerOrReadOnly,)
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -575,7 +575,7 @@ class OrderViewSet(
                 "capture": True,
                 "confirmation": {
                     "type": "redirect",
-                    "return_url": "http://localhost:3000/orders",
+                    "return_url": "http://188.68.80.72/orders",
                 },
                 "description": f"Оплата заказа №{instance.id}",
                 "metadata": {"order_id": instance.id, "transaction_id": transaction.id},
