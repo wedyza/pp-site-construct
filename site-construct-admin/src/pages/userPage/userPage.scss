@@ -1,0 +1,65 @@
+.admin-user_link {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+    margin-top: 24px;
+    display: block;
+    width: fit-content;
+    margin-bottom: 24px;
+}
+
+.admin-user_btn {
+    padding: 6px;
+    border-radius: 5px;
+}
+
+.admin-user_deact {
+    background-color: var(--black);
+    color: var(--background);
+}
+
+.admin-user_del {
+    background-color: var(--red120);
+    color: var(--red1);
+}
+
+.admin-user_info {
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    margin-top: 24px;
+}
+
+.admin-user_info-actions {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    display: flex;
+    gap: 8px;
+}
+
+.admin-user_info-img {
+    width: 85px;
+    height: 85px;
+    background-color: var(--temp-color);
+    border-radius: 5px;
+    margin-top: 16px;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.admin-user_info-name {
+    margin-top: 12px;
+}
+
+.admin-user_info-list {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}

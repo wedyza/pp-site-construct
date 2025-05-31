@@ -1,0 +1,18 @@
+.admin-users_table {
+    grid-template-columns: 1fr 1fr 1fr auto;
+    margin-top: 32px;
+}
+
+.admin-orders_table-cell {
+    padding: 14px 16px;
+}
+
+.admin-orders_table-row {
+    .admin-orders_table-cell {
+        border-top: 1px solid var(--black15);
+    }
+}
+
+.admin-users_link {
+    border-bottom: 1px solid var(--text-color);
+}

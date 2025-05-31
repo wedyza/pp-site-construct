@@ -1,0 +1,53 @@
+.login-gallery {
+    flex: 1;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    height: 100%;
+    position: relative;
+}
+
+.login-gallery_controls {
+    padding: 32px 48px 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.login-gallery_counter {
+    margin-left: auto;
+}
+
+.login-gallery_arrow {
+    width: 36px;
+    height: 36px;
+    background-color: var(--black15);
+    border-radius: 50%;
+}
+
+.login-gallery_arrow__disabled {
+    opacity: 0.3;
+}
+
+.login-gallery_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-gallery_text {
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    width: 192px;
+    margin-top: 48px;
+    margin-left: 48px;
+    color: var(--black60);
+}
+
+.login-gallery_img {
+    width: 70%;
+    position: absolute;
+    bottom: 52px;
+}

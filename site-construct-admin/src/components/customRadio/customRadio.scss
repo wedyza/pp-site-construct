@@ -1,0 +1,17 @@
+.custom-radio {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 0.5rem;
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+    }
+}
+  
