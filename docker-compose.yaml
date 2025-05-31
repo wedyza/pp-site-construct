@@ -1,0 +1,74 @@
+services:
+  minio:  
+    image: minio/minio
+    container_name: minio  
+    restart: unless-stopped  
+    ports:
+      - 9000:9000
+      - 9001:9001
+    expose:
+      - "9000"
+    volumes:  
+      - minio-storage:/data  
+    environment:  
+      - MINIO_ROOT_USER=miniouser  
+      - MINIO_ROOT_PASSWORD=admin123
+    command: server /data --console-address ":9001"  
+    healthcheck:  
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]  
+      interval: 30s  
+      timeout: 20s  
+      retries: 3
+  
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    restart: always
+    env_file: ./.env
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  
+  message_microservice:
+    build: ./microservices/messages_service
+    container_name: messages_service
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - message_volume:/messages.db
+  
+  notifications_microservice:
+    build: ./microservices/notifications_service
+    container_name: notifications_service
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - notification_volume:/code/app/db
+    # network_mode: host
+    
+  monolith_app:
+    build: ./site_construct
+    container_name: monolith_app
+    volumes:
+      - static:/static/
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 443:443
+      - 80:80
+    depends_on:
+      - monolith_app
+      - notifications_microservice
+      - message_microservice
+    volumes:
+      - static:/static/
+      # - ./mycert.crt:/etc/ssl/mycert.crt
+      # - ./mykey.key:/etc/ssl/mykey.key
+volumes:
+  minio-storage:
+  pg_data:
+  message_volume:
+  notification_volume:
+  static:
