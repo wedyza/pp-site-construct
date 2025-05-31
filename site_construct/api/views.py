@@ -622,7 +622,6 @@ class OrderViewSet(
                 Q(status="ON_THE_WAY")
                 | Q(status="DELIVERED")
                 | Q(status="PAYED")
-                | Q(status="PROCESSING")
             )
             .all()
         )
@@ -691,7 +690,7 @@ class OrderViewSet(
         basket.currently_for_order = False
         basket.save()
 
-        order.status = 'PAYED'
+        order.status = order.OrderStatusChoices.PAYED
         order.save()
 
         sellers = (
