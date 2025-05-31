@@ -43,18 +43,29 @@ services:
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     volumes:
       - notification_volume:/code/app/db
-    # network_mode: host
     
   monolith_app:
     build: ./site_construct
     container_name: monolith_app
-    volumes:
-      - static:/static/
     depends_on:
       - db
 
+  frontend_admin:
+    build: ./site-construct-admin
+    container_name: frontend_admin
+    command: cp -r /app/build/. /admin_static/
+    volumes:
+      - admin_static:/admin_static/
+
+  frontend_client:
+    build: ./site-construct-client
+    container_name: frontend_client
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - frontend_static:/frontend_static/
   nginx:
     build: ./nginx
+    container_name: nginx
     ports:
       - 443:443
       - 80:80
@@ -63,12 +74,12 @@ services:
       - notifications_microservice
       - message_microservice
     volumes:
-      - static:/static/
-      # - ./mycert.crt:/etc/ssl/mycert.crt
-      # - ./mykey.key:/etc/ssl/mykey.key
+      - frontend_static:/frontend_static/
+      - admin_static:/admin_static/
 volumes:
   minio-storage:
   pg_data:
   message_volume:
   notification_volume:
-  static:
+  frontend_static:
+  admin_static:
