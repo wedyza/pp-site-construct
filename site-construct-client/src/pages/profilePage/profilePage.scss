@@ -1,0 +1,139 @@
+.page-content__no-pad {
+    padding: 0 var(--padding);
+    padding-top: calc(var(--header-height) + var(--cat-height) + 8px) ;
+    padding-bottom: 0;
+}
+
+.profile-page {
+    display: grid;
+    grid-template-columns: 1fr calc(75% - 6px);
+    gap: 24px;
+}
+
+.profile-content {
+    flex: 1;
+}
+
+.profile-nav {
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    height: fit-content;
+}
+
+.profile-nav_header {
+    display: flex;
+    align-items: center;
+    padding: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--temp-color);
+    cursor: pointer;
+}
+
+.profile-nav_avatar {
+    width: 50px;
+    height: 50px;
+    background-color: var(--temp-color);
+    border-radius: 50%;
+}
+
+.profile-nav_name {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: 12px;
+}
+
+.profile-nav_header:hover {
+    .profile-nav_name {
+        svg path {
+            fill: var(--black60);
+        }
+    }
+}
+
+.profile-nav_notify {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.profile-nav_list {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-nav_item {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    gap: 12px;
+    font-weight: 500;
+    font-size: 0.8em;
+    line-height: 150%;
+    letter-spacing: -1.1%;
+    color: var(--black60);
+    cursor: pointer;
+
+    svg path {
+        fill: var(--black60);
+    }
+}
+
+.profile-nav_item:hover {
+    svg path {
+        fill: var(--accent);
+    }
+}
+
+.profile-nav_item__active {
+    color: var(--accent);
+
+    svg path {
+        fill: var(--accent);
+    }
+}
+
+.modal-container.profile_notify-modal {
+    width: 30%;
+}
+
+.notify-modal_list {
+    margin-top: 24px;
+}
+
+.notify-modal_list-item {
+    border-top: 1px solid var(--black15);
+    padding: 12px 0;
+    display: grid;
+    grid-template-areas: 
+        'img text'
+        'img date'
+    ;
+    grid-template-columns: auto 1fr;
+    row-gap: 12px;
+    column-gap: 16px;
+}
+
+.notify-item_img {
+    width: 45px;
+    height: 45px;
+    background-color: var(--temp-color);
+    border-radius: var(--radius);
+    grid-area: img;
+}
+
+.notify-item_text {
+    grid-area: text;
+}
+
+.notify-item_text__accent {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.notify-item_date {
+    grid-area: date;
+    color: var(--black60);
+}

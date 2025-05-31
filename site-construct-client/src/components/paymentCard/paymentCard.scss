@@ -1,0 +1,37 @@
+.payment-card {
+    border-radius: var(--big-radius);
+    background-color: #48AF5B;
+    width: 312px;
+    height: 165px;
+    position: relative;
+}
+
+.payment-card_bank {
+    color: var(--background);
+    position: absolute;
+    top: 24px;
+    left: 24px;
+}
+
+.payment-card_delete {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.payment-card_main {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    background-color: #B819C7;
+    color: var(--background);
+    padding: 4px 8px;
+    border-radius: var(--radius);
+}
+
+.payment-card_num {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    color: var(--background);
+}

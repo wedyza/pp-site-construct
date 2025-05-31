@@ -1,0 +1,48 @@
+.seller-goods_table {    
+    grid-template-columns: 7% 13% 1fr 12% 12% 8% 13.5% 10% 68px;
+    margin-top: 24px;
+}
+
+.seller-goods_actions {
+    display: flex;
+    gap: 4px;
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.seller-orders_create-btn {
+    position: absolute;
+    right: 0;
+    top: -8px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    border: 1px solid var(--black15);
+    border-radius: 15px;
+
+    svg {
+        height: 13.5px;
+        width: 13.5px;
+    }
+}
+
+.seller-orders_table-cell__warehouse {
+    display: flex;
+    align-items: self-start;
+    gap: 4px;
+
+    svg {
+        height: 14px;
+    }
+}
+
+.warehouse-modal_form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+}

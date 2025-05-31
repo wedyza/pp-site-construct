@@ -1,0 +1,34 @@
+.orders-tabs {
+    display: flex;
+    background-color: var(--second-color);
+    border-radius: var(--radius);
+    width: fit-content;
+}
+
+.orders-tab {
+    padding: 10px 30px;
+    color: var(--text-second);
+}
+
+.orders-tab__active {
+    background-color: var(--black);
+    border-radius: var(--radius);
+    color: var(--background);
+}
+
+.orders-content {
+    margin-top: 45px;
+}
+
+.orders_goods-list {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(648px, 1fr));
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}

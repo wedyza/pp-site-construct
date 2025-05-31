@@ -1,0 +1,39 @@
+.dropdown-title {
+    display: grid;
+    grid-template-columns: 1fr 9px;
+    align-items: center;
+    gap: 5.5px;
+}
+
+.dropdown-title:hover {
+    color: var(--accent);
+    svg path {
+        fill: var(--accent);
+    }
+}
+
+.dropdown-title_text {
+    white-space: nowrap;
+}
+
+.dropdown-list {
+    border: 1px solid var(--black15);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: absolute;
+    z-index: 50;
+    background-color: var(--background);
+    width: 250px;
+}
+
+.dropdown-item {
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+        color: var(--accent);
+    }
+}

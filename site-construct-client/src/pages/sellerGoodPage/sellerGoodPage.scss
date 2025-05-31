@@ -1,0 +1,224 @@
+.seller-good_id {
+    margin-left: auto;
+    margin-right: 30px;
+    align-self: flex-end;
+}
+
+.seller-good_info {
+    margin-top: 24px;
+}
+
+.seller-good_item {
+    background-color: var(--background);
+    border-radius: var(--big-radius);
+    padding: 24px 32px;
+}
+
+.seller-good_info-main {
+    display: grid;
+    grid-template-columns: 55% 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.seller-good_info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.seller-good_input {
+    background-color: var(--white-gray);
+    height: 50px;
+    padding: 0 24px;
+    border-radius: var(--radius);
+}
+
+.seller-good_info-cat {
+    margin-top: 24px;
+    display: flex;
+    gap: 24px;
+
+    .seller-good_info-group {
+        width: 258px;
+    }
+}
+
+.seller-good_cat span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.seller-good_cat {
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding: 0 16px;
+    position: relative;
+    cursor: pointer;
+}
+
+.seller-good_info-imgs {
+    margin-top: 24px;
+}
+
+.seller-good_imgs-list {
+    display: flex;
+    gap: 8px;
+}
+
+.seller-good_img {
+    height: 100px;
+    width: 100px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--black15);
+}
+
+.seller-good_img-cont {
+    height: 100%;
+    width: 100%;
+    background-color: var(--second-color);
+}
+
+.seller-good_img-src {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.seller-good_img-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 33px;
+    width: 33px;
+    background-color: var(--white-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 var(--radius) 0 var(--radius);
+}
+
+.seller-good_img-add {
+    border: none;
+    background-color: var(--white-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seller-good_form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.seller-good_desc-list {
+    margin-top: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.seller-good_desc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.seller-good_desc-add {
+    border: 1px solid var(--black15);
+    border-radius: 15px;
+    height: 40px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.seller-good_desc-main {
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    padding: 11px 24px;
+    margin-top: 24px;
+    width: 100%;
+    height: 200px;
+}
+
+.seller-good_desc-table {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--black15);
+    margin-top: 24px;
+}
+
+.seller-good_desc-row {
+    display: flex;
+    border-bottom: 1px solid var(--black15);
+    height: 50px;
+    align-items: center;
+}
+
+.seller-good_desc-value {
+    margin-left: auto;
+    padding-right: 12px;
+}
+
+.seller-good_desc-actions {
+    border-left: 1px solid var(--black15);
+    height: 100%;
+    display: flex;
+    gap: 4px;
+    padding: 0 16px;
+}
+
+.seller-good_form-btn {
+    width: 327px;
+}
+
+.seller-good_form-btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.seller-good_form-del {
+    height: 50px;
+    width: 160px;
+    background-color: var(--red50);
+    color: var(--background);
+    border-radius: var(--radius);
+}
+
+.seller-good_charc {
+    margin-top: 24px;
+}
+
+.seller-good_charc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.seller-good_charc-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.seller-good_vis {
+    display: flex;
+    gap: 4px;
+    margin-top: 24px;
+}
+
+.seller-good_cat-list {
+    top: 74px;
+}

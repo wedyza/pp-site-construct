@@ -1,0 +1,24 @@
+
+.refund-form_dropzone {
+    background-color: var(--background);
+    border-radius: var(--radius);
+    padding: 19px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.refund-form_dropzone-desc {
+    margin-top: 16px;
+    width: 58%;
+    text-align: center;
+}
+
+.refund-form_upload-btn {
+    padding: 9.5px 12px;
+    border: 1px solid var(--black15);
+    border-radius: var(--radius);
+    margin-top: 12px;
+    background-color: var(--background);
+}

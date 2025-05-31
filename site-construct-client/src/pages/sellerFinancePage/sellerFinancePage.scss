@@ -1,0 +1,29 @@
+.seller-finance {
+    background-color: var(--background);
+    border-radius: var(--big-radius);
+    padding: 16px;
+    padding-top: 24px;
+}
+
+.seller-finance_title {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-left: 16px;
+
+    svg {
+        height: 24px;
+        width: 24px;
+    }
+}
+
+.seller-finance_table {
+    //grid-template-columns: 16% 12.3% 12.5% 1fr 13% 11% 10% 10%;
+    grid-template-columns: 14% 14% 12.5% 1fr 13%;
+}
+
+.seller-finance_table-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

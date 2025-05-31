@@ -1,0 +1,31 @@
+.refund-form_textarea {
+    width: 100%;
+    background-color: var(--background);
+    border-radius: var(--radius);
+    padding: 16.5px 24px;
+    margin-top: 16px;
+}
+
+
+.refund-form_submit-btn {
+    border-radius: var(--radius);
+    width: 50%;
+    margin-top: 48px;
+}
+
+.refund-form_file-list {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.refund-form_file-chip {
+    color: var(--black60);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--black60);
+    padding: 4px 8px;
+    border-radius: var(--radius);
+}

@@ -1,0 +1,108 @@
+.modal-char {
+    width: 46%;
+    min-height: 40%;
+}
+
+.modal-char_header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.modal-char_btn {
+    height: 24px;
+}
+
+.modal-char_save {
+    margin-left: auto;
+}
+
+.modal-char_body {
+    margin-top: 24px;
+}
+
+.custom-dropdown_header {
+    background-color: var(--white-gray);
+    height: 50px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    cursor: pointer;
+}
+
+.custom-dropdown {
+    position: relative;
+}
+
+.custom-dropdown-list {
+    position: absolute;
+    z-index: 100;
+    background-color: var(--background);
+    border-radius: var(--radius);
+    border: 1px solid var(--black15);
+    width: 100%;
+    padding: 12px 24px;
+    top: 54px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.custom-dropdown-list_item {
+    cursor: pointer;
+}
+
+.modal-char_dropdowns {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr 15%;
+    margin-top: 8px;
+}
+
+.modal-charc_add {
+    height: 50px;
+    border: 1px solid var(--black15);
+    border-radius: var(--radius);
+    padding: 0 12px;
+}
+
+.modal-charc_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-charc_cont {
+    margin-top: 32px;
+}
+
+.modal-charc_item {
+    height: 50px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.modal-charc_item-label {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-gray);
+    height: 50px;
+    padding: 0 24px;
+    border-radius: var(--radius);
+}
+
+.modal-charc_item-input {
+    background-color: var(--white-gray);
+    height: 50px;
+    padding: 0 24px;
+    border-radius: var(--radius);
+}
+
+.modal-charc_list-labels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 8px;
+}

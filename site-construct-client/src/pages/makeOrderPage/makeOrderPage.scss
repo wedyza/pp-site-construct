@@ -1,0 +1,143 @@
+.make-order {
+    display: grid;
+    grid-template-areas: 
+        'payment info'
+        'del info'
+        'items info'
+    ;
+    grid-template-columns: 1fr 31%;
+    column-gap: 36px;
+    margin-top: 32px;
+}
+
+.order-info {
+    height: fit-content;
+    background-color: var(--white-gray);
+    grid-area: info;
+    border-radius: var(--radius);
+    border: 1px solid var(--black15);
+}
+
+.order-make_link {
+    width: 100%;
+}
+
+.order_payment {
+    grid-area: payment;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    padding: 24px;
+    position: relative;
+}
+
+.order_payment-list {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.order_payment-card {
+    width: 150px;
+    height: 80px;
+    background-color: #48AF5B;
+    color: var(--background);
+    border-radius: var(--radius);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    cursor: pointer;
+}
+
+.order_payment-card__active::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    right: -5px;
+    left: -5px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: 2px 2px 10px 0px #E5950066;
+}
+
+.order_del {
+    margin-top: 24px;
+    grid-area: del;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    padding: 24px;
+    position: relative;
+}
+
+.order_del-type {
+    position: absolute;
+    right: 24px;
+    top: 16px;
+    background-color: var(--background);
+    padding: 4px 8px;
+    border-radius: var(--radius);
+}
+
+.order_del-info {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.order_del-item {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.order_items {
+    margin-top: 24px;
+    grid-area: items;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    padding: 24px;
+    position: relative;
+}
+
+.order_items-count {
+    margin-top: 16px;
+}
+
+.order_items-list {
+    margin-top: 24px;
+    display: flex;
+    gap: 24px;
+}
+
+.order_items-card {
+    width: 176px;
+    border-radius: var(--big-radius);
+    background-color: var(--background);
+    border: 1px solid var(--black15);
+}
+
+.order_item-img {
+    height: 172px;
+    width: 100%;
+    background-color: var(--temp-color);
+    border-radius: var(--big-radius);
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.order_items-card-text {
+    padding: 12px;
+    padding-bottom: 20px;
+}
+
+.order_del-value {
+    width: 70%;
+}

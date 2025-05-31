@@ -1,0 +1,22 @@
+.header-categories {
+    position: fixed;
+    left: 0;
+    padding: 0 var(--padding);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    top: 0;
+    padding-top: var(--header-height);
+    padding-bottom: 16px;
+    z-index: 9;
+    background-color: var(--background);
+}
+
+.header-categories_dot svg circle {
+    fill: var(--accent);
+}
+
+.header-categories_item {
+    cursor: pointer;
+}

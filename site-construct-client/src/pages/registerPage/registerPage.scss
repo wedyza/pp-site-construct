@@ -1,0 +1,34 @@
+.login-form__radio {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+
+    .custom-radio {
+        .radio-label {
+            color: var(--black60);
+        }
+    }
+}
+
+.register_role-select {
+    position: absolute;
+    top: 24px;
+    left: 32px;
+    right: 32px;
+
+    .orders-tabs {
+        width: 100%;
+    }
+
+    .orders-tab {
+        flex: 1;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .orders-tab__active {
+        background-color: var(--black40);
+    }
+}

@@ -1,0 +1,87 @@
+.order-card {
+    background-color: var(--second-color);
+    border-radius: var(--big-radius);
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+}
+
+.order-card_img {
+    background-color: var(--temp-color);
+    min-width: 200px;
+    width: 200px;
+    height: 255px;
+    border-radius: var(--big-radius);
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.order_good-card_info {
+    padding: 24px;
+    position: relative;
+    width: 100%;
+}
+
+.order-card_id {
+    margin-bottom: 16px;
+    color: var(--black60);
+}
+
+.order-card_info-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    margin-top: 6px;
+}
+
+.order-card_info-item__label {
+    color: var(--black60);
+}
+
+.order-card_status {
+    text-transform: lowercase;
+    position: absolute;
+    right: 0;
+    top: 24px;
+    padding: 4px 8px;
+    background-color: var(--background);
+    border-radius: var(--radius);
+}
+
+.order-card_action {
+    margin-top: 24px;
+    background-color: var(--background);
+    border-radius: var(--radius);
+    border: 1px solid var(--black15);
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.order-card_action:hover {
+    transition: var(--transition);
+    color: var(--background);
+    background-color: var(--black);
+
+    svg path {
+        fill: var(--background);
+    }
+}
+
+.order-card_rate-arrow {
+    position: absolute;
+    top: 17px;
+    right: 16px;
+    opacity: 0.6;
+}

@@ -1,0 +1,70 @@
+.payment-methods_title {
+    margin-top: 8px;
+}
+
+.payment-methods_list {
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-right: var(--padding);
+    display: flex;
+    gap: 24px;
+    margin-top: 25px;
+    width: calc(100% + var(--padding));
+}
+
+.payment-methods_list::-webkit-scrollbar {
+    display: none;
+}
+
+.payment-method_add {
+    margin-top: 24px;
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    width: 312px;
+    height: 165px;
+}
+
+.payment-modal {
+    width: 30%;
+}
+
+.payment-modal_form {
+    display: grid;
+    grid-template-areas: 
+        'number number'
+        'date cvv'
+        'btn btn'
+    ;
+    row-gap: 16px;
+    column-gap: 12px;
+    margin-top: 24px;
+    width: 100%;
+    min-width: 0;
+}
+
+.payment-modal_input {
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    padding: 0 24px;
+    height: 50px;
+    min-width: 0;
+}
+
+.payment-modal_number {
+    grid-area: number;
+}
+
+.payment-modal_date {
+    grid-area: date;
+}
+
+.payment-modal_cvv {
+    grid-area: cvv;
+}
+
+.payment-modal_form-btn {
+    grid-area: btn;
+    margin-top: 8px;
+    min-width: 0;
+}

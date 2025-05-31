@@ -1,0 +1,42 @@
+.review-card {
+    background-color: var(--white-gray);
+    border-radius: var(--big-radius);
+    padding: 32px;
+    padding-left: 24px;
+}
+
+.review-card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-card_body {
+    margin-top: 16px;
+}
+
+.review-card_imgs {
+    margin-top: 24px;
+    display: flex;
+    gap: 8px;
+}
+
+.review-card_img {
+    height: 88px;
+    width: 88px;
+    background-color: var(--temp-color);
+    border-radius: var(--radius);
+}
+
+/* reply */
+
+.review-card_reply {
+    background-color: var(--background);
+    padding: 16px 24px;
+    border-radius: var(--big-radius);
+    margin-top: 24px;
+}
+
+.review-card_reply-body {
+    margin-top: 12px;
+}

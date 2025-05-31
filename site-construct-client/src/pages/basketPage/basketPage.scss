@@ -1,0 +1,115 @@
+.basket-page {
+    display: flex;
+    gap: 24px;
+}
+
+.basket_content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.basket-placement {
+    min-width: 312px;
+    background-color: var(--white-gray);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: fit-content;
+    border: 1px solid var(--black15);
+}
+
+.basket-placement_content {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px;
+    gap: 12px;
+}
+
+.basket-placement_list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--black15);
+}
+
+.basket-placement_list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.basket-placement_list__label {
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.basket-placement_sum {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.basket-placement_link {
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.basket-placement_link span {
+    color: var(--background);
+}
+
+.basket-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.basket_select-all {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.basket_checkbox {
+    height: 20px;
+}
+
+.basket_list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.basket-placement_link-text {
+    color: var(--background);
+}
+
+.basket-empty {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: auto;
+}
+
+.basket-empty_img {
+    width: 418px;
+    height: 369px;
+}
+
+.basket-empty_info {
+    position: relative;
+    display: flex;
+    width: 213px;
+    flex-direction: column;
+    gap: 32px;
+}
