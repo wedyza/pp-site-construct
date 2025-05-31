@@ -10,6 +10,8 @@ import { fetchComments } from '../../store/commentsSlice';
 import { fetchGoodById, toggleWishlist } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { addBasketItem, removeBasketItem, updateBasketItem } from '../../store/basketSlice';
+import { formatDate } from '../../utils/formatDate';
+import { getDateTwoWeeksLater } from '../../utils/getDate';
 
 const ReviewsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -101,7 +103,7 @@ const ReviewsPage: React.FC = () => {
                                     userId={comment.user}
                                     body={comment.body}
                                     rate={comment.rate}
-                                    date={'14 апреля 2025'}
+                                    date={formatDate(comment.created_at || '')}
                                     reply={comment.reply}
                                     media={comment.media}
                                 />
@@ -116,7 +118,7 @@ const ReviewsPage: React.FC = () => {
                                     {selectedItem && formatPrice(selectedItem?.price)} ₽
                                 </div>
                                 <div className="product_delivery text-desc">
-                                    Доставка 15 апреля
+                                    Доставка {getDateTwoWeeksLater()}
                                 </div>
                             </div>
                             <button className='product_fav' onClick={handleToggleWishlist}>

@@ -11,6 +11,8 @@ import { fetchGoodById, toggleWishlist } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { addBasketItem, removeBasketItem, updateBasketItem } from '../../store/basketSlice';
 import { fetchComments } from '../../store/commentsSlice';
+import { getDateTwoWeeksLater } from '../../utils/getDate';
+import { formatDate } from '../../utils/formatDate';
 
 
 const ProductPage: React.FC = () => {
@@ -113,7 +115,7 @@ const ProductPage: React.FC = () => {
                                         {formatPrice(selectedItem.price)} ₽
                                     </div>
                                     <div className="product_delivery text-desc">
-                                        Доставка 15 апреля
+                                        Доставка {getDateTwoWeeksLater()}
                                     </div>
                                 </div>
                                 
@@ -231,7 +233,7 @@ const ProductPage: React.FC = () => {
                                     userId={comment.user}
                                     body={comment.body}
                                     rate={comment.rate}
-                                    date={'14 апреля 2025'}
+                                    date={formatDate(comment.created_at || '')}
                                     reply={comment.reply}
                                     media={comment.media}
                                 />

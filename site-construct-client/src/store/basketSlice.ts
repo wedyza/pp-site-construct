@@ -224,6 +224,7 @@ const basketSlice = createSlice({
                 state.error = action.payload as string;
             })
             .addCase(updateBasketItem.fulfilled, (state, action) => {
+                state.loading = false;
                 const updatedItem = action.payload;
                 const index = state.items.findIndex(i => i.item.good_item === updatedItem.good_item);
                 if (index !== -1) {

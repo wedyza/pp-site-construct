@@ -18,10 +18,16 @@ const ProfilePaymentMethods: React.FC = () => {
         dispatch(fetchPaymentMethods());
     }, [dispatch]);
 
-    function convertDate(ddmm: string): string {
-        const [day, month] = ddmm.split('/');
-        const year = new Date().getFullYear();
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    function convertDate(mmgg: string): string {
+        if (!/^\d{1,2}\/\d{2}$/.test(mmgg)) {
+            throw new Error('Неправильный формат даты. Ожидается мм/гг');
+        }
+        const [month, yearSuffix] = mmgg.split('/');
+        const monthNum = parseInt(month, 10);
+        if (monthNum < 1 || monthNum > 12) {
+            throw new Error('Месяц должен быть между 01 и 12');
+        }
+        return `20${yearSuffix}-${month.padStart(2, '0')}-01`;
     }
 
     const handleSubmit = (e: React.FormEvent) => {

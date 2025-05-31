@@ -18,6 +18,7 @@ interface Comment {
     item: number;
     reply: Reply;
     media?: MediaItem[];
+    created_at?: string;
 }
 
 interface CommentsState {

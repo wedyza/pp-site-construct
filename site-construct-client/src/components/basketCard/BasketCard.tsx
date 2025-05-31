@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { removeAndRefetchBasket, updateBasketAndRefetch } from '../../store/basketSlice';
 import { formatPrice } from '../../utils/formatPrice';
+import { getDateTwoWeeksLater } from '../../utils/getDate';
 
 interface Props {
     good: Good;
@@ -93,7 +94,7 @@ const BasketCard: React.FC<Props> = ({ good, id, count: initialCount, isChecked,
                     </button>
                 </div>
                 <div className='basket-card_delivery text-desc'>
-                    Доставка 15 апреля
+                    Доставка {getDateTwoWeeksLater()}
                 </div>
             </div>
         </div>
