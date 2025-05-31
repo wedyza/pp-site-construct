@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { deleteGood, fetchGoods, updateWarehouse } from '../../store/goodsSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import Modal from '../../components/modal/Modal';
+import { fetchCategoryById } from '../../store/categoriesSlice';
 
 const SellerGoodsPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -15,7 +16,7 @@ const SellerGoodsPage: React.FC = () => {
     useEffect(() => {
         dispatch(fetchGoods());
     }, [dispatch]);
-
+    
     const handleDelete = (id:number) => {
         dispatch(deleteGood(id));
     };
@@ -35,6 +36,28 @@ const SellerGoodsPage: React.FC = () => {
             });
         }
     }
+
+    const [categoryNames, setCategoryNames] = useState<Record<number, string>>({});
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const names: Record<number, string> = {};
+            for (const good of goods) {
+                if (good.category && !categoryNames[good.category]) {
+                    try {
+                        const result = await dispatch(fetchCategoryById(good.category));
+                        if (fetchCategoryById.fulfilled.match(result)) {
+                            names[good.category] = result.payload.title;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching category:', error);
+                        names[good.category] = 'Неизвестная категория';
+                    }
+                }
+            }
+            setCategoryNames(prev => ({ ...prev, ...names }));
+        };
+        fetchCategories();
+    }, [goods, dispatch]);
 
     return (
         <div className='page-content__seller'>
@@ -75,7 +98,6 @@ const SellerGoodsPage: React.FC = () => {
                         <div className='seller-orders_table-cell'>Фото</div>
                         <div className='seller-orders_table-cell'>Наименование товара</div>
                         <div className='seller-orders_table-cell'>Категория</div>
-                        <div className='seller-orders_table-cell'>Подкатегория</div>
                         <div className='seller-orders_table-cell'>Цена</div>
                         <div className='seller-orders_table-cell'>Товара в наличии</div>
                         <div className='seller-orders_table-cell'>Рейтинг</div>
@@ -93,9 +115,8 @@ const SellerGoodsPage: React.FC = () => {
                             </div>
                             <div className='seller-orders_table-cell'>{good.name}</div>
                             <div className='seller-orders_table-cell'>
-                                Электроприборы
+                                {good.category ? categoryNames[good.category] || 'Загрузка...' : 'Без категории'}
                             </div>
-                            <div className='seller-orders_table-cell'>Электроприборы</div>
                             <div className='seller-orders_table-cell'>{good.price && formatPrice(good.price)} ₽</div>
                             <div className='seller-orders_table-cell seller-orders_table-cell__warehouse'>
                                 {good.warehouse_count} шт

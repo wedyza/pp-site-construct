@@ -23,7 +23,6 @@ export const createOtp = createAsyncThunk(
         try {
             const response = await axiosInstance.post('/auth/create-otp', {
                 email,
-                user_type: 'Покупатель',
             });
             return response.data;
         } catch (error: any) {

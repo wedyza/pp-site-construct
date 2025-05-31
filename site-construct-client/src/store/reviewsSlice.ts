@@ -13,6 +13,7 @@ export interface Comment {
     good?: Good;
     reply: Reply;
     media?: MediaItem[];
+    created_at?: string;
 }
 
 interface ReviewsState {

@@ -5,6 +5,7 @@ import SellerNav from '../../components/sellerNav/SellerNav';
 import './sellerReviewsPage.scss'
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addReply, fetchComments } from '../../store/reviewsSlice';
+import { formatDate } from '../../utils/formatDate';
 
 const SellerReviewsPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -65,7 +66,9 @@ const SellerReviewsPage: React.FC = () => {
                     
                     {comments.map((comment) => (
                         <div className='seller-orders_table-body seller-orders_table-row'>
-                            <div className='seller-orders_table-cell'>20.02.2025, 14:51</div>
+                            <div className='seller-orders_table-cell'>
+                                {formatDate(comment.created_at || '')}
+                            </div>
                             <div className='seller-orders_table-cell'>
                                 {comment.good?.name}
                             </div>
