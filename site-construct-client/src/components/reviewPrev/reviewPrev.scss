@@ -8,6 +8,7 @@
     width: 424px;
     padding: 24px;
     padding-top: 16px;
+    height: 202px;
 }
 
 .review-prev_header {
@@ -56,6 +57,7 @@
 
 .review-prev_imgs {
     display: flex;
+    flex-wrap: nowrap;
     gap: 8px;
     overflow: hidden;
     border-radius: var(--radius);
@@ -70,6 +72,7 @@
 .review-prev_img {
     height: 88px;
     width: 88px;
+    min-width: 88px;
     background-color: var(--temp-color);
     border-radius: var(--radius);
     overflow: hidden;
@@ -79,4 +82,12 @@
         height: 100%;
         object-fit: cover;
     }
+}
+
+.review-prev_text {
+    width: 272px;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 85px;
 }
