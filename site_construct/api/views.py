@@ -507,8 +507,8 @@ class OrderViewSet(
                 .values_list("basket_id", flat=True)
                 .all()
             )
-            return Order.objects.filter(basket_id__in=baskets).all()
-        return Order.objects.filter(user=self.request.user).all()
+            return Order.objects.exclude(status='PROCESSING').filter(basket_id__in=baskets).all()
+        return Order.objects.exclude(status='PROCESSING').filter(user=self.request.user).all()
 
     def create(self, request, *args, **kwargs):
         order = OrderCreateSerializer(data=request.data)
@@ -690,6 +690,9 @@ class OrderViewSet(
 
         basket.currently_for_order = False
         basket.save()
+
+        order.status = 'PAYED'
+        order.save()
 
         sellers = (
             BasketItem.objects.filter(basket=basket).select_related("good_item").all()
@@ -922,11 +925,13 @@ class AnalyticsViewSet(views.APIView):
         start, end = define_this_month_period()
         orders = (
             Order.objects.filter(basket_id__in=baskets)
+            .exclude(status='PROCESSING')
             .filter(created_at__gte=start, created_at__lte=end)
             .all()
         )
         today_orders = (
             Order.objects.filter(basket_id__in=baskets)
+            .exclude(status='PROCESSING')
             .filter(created_at__date=datetime.date.today())
             .count()
         )
@@ -965,6 +970,7 @@ class SellDynamicsViewSet(views.APIView):
         start, end = define_this_week_period()
         orders = (
             Order.objects.values("created_at__date")
+            .exclude(status='PROCESSING')
             .filter(basket_id__in = 
                     BasketItem.objects.filter(basket__in=Basket.objects.filter(visible=False).filter(currently_for_order=False).all())
                     .select_related("good_item")
@@ -1004,9 +1010,9 @@ class ItemsLeftViewSet(views.APIView):
             BasketItem.objects.filter(
                 basket__in=(
                     Basket.objects.filter(
-                        order__in=Order.objects.filter(
-                            created_at__gte=start, created_at__lte=end
-                        ).all()
+                        order__in=Order.objects
+                        .exclude(status='PROCESSING')
+                        .filter(created_at__gte=start, created_at__lte=end).all()
                     ).all()
                 )
             )
@@ -1059,6 +1065,7 @@ class TodayOrdersWithItems(views.APIView):
         )
         orders = (
             Order.objects.filter(basket_id__in=baskets)
+            .exclude(status='PROCESSING')
             .filter(created_at__date=timezone.now().date())
             .all()
         )
