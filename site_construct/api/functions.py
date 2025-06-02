@@ -1,3 +1,4 @@
+from .filters import GoodItemFilter
 from .models import GoodCategory, CharacteristicsCategory, GoodItem
 from typing import List
 import datetime
@@ -19,13 +20,13 @@ def unwrap_categories(category: GoodCategory) -> List[GoodCategory]:
     return characteristics_categories
 
 
-def unwrap_categories_items(category: GoodCategory) -> List[GoodItem]:
+def unwrap_categories_items(data, category: GoodCategory) -> List[GoodItem]:
     category_items = (
-        GoodItem.objects.filter(category=category).filter(visible=True).all()
+        GoodItemFilter(data, queryset=GoodItem.objects.filter(category=category).filter(visible=True).all()).qs
     )
     daughter_list = GoodCategory.objects.filter(parent=category).all()
     for daughter in daughter_list:
-        new_items = unwrap_categories_items(daughter)
+        new_items = unwrap_categories_items(data, daughter)
         category_items = category_items.union(new_items)
     return category_items
 

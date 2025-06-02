@@ -103,11 +103,10 @@ class GoodCategoryViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="items",
         pagination_class=CustomPagination,
-        serializer_class=GoodItemSerializer,
+        serializer_class=GoodItemSerializer
     )
     def get_items(self, request, pk):
-        items = unwrap_categories_items(GoodCategory.objects.get(id=pk))
-
+        items = unwrap_categories_items(request.GET, GoodCategory.objects.get(id=pk))
         page = self.paginate_queryset(items)
 
         if page is not None:
