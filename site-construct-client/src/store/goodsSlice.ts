@@ -57,22 +57,33 @@ const initialState: GoodsState = {
 
 export const fetchGoods = createAsyncThunk<
     Good[],
-    { search?: string } | undefined,
+    { search?: string; price__gt?: number; price__lt?: number } | undefined,
     { state: RootState }
->('goods/fetchGoods', async ({ search } = {}, { getState, rejectWithValue }) => {
-    const token = getState().auth.token;
-    try {
-        const config = {
-            headers: token ? { Authorization: `Token ${token}` } : {},
-            params: search ? { search } : {},
-        };
+>(
+    'goods/fetchGoods',
+    async (filters = {}, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
 
-        const response = await axiosInstance.get('/goods/', config);
-        return response.data.results;
-    } catch (err: any) {
-        return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товаров');
+        try {
+            const { search, price__gt, price__lt } = filters;
+
+            const params: Record<string, any> = {};
+            if (search) params.search = search;
+            if (price__gt !== undefined) params.price__gt = price__gt;
+            if (price__lt !== undefined) params.price__lt = price__lt;
+
+            const config = {
+                headers: token ? { Authorization: `Token ${token}` } : {},
+                params,
+            };
+
+            const response = await axiosInstance.get('/goods/', config);
+            return response.data.results;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки товаров');
+        }
     }
-});
+);
 
 export const fetchGoodById = createAsyncThunk<
     Good,

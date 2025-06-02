@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { Good } from './goodsSlice';
+import { RootState } from './store';
 
 export interface Category {
     id: number;
@@ -134,12 +135,24 @@ export const getCategoryPath = (category: Category | null, allCategories: Catego
 
 export const fetchGoodsByCategory = createAsyncThunk<
     { categoryId: number; results: Good[]; count: number },
-    number
+    { categoryId: number; price__gt?: number; price__lt?: number },
+    { state: RootState }
 >(
     'categories/fetchGoodsByCategory',
-    async (categoryId, { rejectWithValue }) => {
+    async ({ categoryId, price__gt, price__lt }, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
         try {
-            const res = await axiosInstance.get(`/good-categories/${categoryId}/items/`);
+            const params: Record<string, any> = {};
+            if (price__gt !== undefined) params.price__gt = price__gt;
+            if (price__lt !== undefined) params.price__lt = price__lt;
+
+            const config = {
+                headers: token ? { Authorization: `Token ${token}` } : {},
+                params,
+            };
+
+            const res = await axiosInstance.get(`/good-categories/${categoryId}/items/`, config);
+
             return {
                 categoryId,
                 results: res.data.results,
@@ -185,8 +198,9 @@ const categoriesSlice = createSlice({
                 state.selected = null;
             })
             .addCase(fetchGoodsByCategory.pending, (state, action) => {
-                const categoryId = action.meta.arg;
-                state.categoryGoods[categoryId] = {
+                state.loading = true;
+                const data = action.meta.arg;
+                state.categoryGoods[data.categoryId] = {
                     items: [],
                     count: 0,
                     loading: true,
@@ -194,6 +208,7 @@ const categoriesSlice = createSlice({
                 };
             })
             .addCase(fetchGoodsByCategory.fulfilled, (state, action) => {
+                state.loading = false;
                 const { categoryId, results, count } = action.payload;
                 state.categoryGoods[categoryId] = {
                     items: results,
@@ -203,8 +218,9 @@ const categoriesSlice = createSlice({
                 };
             })
             .addCase(fetchGoodsByCategory.rejected, (state, action) => {
-                const categoryId = action.meta.arg;
-                state.categoryGoods[categoryId] = {
+                state.loading = false;
+                const data = action.meta.arg;
+                state.categoryGoods[data.categoryId] = {
                     items: [],
                     count: 0,
                     loading: false,

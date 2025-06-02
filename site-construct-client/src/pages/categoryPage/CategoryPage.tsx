@@ -11,6 +11,9 @@ import { Category, fetchCategories, fetchCategoryById, fetchGoodsByCategory, get
 const CategoryPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
+    const [priceGt, setPriceGt] = useState('');
+    const [priceLt, setPriceLt] = useState('');
+    const lastRequestParams = useRef<{ search?: string; price__gt?: number; price__lt?: number }>({});
 
     const { selected } = useAppSelector((state) => state.categories);
 
@@ -19,8 +22,26 @@ const CategoryPage: React.FC = () => {
             dispatch(fetchCategoryById(Number(id)));
         }
     }, [id, dispatch]);
+    
+    const sendSearchRequest = () => {
+        const filters: { categoryId: number, price__gt?: number; price__lt?: number } = {categoryId: Number(id)};
+        if (priceGt.trim() !== '') filters.price__gt = Number(priceGt);
+        if (priceLt.trim() !== '') filters.price__lt = Number(priceLt);
+        const hasChanged = JSON.stringify(filters) !== JSON.stringify(lastRequestParams.current);
+        if (!hasChanged) return;
+        lastRequestParams.current = filters;
+        dispatch(fetchGoodsByCategory(filters));
+    };
+    
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            sendSearchRequest();
+        }
+    };
 
-
+    const handleBlur = () => {
+        sendSearchRequest();
+    };
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -74,7 +95,7 @@ const CategoryPage: React.FC = () => {
     const goodsData = useAppSelector((state) => state.categories.categoryGoods[Number(id)]);
     
     useEffect(() => {
-        dispatch(fetchGoodsByCategory(Number(id)));
+        dispatch(fetchGoodsByCategory({categoryId: Number(id)}));
     }, [dispatch, id]);
 
     useEffect(() => {
@@ -120,8 +141,8 @@ const CategoryPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="main-content category-page_content">
-                    {/* <div className="category-page_filters">
-                        <div className='category-page_filter'>
+                    <div className="category-page_filters">
+                        {/* <div className='category-page_filter'>
                             <p className='text-h3'>
                                 Сроки доставки
                             </p>
@@ -131,17 +152,33 @@ const CategoryPage: React.FC = () => {
                                     <input type="text" />
                                 </li>
                             </ul>
-                        </div>
+                        </div> */}
                         <div className='category-page_filter'>
                             <p className='text-h3'>
                                 Цена
                             </p>
                             <div className='category-page_filter-price'>
-                                <input className='category-page_price-input text-n14' type="text" placeholder='от 100' />
-                                <input className='category-page_price-input text-n14' type="text" placeholder='до 1000' />
+                                <input
+                                    className='category-page_price-input text-n14'
+                                    type="text"
+                                    placeholder='от 100'
+                                    value={priceGt}
+                                    onChange={(e) => setPriceGt(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    onBlur={handleBlur}
+                                />
+                                <input
+                                    className='category-page_price-input text-n14'
+                                    type="text"
+                                    placeholder='до 1000'
+                                    value={priceLt}
+                                    onChange={(e) => setPriceLt(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    onBlur={handleBlur}
+                                />
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                     <div className="category-page_products">
                         <ul className='main_goods-list category-page_products-list'>
                             {goodsData && goodsData.items.map((good, index) => (
