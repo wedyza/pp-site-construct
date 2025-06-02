@@ -689,7 +689,7 @@ class OrderViewSet(
         basket.currently_for_order = False
         basket.save()
 
-        order.status = order.OrderStatusChoices.PAYED
+        order.status = "PAYED"
         order.save()
 
         sellers = (
