@@ -32,7 +32,7 @@ const ProfilePage: React.FC = () => {
             case 'profile':
                 return <ProfileInfo />;
             default:
-                return <ProfileOrders />;
+                return <ProfileOrders setSelectedSection={setSelectedSection} />;
         }
     };
 
