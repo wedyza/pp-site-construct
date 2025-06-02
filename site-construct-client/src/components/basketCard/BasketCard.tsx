@@ -7,6 +7,7 @@ import { AppDispatch } from '../../store/store';
 import { removeAndRefetchBasket, updateBasketAndRefetch } from '../../store/basketSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { getDateTwoWeeksLater } from '../../utils/getDate';
+import { Link } from 'react-router-dom';
 
 interface Props {
     good: Good;
@@ -45,11 +46,11 @@ const BasketCard: React.FC<Props> = ({ good, id, count: initialCount, isChecked,
                     checkboxClass='basket-card_checkbox'
                 />
             </div>
-            <div className='basket-card_img'>
+            <Link to={`/product/${good.id}`} className='basket-card_img'>
                 {good.media && good.media?.length > 0 && (
                     <img src={good.media[0].source} alt="" />
                 )}
-            </div>
+            </Link>
             <div className='basket-card_info'>
                 <p className="basket-card_price text-price2">
                     {formatPrice(good.price)} ₽

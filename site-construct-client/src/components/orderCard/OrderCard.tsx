@@ -6,6 +6,7 @@ import { Order } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { Link } from 'react-router-dom';
 import { Good } from '../../store/goodsSlice';
+import { getTranslatedStatus } from '../../utils/getStatus';
 
 interface OrderCardProps {
     order: Order;
@@ -23,7 +24,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         <div className="order-card order-card__wide">
             <div className='order-card_info'>
                 <p className='order-card_id text-card'>№{order.id}</p>
-                <p className='order-card_status text-n14'>{order.status}</p>
+                <p className='order-card_status text-n14'>{getTranslatedStatus(order.status)}</p>
                 {/* <div className='order-card_info-item'>
                     <p className='order-card_info-item__label text-n14'>Дата оформления заказа</p>
                     <p className='order-card_info-item__value text-n16'>{order.placement_date}</p>

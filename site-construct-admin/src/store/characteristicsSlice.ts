@@ -80,7 +80,11 @@ export const upsertCharacteristicGroup = createAsyncThunk<
             ? `/characteristics-categories/${payload.id}/`
             : '/characteristics-categories/';
 
-        const response = await axiosInstance[method](url, payload, {
+        const data = method === 'patch'
+            ? { id: payload.id, title: payload.title }
+            : payload;
+
+        const response = await axiosInstance[method](url, data, {
             headers: { Authorization: `Token ${token}` },
         });
 

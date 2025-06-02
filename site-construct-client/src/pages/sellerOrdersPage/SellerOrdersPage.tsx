@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { fetchOrders } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { formatDate } from '../../utils/formatDate';
+import { getTranslatedStatus } from '../../utils/getStatus';
 
 const SellerOrdersPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -69,7 +70,7 @@ const SellerOrdersPage: React.FC = () => {
                                 
                             </div>
                             <div className='seller-orders_table-cell'>{formatPrice(order.payment_total)} ₽</div>
-                            <div className='seller-orders_table-cell'>{order.status}</div>
+                            <div className='seller-orders_table-cell'>{getTranslatedStatus(order.status)}</div>
                             <div className='seller-orders_table-cell'>15.01.2025</div>
                             <div className='seller-orders_table-cell'>{order.address}</div>
                         </Link>

@@ -119,8 +119,8 @@ const SellerOrderPage: React.FC = () => {
                                 </div>
                                 <div className='seller-orders_table-cell'>{item.good_item.name}</div>
                                 <div className='seller-orders_table-cell'>{item.count} шт</div>
-                                <div className='seller-orders_table-cell'>{formatPrice(item.good_item.price)}</div>
-                                <div className='seller-orders_table-cell'>480 шт</div>
+                                <div className='seller-orders_table-cell'>{formatPrice(item.good_item.price)} ₽</div>
+                                <div className='seller-orders_table-cell'>{item.good_item.warehouse_count} шт</div>
                             </div>
                         ))}
                     </div>

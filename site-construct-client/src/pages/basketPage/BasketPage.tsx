@@ -131,7 +131,7 @@ const BasketPage: React.FC = () => {
                         <img src={empty} className='basket-empty_img' alt="" />
                         <div className='basket-empty_info'>
                             <p className='basket-empty_text text-n16'>
-                                У вас пока нет товаров в корзина, 
+                                У вас пока нет товаров в корзине, 
                                 давайте это исправим
                             </p>
                             <Link to='/' className="empty-orders_link btn-black">

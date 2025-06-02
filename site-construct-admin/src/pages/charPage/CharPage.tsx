@@ -232,7 +232,7 @@ const CharPage: React.FC = () => {
                 className="admin-cat_modal"
             >
                 <div className="admin-cat_modal-header">
-                    <h2 className='text-h2 admin-cat_modal-title'>Изменение категории</h2>
+                    <h2 className='text-h2 admin-cat_modal-title'>Изменение характеристики</h2>
                     <button className="admin-cat_modal-close" onClick={() => setIsModalOpen(false)}>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M0.226095 0.22703C0.518988 -0.0658633 0.993862 -0.0658636 1.28676 0.22703L5.99907 4.93934L10.7114 0.22703C11.0043 -0.0658633 11.4791 -0.0658637 11.772 0.22703C12.0649 0.519923 12.0649 0.994797 11.772 1.28769L7.05973 6L11.772 10.7123C12.0649 11.0052 12.0649 11.4801 11.772 11.773C11.4791 12.0659 11.0043 12.0659 10.7114 11.773L5.99907 7.06066L1.28676 11.773C0.993862 12.0659 0.518988 12.0659 0.226095 11.773C-0.0667979 11.4801 -0.0667978 11.0052 0.226095 10.7123L4.93841 6L0.226095 1.28769C-0.0667978 0.994797 -0.0667979 0.519923 0.226095 0.22703Z" fill="#02040F"/>
@@ -240,7 +240,7 @@ const CharPage: React.FC = () => {
                     </button>
                 </div>
                 <div className="admin-cat_modal-body">
-                    <label className="text-n14">Название категории</label>
+                    <label className="text-n14">Название таблицы</label>
                     <div className="admin-cat_modal-input-row">
                         <input 
                             className="admin-cat_modal-input text-n16"
@@ -265,7 +265,7 @@ const CharPage: React.FC = () => {
                             Сохранить
                         </button>
                     </div>
-                    <h3 className="text-n14 admin-cat_modal-subtitle">Подкатегории</h3>
+                    <h3 className="text-n14 admin-cat_modal-subtitle">Характеристики</h3>
                     <ul className="admin-cat_subcategory-list">
                         <button
                             className="admin-cat_modal-btn admin-cat_modal-btn__mt text-n14"

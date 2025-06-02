@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
                 <div className='to-reg text-n16'>
                     <p className='to-reg_text'>Нет аккаунта?</p>
                     <Link to='/register' className='to-reg_link'>
-                        <p className='to-reg_link-text hover-def'>Создайте его!</p>
+                        <p className='to-reg_link-text hover-def'>Создайте покупатель/продавец</p>
                     </Link>
                 </div>
             </div>
