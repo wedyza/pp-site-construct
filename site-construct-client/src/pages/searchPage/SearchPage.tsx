@@ -61,7 +61,7 @@ const SearchPage: React.FC = () => {
                         </div>
                     </div> */}
                     <div className="category-page_products">
-                        <ul className='main_goods-list category-page_products-list'>
+                        <ul className='main_goods-list category-page_products-list search-page_products-list'>
                             {items.map((good, index) => (
                                 <li key={index} className="main_good">
                                     <Link to={`/product/${good.id}`}>
