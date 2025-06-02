@@ -141,3 +141,16 @@
 .order_del-value {
     width: 70%;
 }
+
+.make-order_adress-cont {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+}
+
+.make-order_adress {
+    background-color: var(--background);
+    width: 100%;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+}

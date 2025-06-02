@@ -15,6 +15,27 @@ const MainPage: React.FC = () => {
         dispatch(fetchGoods());
     }, [dispatch]);
 
+    useEffect(() => {
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.setAttribute('name', 'description');
+            document.head.appendChild(metaDescription);
+        }
+
+        metaDescription.setAttribute(
+            'content',
+            'Добро пожаловать в интернет-магазин Kaufen. У нас вы найдете широкий ассортимент товаров по выгодным ценам.'
+        );
+
+        return () => {
+            document.title = 'Kaufen';
+            if (metaDescription) {
+                metaDescription.setAttribute('content', 'Kaufen – интернет-магазин качественных товаров.');
+            }
+        };
+    }, []);
+
     return (
         <div className='page-content'>
             <Header />

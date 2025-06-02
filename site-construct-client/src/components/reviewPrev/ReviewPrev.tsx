@@ -41,15 +41,15 @@ const ReviewPrev: React.FC<ReviewCardProps> = ({ userId, body, rate, date, reply
                 </div>
             </div>
             <div className="review-prev_body">
-                <div className="review-prev_text text-n14">
+                <p className="review-prev_text text-n14">
                     {body}
-                </div>
+                </p>
                 <div className="review-prev_imgs">
-                    {media?.map((img) => (
+                    {media && media.length > 0 && (
                         <div className="review-prev_img">
-                            <img src={img.source} alt="" />
+                            <img src={media[0].source} alt="" />
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </div>

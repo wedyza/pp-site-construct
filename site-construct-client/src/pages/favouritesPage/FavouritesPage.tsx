@@ -15,6 +15,14 @@ const FavouritesPage: React.FC = () => {
     useEffect(() => {
         dispatch(fetchWishlist());
     }, [dispatch]);
+        
+    useEffect(() => {
+        document.title = `Избранное | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         <div className='page-content'>

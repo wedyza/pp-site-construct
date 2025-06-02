@@ -51,6 +51,28 @@ const ReviewsPage: React.FC = () => {
         await dispatch(addBasketItem({ good_item: Number(id), count: 1 }));
         await dispatch(fetchGoodById(Number(id)));
     };
+
+    useEffect(() => {
+        if (!selectedItem) return;
+        document.title = `${selectedItem.name} – Отзывы | Kaufen` ;
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.setAttribute('name', 'description');
+            document.head.appendChild(metaDescription);
+        }
+        metaDescription.setAttribute(
+            'content',
+            `Отзывы о товаре "${selectedItem.name}". ${selectedItem.description?.substring(0, 160) || 'Почитайте мнения покупателей и делитесь своими впечатлениями.'}`
+        );
+        return () => {
+            document.title = 'Kaufen';
+            if (metaDescription) {
+                metaDescription.setAttribute('content', 'Kaufen – интернет-магазин качественных товаров.');
+            }
+        };
+    }, [selectedItem]);
+
     if (!selectedItem) return <div>Товар не найден</div>;
     
     const handleToggleWishlist = (e: React.MouseEvent ) => {

@@ -77,6 +77,27 @@ const CategoryPage: React.FC = () => {
         dispatch(fetchGoodsByCategory(Number(id)));
     }, [dispatch, id]);
 
+    useEffect(() => {
+        if (!selected) return;
+        document.title = `${selected.title} – Каталог | Kaufen`;
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.setAttribute('name', 'description');
+            document.head.appendChild(metaDescription);
+        }
+        metaDescription.setAttribute(
+            'content',
+            `Купить товары из категории "${selected.title}" в интернет-магазине Kaufen. Выгодные цены и быстрая доставка.`
+        );
+        return () => {
+            document.title = 'Kaufen';
+            if (metaDescription) {
+                metaDescription.setAttribute('content', 'Kaufen – интернет-магазин качественных товаров.');
+            }
+        };
+    }, [selected]);
+
     return (
         <div className='page-content__no-pad'>
             <Header />
@@ -99,8 +120,8 @@ const CategoryPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="main-content category-page_content">
-                    <div className="category-page_filters">
-                        {/* <div className='category-page_filter'>
+                    {/* <div className="category-page_filters">
+                        <div className='category-page_filter'>
                             <p className='text-h3'>
                                 Сроки доставки
                             </p>
@@ -110,7 +131,7 @@ const CategoryPage: React.FC = () => {
                                     <input type="text" />
                                 </li>
                             </ul>
-                        </div> */}
+                        </div>
                         <div className='category-page_filter'>
                             <p className='text-h3'>
                                 Цена
@@ -120,7 +141,7 @@ const CategoryPage: React.FC = () => {
                                 <input className='category-page_price-input text-n14' type="text" placeholder='до 1000' />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="category-page_products">
                         <ul className='main_goods-list category-page_products-list'>
                             {goodsData && goodsData.items.map((good, index) => (

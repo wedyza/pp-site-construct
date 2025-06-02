@@ -247,4 +247,13 @@
     margin-top: 32px;
     display: flex;
     gap: 24px;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-right: var(--padding);
+    width: calc(100% + var(--padding));
+}
+
+.product-reviews_list::-webkit-scrollbar {
+    display: none;
 }
