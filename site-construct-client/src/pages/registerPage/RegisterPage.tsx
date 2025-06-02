@@ -48,6 +48,14 @@ const RegisterPage: React.FC = () => {
     useEffect(() => {
         if (token) navigate('/');
     }, [token, navigate]);
+                
+    useEffect(() => {
+        document.title = `Регистрация | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         <div className="login-page">

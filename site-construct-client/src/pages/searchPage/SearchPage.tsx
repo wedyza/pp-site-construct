@@ -19,6 +19,27 @@ const SearchPage: React.FC = () => {
         }
     }, [searchQuery, dispatch]);
 
+    useEffect(() => {
+        if (!searchQuery) return;
+        document.title = `${searchQuery} - Результаты поиска | Kaufen`;
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.setAttribute('name', 'description');
+            document.head.appendChild(metaDescription);
+        }
+        metaDescription.setAttribute(
+            'content',
+            `Результаты поиска по запросу "${searchQuery}". Найдите нужные товары в магазине Kaufen.`
+        );
+        return () => {
+            document.title = 'Kaufen';
+            if (metaDescription) {
+                metaDescription.setAttribute('content', 'Kaufen – интернет-магазин качественных товаров.');
+            }
+        };
+    }, [searchQuery]);
+
     return (
         <div className='page-content__no-pad'>
             <Header />
@@ -28,7 +49,7 @@ const SearchPage: React.FC = () => {
                     <h1 className="category-header_title text-h1">{searchQuery}</h1>
                 </div>
                 <div className="main-content category-page_content">
-                    <div className="category-page_filters">
+                    {/* <div className="category-page_filters">
                         <div className='category-page_filter'>
                             <p className='text-h3'>
                                 Цена
@@ -38,7 +59,7 @@ const SearchPage: React.FC = () => {
                                 <input className='category-page_price-input text-n14' type="text" placeholder='до 1000' />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="category-page_products">
                         <ul className='main_goods-list category-page_products-list'>
                             {items.map((good, index) => (

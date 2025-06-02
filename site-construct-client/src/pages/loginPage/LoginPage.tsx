@@ -35,6 +35,14 @@ const LoginPage: React.FC = () => {
             navigate('/');
         }
     }, [token, navigate]);
+        
+    useEffect(() => {
+        document.title = `Вход | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         <div className="login-page">

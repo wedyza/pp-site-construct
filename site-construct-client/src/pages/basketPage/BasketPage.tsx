@@ -52,6 +52,14 @@ const BasketPage: React.FC = () => {
             dispatch(setSelectedItems(parsed));
         }
     }, [dispatch]);
+    
+    useEffect(() => {
+        document.title = `Корзина | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         <div className='page-content'>

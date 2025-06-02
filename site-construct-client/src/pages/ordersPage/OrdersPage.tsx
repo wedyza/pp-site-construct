@@ -118,6 +118,14 @@ const OrdersPage: React.FC = () => {
             setSelectedGoodComment(null);
         }
     }, [isModalOpen]);
+            
+    useEffect(() => {
+        document.title = `Заказы | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         <div className='page-content'>

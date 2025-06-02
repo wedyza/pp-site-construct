@@ -64,6 +64,14 @@ const MakeOrderPage: React.FC = () => {
             }
         }
     }, [items, dispatch]);
+            
+    useEffect(() => {
+        document.title = `Оформление заказа | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         <div className='page-content'>

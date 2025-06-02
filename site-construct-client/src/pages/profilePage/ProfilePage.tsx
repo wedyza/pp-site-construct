@@ -41,6 +41,14 @@ const ProfilePage: React.FC = () => {
     const handleLogout = () => {
         dispatch(logout());
     };
+                
+    useEffect(() => {
+        document.title = `Профиль | Kaufen`;
+
+        return () => {
+            document.title = 'Kaufen';
+        };
+    }, []);
 
     return (
         // <div className={`${selectedSection === 'messages' ? 'page-content__no-pad' : 'page-content'}`}>
