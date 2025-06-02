@@ -7,20 +7,7 @@ import { Link } from 'react-router-dom';
 import { fetchOrders } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { formatDate } from '../../utils/formatDate';
-
-const ORDER_STATUSES: Record<string, string> = {
-    PAYED: "Оплачен",
-    PROCESSING: "В обработке",
-    ON_THE_WAY: "В пути",
-    DELIVERED: "Доставлен",
-    RECEIVED: "Получен",
-    REFUND: "Возврат",
-    DECLINED: "Отклонен"
-};
-
-const getTranslatedStatus = (status: string): string => {
-    return ORDER_STATUSES[status] || status;
-};
+import { getTranslatedStatus } from '../../utils/getStatus';
 
 const SellerOrdersPage: React.FC = () => {
     const dispatch = useAppDispatch();
