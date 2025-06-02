@@ -8,6 +8,20 @@ import { fetchOrders } from '../../store/orderSlice';
 import { formatPrice } from '../../utils/formatPrice';
 import { formatDate } from '../../utils/formatDate';
 
+const ORDER_STATUSES: Record<string, string> = {
+    PAYED: "Оплачен",
+    PROCESSING: "В обработке",
+    ON_THE_WAY: "В пути",
+    DELIVERED: "Доставлен",
+    RECEIVED: "Получен",
+    REFUND: "Возврат",
+    DECLINED: "Отклонен"
+};
+
+const getTranslatedStatus = (status: string): string => {
+    return ORDER_STATUSES[status] || status;
+};
+
 const SellerOrdersPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { orders/*, loading*/ } = useAppSelector(state => state.orders);
@@ -69,7 +83,7 @@ const SellerOrdersPage: React.FC = () => {
                                 
                             </div>
                             <div className='seller-orders_table-cell'>{formatPrice(order.payment_total)} ₽</div>
-                            <div className='seller-orders_table-cell'>{order.status}</div>
+                            <div className='seller-orders_table-cell'>{getTranslatedStatus(order.status)}</div>
                             <div className='seller-orders_table-cell'>15.01.2025</div>
                             <div className='seller-orders_table-cell'>{order.address}</div>
                         </Link>

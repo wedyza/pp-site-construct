@@ -9,7 +9,16 @@ import { fetchTodayOrders } from '../../store/todayOrdersSlice';
 import { formatDate } from '../../utils/formatDate';
 import { fetchItemsLeft } from '../../store/itemsLeftSlice';
 
+export const getRussianMonthAccusative = (date: Date): string => {
+    const months = [
+        'январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
+        'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре'
+    ];
+    return months[date.getMonth()];
+};
+
 const SellerMainPage: React.FC = () => {
+    const currentMonth = getRussianMonthAccusative(new Date());
     const dispatch = useAppDispatch();
     const { data/*, loading, error*/ } = useAppSelector((state) => state.analytics);
     const { orders, total } = useAppSelector((state) => state.todayOrders);
@@ -37,7 +46,7 @@ const SellerMainPage: React.FC = () => {
                         <div className='seller-main_item-body seller-main_kpi-body'>
                             <div className='seller-main_kpi-item'>
                                 <span className='seller-main_kpi-label text-n14'>
-                                    Выручка в марте
+                                    Выручка в {currentMonth}
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
@@ -63,7 +72,7 @@ const SellerMainPage: React.FC = () => {
                             </div>
                             <div className='seller-main_kpi-item'>
                                 <span className='seller-main_kpi-label text-n14'>
-                                    Заказы в марте
+                                    Заказы в {currentMonth}
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
@@ -76,7 +85,7 @@ const SellerMainPage: React.FC = () => {
                             </div>
                             <div className='seller-main_kpi-item'>
                                 <span className='seller-main_kpi-label text-n14'>
-                                    Отмены в марте
+                                    Отмены в {currentMonth}
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
