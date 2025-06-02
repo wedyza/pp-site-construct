@@ -261,50 +261,6 @@ class ItemMedia(models.Model):
     )
     source = models.ImageField("Картинка", upload_to="media")
 
-
-# class Message(models.Model):
-#     user_from = models.ForeignKey(
-#         User,
-#         null=False,
-#         on_delete=models.CASCADE,
-#         verbose_name="Отправитель",
-#         related_name="sended_messages",
-#     )
-#     user_to = models.ForeignKey(
-#         User,
-#         null=False,
-#         on_delete=models.CASCADE,
-#         verbose_name="Получатель",
-#         related_name="received_messagess",
-#     )
-#     body = models.TextField("тело сообщения", max_length=500)
-#     created_at = models.DateTimeField("Время сообщения", auto_now_add=True)
-
-
-# class Notification(models.Model):
-#     class NotificationType(Enum):
-#         COMMENT = "Отзыв"
-#         REFUND = "Возврат"
-#         CHAT = "Чат"
-#         NEW_ORDER = "Новый заказ"
-#         ITEM_APPLIED = "Товар одобрен"
-#         ORDER_STATUS_CHANGED = "Изменился статус заказа"
-#         COMMENT_REPLIED = "Получен ответ на комментарий"
-#         # discount
-
-#     body = models.TextField("Тело", max_length=300)
-#     user = models.ForeignKey(
-#         User, on_delete=models.CASCADE, verbose_name="Пользователь"
-#     )
-#     notification_type = models.TextField(
-#         "Тип уведомления",
-#         choices=[
-#             (notification.name, notification.value) for notification in NotificationType
-#         ],
-#     )
-#     readed = models.BooleanField("Прочитано", default=False)
-
-
 class Like(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"

@@ -2,9 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, mixins, permissions, status, views, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
-from enum import Enum
 import datetime
+from .filters import GoodItemFilter
 from .functions import (
     define_this_week_period,
     fill_this_week_with_days,
@@ -134,6 +133,7 @@ class GoodItemViewSet(viewsets.ModelViewSet):
     filterset_fields = ("visible",)
     search_fields = ("name", "description")
     pagination_class = CustomPagination
+    filterset_class = GoodItemFilter
 
     def get_queryset(self):
         if (
