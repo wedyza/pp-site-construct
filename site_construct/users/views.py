@@ -8,7 +8,8 @@ from api.serializers import (
     UserLoginOTPSerializer,
 )
 from django.contrib.auth import get_user_model
-from .utils import generate_otp, send_otp_email
+from .utils import generate_otp
+from .tasks import send_otp_email
 from rest_framework.authtoken.models import Token
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions
@@ -52,7 +53,7 @@ class RegisterSellerView(APIView):
         user.otp = otp
         user.otp_expires = timezone.now() + timezone.timedelta(minutes=15)
         user.save()
-        send_otp_email(new_user.data["email"], otp)
+        send_otp_email.delay(new_user.data["email"], otp)
 
         return Response(
             {
@@ -76,7 +77,7 @@ class RegisterView(APIView):
         user.otp = otp
         user.otp_expires = timezone.now() + timezone.timedelta(minutes=15)
         user.save()
-        send_otp_email(new_user.data["email"], otp)
+        send_otp_email.delay(new_user.data["email"], otp)
 
         return Response(
             {

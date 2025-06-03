@@ -3,6 +3,7 @@ from rest_framework import viewsets, mixins, permissions, status, views, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 import datetime
+from .tasks import create_notification
 from .filters import GoodItemFilter
 from .functions import (
     define_this_week_period,
@@ -87,7 +88,6 @@ import uuid
 from django.conf import settings
 
 User = get_user_model()
-BASE_NOTIFICATION_URL = "http://188.68.80.72/api/v1/notifications/"
 TAX = 0.12
 
 
@@ -651,7 +651,7 @@ class OrderViewSet(
                 "type": "Изменился статус заказа",
             }
 
-            httpx.post(BASE_NOTIFICATION_URL, json=data)
+            create_notification.delay(data)
             return Response(status.data)
 
     @action(
@@ -715,7 +715,7 @@ class OrderViewSet(
                 "type": "Новый заказ",
                 "body": f"Появился новый заказ! Его номер {order.id}. Скорее посмотрите, что в нем!",
             }
-            response = httpx.post(BASE_NOTIFICATION_URL, json=data)
+            create_notification.delay(data)
 
         return Response({"success": True}, status=status.HTTP_200_OK)
 
@@ -882,15 +882,12 @@ class RefundViewSet(viewsets.ModelViewSet):
         ).first()
         if payout is not None:
             payout.state = payout.States.REFUND  # Возврат
-        httpx.post(
-            url=BASE_NOTIFICATION_URL,
-            json={  # вообще по-хорошему добавить очередь, так как если проихсодит ошибка, то все падает. Но в рамках теста все гарантируется (надо бы исправить)
-                "user_id": item.id,
-                "body": f'На ваш товар "{item.name}" оформлен возрат. ',
-                "type": "Возврат",
-            },
-        )
-
+        data = {
+            "user_id": item.id,
+            "body": f'На ваш товар "{item.name}" оформлен возрат. ',
+            "type": "Возврат",
+        },
+        create_notification.delay(data)
         payload.save(user=request.user, applied=True)
         return Response(payload.data)
 
