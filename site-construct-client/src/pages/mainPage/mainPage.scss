@@ -1,6 +1,30 @@
+// .news {
+//     background-color: var(--temp-color);
+//     width: 100%;
+//     height: 186px;
+//     border-radius: var(--radius);
+// }
+
+.news-container {
+    min-height: 18.7vw;
+    height: 18.7vw;
+    position: relative;
+}
+
 .news {
-    background-color: var(--temp-color);
-    width: 100%;
-    height: 186px;
-    border-radius: var(--radius);
+    display: flex;
+    width: calc(100% + var(--padding) + var(--padding));
+    overflow-x: hidden;
+    gap: 24px;
+    position: absolute;
+    left: -60px;
+}
+
+.news-banner {
+    height: auto;
+    min-width: 76vw;
+    img {
+        width: 100%;
+        height: 100%;
+    }
 }

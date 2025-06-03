@@ -6,6 +6,7 @@ import Header from '../../components/header/Header';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchGoods } from '../../store/goodsSlice';
+import NewsCarousel from '../../components/newsCarousel/NewsCarousel';
 
 const MainPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -41,7 +42,7 @@ const MainPage: React.FC = () => {
             <Header />
             <HeaderCategories />
             <div className="main-content">
-                <div className="news"></div>
+                <NewsCarousel />
                 <ul className='main_goods-list'>
                     {goods.map((good, index) => (
                         <li key={index} className="main_good">
