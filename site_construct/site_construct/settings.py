@@ -188,3 +188,5 @@ AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_S3_ENDPOINT_URL = "http://188.68.80.72/media"
 
 YOMONEY_TESTKEY = os.getenv("YOMONEY_TESTKEY")
+CELERY_BROKER_URL = 'amqp://rabbitmq'
+BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'
