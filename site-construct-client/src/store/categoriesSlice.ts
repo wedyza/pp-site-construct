@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
-import { Good } from './goodsSlice';
+import { Good, toggleWishlist } from './goodsSlice';
 import { RootState } from './store';
 
 export interface Category {
@@ -226,6 +226,17 @@ const categoriesSlice = createSlice({
                     loading: false,
                     error: action.payload as string,
                 };
+            })
+            .addCase(toggleWishlist.fulfilled, (state, action) => {
+                const { id } = action.payload;
+                console.log(id);
+                if (state.selected) {
+                    const index = state.categoryGoods[state.selected?.id].items.findIndex((item) => item.id === id);
+                        if (index !== -1) {
+                            state.categoryGoods[state.selected?.id].items[index].in_wishlist = !state.categoryGoods[state.selected?.id].items[index].in_wishlist;
+                        }
+                }
+                
             });
     },
 });
