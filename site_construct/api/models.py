@@ -61,6 +61,9 @@ class GoodItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Продавец")
     warehouse_count = models.IntegerField("Количество на складе", default=0)
 
+    def __str__(self): #pragma: no cover
+        return self.name
+
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
