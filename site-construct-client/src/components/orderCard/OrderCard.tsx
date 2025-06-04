@@ -7,6 +7,7 @@ import { formatPrice } from '../../utils/formatPrice';
 import { Link } from 'react-router-dom';
 import { Good } from '../../store/goodsSlice';
 import { getTranslatedStatus } from '../../utils/getStatus';
+import { getDateTwoWeeksLater } from '../../utils/getDate';
 
 interface OrderCardProps {
     order: Order;
@@ -37,7 +38,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                     <p className='order-card_info-item__label text-n14'>
                         {order.status === 'Получен' ? 'Дата доставки' : 'Ожидаемая дата доставки'}
                     </p>
-                    <p className='order-card_info-item__value text-n16'>{order.delivery_date}</p>
+                    <p className='order-card_info-item__value text-n16'>{getDateTwoWeeksLater()}</p>
                 </div>
                 <div className='order-card_info-item order-card_info-item__price'>
                     <p className='order-card_info-item__label text-n14'>Оплачено</p>

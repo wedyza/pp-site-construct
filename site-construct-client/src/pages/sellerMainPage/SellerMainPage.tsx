@@ -50,7 +50,7 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        {(data?.total_payed.amount__sum || 0)} ₽
+                                        {(data?.total_payed.amount__sum ? data?.total_payed.amount__sum.toFixed(2) : 0)} ₽
                                     </span>
                                     {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+12% за неделю)
@@ -63,7 +63,7 @@ const SellerMainPage: React.FC = () => {
                                 </span>
                                 <div className='seller-main_kpi-value-main'>
                                     <span className='seller-main_kpi-value text-n16'>
-                                        {(data?.total_freezed.amount__sum || 0)} ₽
+                                        {(data?.total_freezed.amount__sum ? data?.total_freezed.amount__sum.toFixed(2) : 0)} ₽
                                     </span>
                                     {/* <span className='seller-main_kpi-stat text-n14'>
                                         (+12% за неделю)
