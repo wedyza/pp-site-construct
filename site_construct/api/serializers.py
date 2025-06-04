@@ -456,15 +456,6 @@ class BasketSerializer(serializers.ModelSerializer):
         exclude = ("visible", "currently_for_order")
         # read_only_fields = ("items",)
 
-    def create(self, validated_data):
-        basket = Basket.objects.create(**validated_data)
-        basket.user = User.objects.first(id=1)
-        basket.save()
-        return basket
-
-    def get_summary(self, obj):
-        return None
-
 
 class OrderStatusChangeSerializer(serializers.ModelSerializer):
     class Meta:

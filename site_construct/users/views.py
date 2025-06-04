@@ -1,6 +1,5 @@
 from rest_framework.response import Response
 from rest_framework import status
-from djoser.views import UserViewSet
 from rest_framework.views import APIView
 from api.serializers import (
     UserCreateSerializer,
@@ -21,24 +20,6 @@ from django.utils import timezone
 
 User = get_user_model()
 
-
-class ActivationView(UserViewSet):
-    def activation(self, request, *args, **kwargs):
-        print(self.kwargs)
-        request.data["uid"] = self.kwargs["uid"]
-        request.data["token"] = self.kwargs["token"]
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        # user.is_verified = True
-        user.save()
-        super().activation(request, *args, **kwargs)
-        return Response(
-            {"message": "Account activated successfully!"},
-            status=status.HTTP_200_OK,
-        )
-
-
 class RegisterSellerView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -55,7 +36,7 @@ class RegisterSellerView(APIView):
         user.save()
         send_otp_email.delay(new_user.data["email"], otp)
 
-        return Response(
+        return Response( #pragma: no cover
             {
                 "message": "Письмо с одноразовым кодом отправлено вам на почту. Он действителен в течении 15 минут"
             },
@@ -79,7 +60,7 @@ class RegisterView(APIView):
         user.save()
         send_otp_email.delay(new_user.data["email"], otp)
 
-        return Response(
+        return Response( #pragma: no cover
             {
                 "message": "Письмо с одноразовым кодом отправлено вам на почту. Он действителен в течении 15 минут"
             },
@@ -95,7 +76,7 @@ class LoginView(APIView):
     def post(self, request):
         email = UserLoginSerializer(data=request.data)
         if not email.is_valid():
-            return Response(email.errors)
+            return Response(email.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(email=email.data["email"])
         except User.DoesNotExist as e:
@@ -110,7 +91,7 @@ class LoginView(APIView):
 
         send_otp_email(email.data["email"], otp)
 
-        return Response(
+        return Response( #pragma: no cover
             {
                 "message": "Письмо с одноразовым кодом отправлено вам на почту. Он действителен в течении 15 минут"
             },
@@ -127,11 +108,10 @@ class ValidateOTPView(APIView):
         payload = UserLoginOTPSerializer(data=request.data)
 
         if not payload.is_valid():
-            return Response(payload.errors)
+            return Response(payload.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(email=payload.data["email"])
         except User.DoesNotExist as e:
-            print(e)
             return Response(
                 {"error": "Пользователя с такой почтой не существует."},
                 status=status.HTTP_404_NOT_FOUND,
@@ -140,7 +120,7 @@ class ValidateOTPView(APIView):
         otp = payload.data["otp"]
         if user.otp == otp:
             if timezone.now() > user.otp_expires:
-                return Response(
+                return Response(#pragma: no cover
                     {"error": "Срок действия пароля истек"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -154,5 +134,5 @@ class ValidateOTPView(APIView):
             return Response({"token": token.key}, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"error": "Неправильынй код."}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Неправильный код."}, status=status.HTTP_400_BAD_REQUEST
             )

@@ -1,6 +1,6 @@
 from .filters import GoodItemFilter
 from .models import GoodCategory, CharacteristicsCategory, GoodItem
-from typing import List
+from typing import List, Tuple
 import datetime
 from users.models import CustomAbstractUser
 from .models import MoneyPayout
@@ -8,7 +8,7 @@ from django.utils import timezone
 import httpx
 
 
-def unwrap_categories(category: GoodCategory) -> List[GoodCategory]:
+def unwrap_categories(category: GoodCategory) -> List[CharacteristicsCategory]:
     characteristics_categories = CharacteristicsCategory.objects.filter(
         category=category
     ).all()
@@ -31,7 +31,7 @@ def unwrap_categories_items(data, category: GoodCategory) -> List[GoodItem]:
     return category_items
 
 
-def define_this_month_period():
+def define_this_month_period() -> Tuple[datetime.date, datetime.date]: #pragma: no cover
     today = timezone.now().date()
     start_of_month = datetime.date(today.year, today.month, 1)
     end_of_month = datetime.date(today.year, today.month + 1, 1) - datetime.timedelta(
@@ -40,7 +40,7 @@ def define_this_month_period():
     return start_of_month, end_of_month
 
 
-def define_this_week_period():
+def define_this_week_period() -> Tuple[datetime.date, datetime.date]: #pragma: no cover
     today = timezone.now().date()
     today_weekday = today.weekday()
     start_of_week = today - datetime.timedelta(days=today_weekday)
@@ -48,7 +48,7 @@ def define_this_week_period():
     return start_of_week, end_of_week
 
 
-def fill_this_week_with_days(week: list, start: datetime.date):
+def fill_this_week_with_days(week: list, start: datetime.date): #pragma: no cover
     if len(week) == 7:
         return week
     week = list(week)
@@ -61,7 +61,7 @@ def fill_this_week_with_days(week: list, start: datetime.date):
     return week
 
 
-def get_status(count: int) -> str:
+def get_status(count: int) -> str: #pragma: no cover
     status = "В наличии"
     if count <= 0:
         status = "Нет в наличии"

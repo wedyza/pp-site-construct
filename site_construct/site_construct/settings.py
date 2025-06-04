@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_filters",
     "users.apps.UsersConfig",
     "api.apps.ApiConfig",
+    "coverage"
 ]
 
 MIDDLEWARE = [

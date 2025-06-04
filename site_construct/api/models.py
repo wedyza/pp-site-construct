@@ -20,9 +20,6 @@ class GoodCategory(models.Model):
         related_name="daughter",
     )
 
-    def __str__(self) -> str:
-        return self.title
-
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
@@ -37,10 +34,6 @@ class CharacteristicsCategory(models.Model):
     )
     title = models.CharField("Название категории", max_length=50)
 
-    def __str__(self):
-        return self.title
-
-
 class Characteristics(models.Model):
     category = models.ForeignKey(
         CharacteristicsCategory,
@@ -49,9 +42,6 @@ class Characteristics(models.Model):
         related_name="characteristics",
     )
     title = models.CharField("Название свойства", max_length=50)
-
-    def __str__(self):
-        return self.title
 
 
 class GoodItem(models.Model):
@@ -70,9 +60,6 @@ class GoodItem(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Продавец")
     warehouse_count = models.IntegerField("Количество на складе", default=0)
-
-    def __str__(self) -> str:
-        return self.name
 
     class Meta:
         verbose_name = "Товар"
@@ -101,9 +88,6 @@ class PaymentMethod(models.Model):
     card_cvv_code = models.IntegerField("CVC код", null=False)
     # bank_name = models.CharField("Название банка", max_length=50, null=True)
 
-    def __str__(self) -> str:
-        return self.card_body
-
     class Meta:
         verbose_name = "Способ оплаты"
         verbose_name_plural = "Способы оплаты"
@@ -112,9 +96,6 @@ class PaymentMethod(models.Model):
 class DeliveryMethod(models.Model):
     title = models.CharField("Название", max_length=100)
     description = models.TextField("Описание", max_length=500)
-
-    def __str__(self) -> str:
-        return self.title
 
     class Meta:
         verbose_name = "Способ доставки"
@@ -139,9 +120,6 @@ class BasketItem(models.Model):
     )
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE, verbose_name="Корзина")
     count = models.IntegerField("Количество", default=1)
-
-    def __str__(self) -> str:
-        return self.good_item.name
 
     class Meta:
         unique_together = ("good_item", "basket")

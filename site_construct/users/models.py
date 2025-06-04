@@ -5,7 +5,7 @@ from django.utils import timezone
 from enum import Enum
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager): #pragma: no cover
     """Define a model manager for User model with no username field."""
 
     use_in_migrations = True

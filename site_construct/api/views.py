@@ -74,10 +74,7 @@ from .permissions import (
     AdminOrReadOnly,
     IsSeller,
     IsSellerOrAdmin,
-    Owner,
     OwnerOrReadOnly,
-    AdminOrModerator,
-    SellerOrReadOnly,
     IsBuyer,
 )
 from .paginators import CustomPagination
@@ -812,7 +809,7 @@ class CommentReplyViewSet(
     mixins.DestroyModelMixin,
 ):
     serializer_class = CommentReplySerializer
-    permission_classes = (SellerOrReadOnly,)
+    permission_classes = (OwnerOrReadOnly,)
 
     def get_queryset(self):
         return CommentReply.objects.filter(user=self.request.user).all()
