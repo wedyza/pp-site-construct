@@ -30,6 +30,29 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    container_name: rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+  
+  celery:
+    build: ./site_construct/
+    container_name: celery_worker
+    depends_on:
+      - rabbitmq
+    command: celery -A site_construct worker -l INFO
+
   message_microservice:
     build: ./microservices/messages_service
     container_name: messages_service

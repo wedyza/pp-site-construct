@@ -150,14 +150,14 @@ async def list_unreaded_notifications(
         .count()
     )
 
-
+tzinfo = datetime.timezone(datetime.timedelta(hours=5))
 @app.get("/api/v1/notifications/test")
 async def test(db: Session = Depends(get_db)):
 
     notification = Notification()
     notification.user_id = 1
     notification.body = "test"
-    notification.created_at = datetime.datetime.now()
+    notification.created_at = datetime.datetime.now(tz=tzinfo)
     notification.type = ENUM_TABLE["Возврат"]
 
     db.add(notification)
